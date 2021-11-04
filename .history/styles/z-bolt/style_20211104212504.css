@@ -3,11 +3,11 @@
 }
 
 window {
-    background-color: #101418;
+    background-color: #13181C;
 }
 
 button {
-    background-color: rgba(0,0,0,0);
+    background-color: #13181C;
 }
 
 button:active {
