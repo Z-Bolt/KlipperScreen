@@ -27,9 +27,9 @@
      inkscape:window-height="1017"
      id="namedview8"
      showgrid="false"
-     inkscape:zoom="4.7265625"
-     inkscape:cx="64.985077"
-     inkscape:cy="2.9599225"
+     inkscape:zoom="9.453125"
+     inkscape:cx="52.034822"
+     inkscape:cy="17.532186"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
@@ -375,14 +375,15 @@
        inkscape:connector-curvature="0" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.37795275;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
-       x="35.127342"
-       y="57.187599"
-       id="text890"><tspan
+       style="font-style:normal;font-weight:normal;font-size:29.46201706px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.27838126;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+       x="6.583385"
+       y="55.636032"
+       id="text890"
+       transform="scale(0.95791149,1.0439378)"><tspan
          sodipodi:role="line"
          id="tspan888"
-         x="35.127342"
-         y="57.187599"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18.66666603px;line-height:40px;font-family:'BankGothic Lt BT';-inkscape-font-specification:'BankGothic Lt BT';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.37795275;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke">Z-Bolt</tspan></text>
+         x="6.583385"
+         y="55.636032"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:semi-expanded;font-size:17.67720985px;line-height:0px;font-family:'BankGothic Lt BT';-inkscape-font-specification:'BankGothic Lt BT, Semi-Expanded';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:-0.93541902px;word-spacing:-2.26857471px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.27838126;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke">Z-BOLT</tspan></text>
   </g>
 </svg>
