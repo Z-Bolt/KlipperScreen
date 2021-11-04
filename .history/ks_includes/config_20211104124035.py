@@ -29,7 +29,7 @@ class KlipperScreenConfig:
     do_not_edit_line = "#~# --- Do not edit below this line. This section is auto generated --- #~#"
     do_not_edit_prefix = "#~#"
 
-    def __init__(self, configfile, config_mod, screen=None):
+    def __init__(self, configfile, screen=None):
         self.default_config_path = "%s/ks_includes/%s" % (os.getcwd(), "defaults_simple.conf")
         self.default_expert_config_path = "%s/ks_includes/%s" % (os.getcwd(), "defaults_expert.conf")
         self.config = configparser.ConfigParser()
