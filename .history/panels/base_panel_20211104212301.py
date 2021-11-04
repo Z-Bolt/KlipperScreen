@@ -269,8 +269,8 @@ class BasePanel(ScreenPanel):
         self.titlelbl.set_label("%s | %s" % (self._screen.connected_printer, title))
 
     def show_back_buttons(self):
-        self.control_grid.attach(self.control['back'], 0, 0, 1, 2)
-        self.control_grid.attach(self.control['home'], 0, 2, 1, 2)
+        self.control_grid.attach(self.control['back'], 0, 0, 1, 1)
+        self.control_grid.attach(self.control['home'], 0, 1, 1, 1)
 
     def update_time(self):
         now = datetime.datetime.now()
