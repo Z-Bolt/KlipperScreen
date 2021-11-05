@@ -1,4 +1,6 @@
+from _typeshed import IdentityFunction
 import configparser
+from enum import IntFlag
 import gettext
 import os
 import logging
