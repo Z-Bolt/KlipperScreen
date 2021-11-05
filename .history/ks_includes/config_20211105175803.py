@@ -1,6 +1,4 @@
-from _typeshed import IdentityFunction
 import configparser
-from enum import IntFlag
 import gettext
 import os
 import logging
@@ -107,7 +105,7 @@ class KlipperScreenConfig:
         _n = self.lang.ngettext
 
         self.configurable_options = [
-           # {"invert_x": {"section": "main", "name": _("Invert X"), "type": "binary", "value": "False"}},
+            {"invert_x": {"section": "main", "name": _("Invert X"), "type": "binary", "value": "False"}},
             {"invert_y": {"section": "main", "name": _("Invert Y"), "type": "binary", "value": "False"}},
             {"invert_z": {"section": "main", "name": _("Invert Z"), "type": "binary", "value": "False"}},
             {"language": {"section": "main", "name": _("Language"), "type": "dropdown", "value": "system_lang",

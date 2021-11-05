@@ -30,6 +30,9 @@ class KlipperScreenConfig:
     do_not_edit_line = "#~# --- Do not edit below this line. This section is auto generated --- #~#"
     do_not_edit_prefix = "#~#"
 
+    def _select_mode_interface(self):
+        
+
     def __init__(self, configfile, screen=None):
         self.default_config_path = "%s/ks_includes/%s" % (os.getcwd(), "defaults_simple.conf")
         self.default_expert_config_path = "%s/ks_includes/%s" % (os.getcwd(), "defaults_expert.conf")
@@ -107,7 +110,7 @@ class KlipperScreenConfig:
         _n = self.lang.ngettext
 
         self.configurable_options = [
-           # {"invert_x": {"section": "main", "name": _("Invert X"), "type": "binary", "value": "False"}},
+            {"invert_x": {"section": "main", "name": _("Invert X"), "type": "binary", "value": "False"}},
             {"invert_y": {"section": "main", "name": _("Invert Y"), "type": "binary", "value": "False"}},
             {"invert_z": {"section": "main", "name": _("Invert Z"), "type": "binary", "value": "False"}},
             {"language": {"section": "main", "name": _("Language"), "type": "dropdown", "value": "system_lang",
