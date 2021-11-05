@@ -66,13 +66,13 @@ class BedLevelPanel(ScreenPanel):
             logging.debug("bed_screws not configured, calculating locations")
             xconf = self._screen.printer.get_config_section("stepper_x")
             yconf = self._screen.printer.get_config_section("stepper_y")
-            x = int(int(xconf['position_max'])/20)
-            y = int(int(yconf['position_max'])/20)
+            x = int(int(xconf['position_max'])/10)
+            y = int(int(yconf['position_max'])/10)
             self.screws = [
                 [x, y],
-                [x*19, y],
-                [x, y*19],
-                [x*19, y*19],
+                [x*9, y],
+                [x, y*9],
+                [x*9, y*9],
             ]
             logging.debug("Calculated screw locations [x,y]: %s", screws)
         else:
