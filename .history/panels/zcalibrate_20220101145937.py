@@ -94,8 +94,6 @@ class ZCalibratePanel(ScreenPanel):
                 self._screen._ws.klippy.gcode_script('G0 X%d Y%d F3000' % (x_position, y_position))
 
         if (self._printer.config_section_exists("probe") or self._printer.config_section_exists("bltouch")):
-            self._screen._ws.klippy.gcode_script('G0 X10 Y10 F3000')
-            self._screen._ws.klippy.gcode_script('G0 Z10 F1500')
             self._screen._ws.klippy.gcode_script(KlippyGcodes.PROBE_CALIBRATE)
         else:
             self._screen._ws.klippy.gcode_script(KlippyGcodes.Z_ENDSTOP_CALIBRATE)
