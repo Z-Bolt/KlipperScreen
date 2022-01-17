@@ -163,10 +163,10 @@ class KlipperScreenConfig:
                     {"name": _("Medium") + " " + _("(default)"), "value": "medium"},
                     {"name": _("Large"), "value": "large"}]}},
             {"confirm_estop": {
-                "section": "main", "name": "Подтверждение при экстренном стопе", "type": "binary",
+                "section": "main", "name": _("Confirm emergency stop"), "type": "binary",
                 "value": "False"}},
             {"select_mode": {
-                "section": "main", "name": "Режим эксперта", "type": "binary",
+                "section": "main", "name": _("Expert Mode"), "type": "binary",
                 "value": "False", "callback": screen.restart_warning}},
             # {"": {"section": "main", "name": _(""), "type": ""}}
         ]
