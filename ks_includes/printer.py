@@ -85,6 +85,7 @@ class Printer:
             'print_stats',
             'toolhead',
             'virtual_sdcard',
+            'output_pin',
             'webhooks'
         ]
 
