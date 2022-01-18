@@ -168,6 +168,9 @@ class KlipperScreenConfig:
             {"select_mode": {
                 "section": "main", "name": _("Expert Mode"), "type": "binary",
                 "value": "False", "callback": screen.restart_warning}},
+            {"enable_psu": {
+                "section": "main", "name": _("Enable PSU"), "type": "binary",
+                "value": "True", "callback": screen.restart_warning}},
             # {"": {"section": "main", "name": _(""), "type": ""}}
         ]
 
