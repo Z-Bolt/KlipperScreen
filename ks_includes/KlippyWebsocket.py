@@ -160,7 +160,7 @@ class KlippyWebsocket(threading.Thread):
             Gdk.threads_add_idle(
                 GLib.PRIORITY_HIGH_IDLE,
                 self._callback['on_close'],
-                "Lost Connection to Moonraker"
+                _("Lost Connection to Moonraker")
             )
 
     def reconnect(self):
