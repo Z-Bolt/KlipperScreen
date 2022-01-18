@@ -19,7 +19,7 @@ class ExtrudePanel(ScreenPanel):
 
         self.load_filament = self.unload_filament = False
         self.find_gcode_macros()
-        self.speed = 1
+        self.speed = 5
         self.speeds = ['1', '2', '5', '25']
 
         grid = Gtk.Grid()
