@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-29 11:44-0300\n"
-"PO-Revision-Date: 2022-01-18 15:06+0300\n"
+"PO-Revision-Date: 2022-01-19 14:30+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -604,3 +604,6 @@ msgstr "Вы уверены, что хотите экстренно выключ
 
 msgid "Lost Connection to Moonraker. Restart Firmware."
 msgstr "Moonraker отключился. Перезагрузите прошивку."
+
+msgid "Splash Screen"
+msgstr "Сервисное меню"
