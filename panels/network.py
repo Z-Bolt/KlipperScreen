@@ -348,7 +348,7 @@ class NetworkPanel(ScreenPanel):
         self.labels['add_network'] = Gtk.VBox()
         self.labels['add_network'].set_valign(Gtk.Align.START)
 
-        box = Gtk.Box(spacing=5)
+        box = Gtk.Box(spacing=2)
         box.set_size_request(self._gtk.get_content_width(), self._gtk.get_content_height() -
                              self._screen.keyboard_height - 20)
         box.set_hexpand(True)
