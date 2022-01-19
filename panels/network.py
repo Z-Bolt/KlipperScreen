@@ -49,15 +49,16 @@ class NetworkPanel(ScreenPanel):
 
         self.labels['interface'] = Gtk.Label()
         self.labels['interface'].set_text(" %s: %s" % (_("Interface"), self.interface))
-        self.labels['ip-addr'] = Gtk.Label()
-        self.labels['ip-addr'].set_text(" %s: %s" % (_("IP-Adress"), self.ip))
+        #self.labels['ip-addr'] = Gtk.Label()
+        #self.labels['ip-addr'].set_text(" %s: %s" % (_("IP-Adress"), self.ip))
         self.labels['disconnect'] = self._gtk.Button(_("Disconnect"), "color2")
 
 
         sbox = Gtk.Box()
         sbox.set_hexpand(True)
         sbox.set_vexpand(False)
-        sbox.add(self.labels['interface'], self.labels['ip-addr'])
+        sbox.add(self.labels['interface'])
+        #sbox.add(self.labels['ip-addr'])
         # sbox.add(self.labels['disconnect'])
 
 
