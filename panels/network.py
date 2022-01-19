@@ -48,7 +48,7 @@ class NetworkPanel(ScreenPanel):
         self.labels['networks'] = {}
 
         self.labels['interface'] = Gtk.Label()
-        self.labels['interface'].set_text(" %s: %s  %s: %s" % (_("Interface"), self.interface,_("IP-Adress"), ip))
+        self.labels['interface'].set_text(" %s: %s            %s: %s" % (_("Interface"), self.interface,_("IP"), ip))
         self.labels['disconnect'] = self._gtk.Button(_("Disconnect"), "color2")
 
 
