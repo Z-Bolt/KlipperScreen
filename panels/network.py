@@ -55,6 +55,7 @@ class NetworkPanel(ScreenPanel):
         sbox = Gtk.Box()
         sbox.set_hexpand(True)
         sbox.set_vexpand(False)
+        sbox.set_halign(Center)
         sbox.add(self.labels['interface'])
         # sbox.add(self.labels['disconnect'])
 
