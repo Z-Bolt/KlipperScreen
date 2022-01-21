@@ -12,15 +12,15 @@ def create_panel(*args):
 
 # X and Y frequencies
 XY_FREQ = [
-    {'name': 'Частота для X', 'config': 'shaper_freq_x', 'min': 0, 'max': 133},
-    {'name': 'Частота для Y', 'config': 'shaper_freq_y', 'min': 0, 'max': 133},
+    {'name': _("Frequency for X"), 'config': 'shaper_freq_x', 'min': 0, 'max': 133},
+    {'name': _("Frequency for Y"), 'config': 'shaper_freq_y', 'min': 0, 'max': 133},
 ]
 SHAPERS = ['zv', 'mzv', 'zvd', 'ei', '2hump_ei', '3hump_ei']
 
 class InputShaperPanel(ScreenPanel):
     def initialize(self, panel_name):
         _ = self.lang.gettext
-        self.CALIBRATE_TEXT = self.lang.gettext('Запустить автокалибровку')
+        self.CALIBRATE_TEXT = self.lang.gettext(_("Run Auto Calibration"))
 
         self.has_sensor = False
 
@@ -38,12 +38,11 @@ class InputShaperPanel(ScreenPanel):
         self.freq_xy_combo = {}
 
         manual_calibration_label = Gtk.Label()
-        manual_calibration_label.set_markup('<big><b>Ручная калибровка</b></big>')
+        manual_calibration_label.set_markup(_("<big><b>Manual calibration</b></big>"))
         input_grid.attach(manual_calibration_label, 0, 0, 1, 1)
 
         disclaimer = Gtk.Label()
-        disclaimer.set_markup('<small>NOTE: Ручная калибровка будет использоваться только во время работы в панели. Отредактируйте файл printer.cfg,'
-                              'чтобы сохранить изменения..</small>')
+        disclaimer.set_markup(_("<small>ATTENTION: Manual calibration will only be used while working in the panel. Edit the printer.cfg file to save the changes.</small>"))
         disclaimer.set_line_wrap(True)
         disclaimer.set_hexpand(True)
         disclaimer.set_vexpand(False)
@@ -79,7 +78,7 @@ class InputShaperPanel(ScreenPanel):
             shaper_grid = Gtk.Grid()
             shaper_grid.set_vexpand(True)
             name = Gtk.Label()
-            name.set_markup("<b>{}</b>".format(dim_freq['name'].replace('Частота', 'Тип коррекции')))
+            name.set_markup("<b>{}</b>".format(dim_freq['name'].replace(_("Frequency"), _("Shaper"))))
             name.set_hexpand(True)
             name.set_vexpand(True)
             name.set_halign(Gtk.Align.START)
@@ -108,11 +107,11 @@ class InputShaperPanel(ScreenPanel):
         auto_grid.set_vexpand(True)
 
         auto_calibration_label = Gtk.Label()
-        auto_calibration_label.set_markup('<big><b>Автоматическая калибровка</b></big>')
+        auto_calibration_label.set_markup(_("<big><b>Automatic calibration</b></big>"))
         auto_grid.attach(auto_calibration_label, 0, 0, 1, 1)
 
         disclaimer = Gtk.Label('')
-        disclaimer.set_markup('<small>NOTE: После автокалибровки изменения сохранятся сами. Принтер будет перезагружен.</small>')
+        disclaimer.set_markup(_("<small>ATTENTION: After auto-calibration, the changes will be saved by themselves. The printer will restart.</small>"))
         disclaimer.set_line_wrap(True)
         disclaimer.set_hexpand(True)
         disclaimer.set_vexpand(False)
@@ -120,14 +119,14 @@ class InputShaperPanel(ScreenPanel):
 
         auto_grid.attach(disclaimer, 0, 1, 1, 1)
 
-        self.calibrate_btn = self._gtk.ButtonImage("move", _('Поиск ADXL345'), "color1", word_wrap=False)
+        self.calibrate_btn = self._gtk.ButtonImage("move", _("Search ADXL345"), "color1", word_wrap=False)
         self.calibrate_btn.connect('clicked', self.start_calibration)
         self.calibrate_btn.set_sensitive(False)
         auto_grid.attach(self.calibrate_btn, 0, 2, 1, 1)
 
         grid.attach(auto_grid, 1, 0, 1, 1)
 
-        self.status = Gtk.Label('Статус:')
+        self.status = Gtk.Label(_("Status:"))
         self.status.set_hexpand(True)
         self.status.set_vexpand(False)
         self.status.set_halign(Gtk.Align.START)
@@ -141,7 +140,7 @@ class InputShaperPanel(ScreenPanel):
 
     def start_calibration(self, *_):
         self._screen._ws.klippy.gcode_script('SHAPER_CALIBRATE HZ_PER_SEC=2')
-        self.calibrate_btn.set_label(self.lang.gettext('Осуществляется калибровка'))
+        self.calibrate_btn.set_label(self.lang.gettext(_("Calibration in progress")))
         self.calibrate_btn.set_sensitive(False)
 
     def set_opt_value(self, widget, opt, *args):
@@ -164,6 +163,7 @@ class InputShaperPanel(ScreenPanel):
     def activate(self):
         self.get_updates()
         self._screen._ws.klippy.gcode_script(
+            'G28'
             'ACCELEROMETER_QUERY'
         )
 
@@ -171,10 +171,10 @@ class InputShaperPanel(ScreenPanel):
         if action == "notify_gcode_response":
             self.status.set_text('Status: {}'.format(data.replace('shaper_', '').replace('damping_', '')))
             if 'got 0' in data.lower():
-                self.calibrate_btn.set_label(self.lang.gettext('Проверка связи с ADXL345'))
+                self.calibrate_btn.set_label(self.lang.gettext(_("Verifying communication with the ADXL345")))
                 self.calibrate_btn.set_sensitive(False)
             if 'Unknown command:"ACCELEROMETER_QUERY"'.lower() in data.lower():
-                self.calibrate_btn.set_label(self.lang.gettext('ADXL Не обнаружен'))
+                self.calibrate_btn.set_label(self.lang.gettext(_("ADXL345 Module Not Detected")))
                 self.calibrate_btn.set_sensitive(False)
             if 'must home' in data.lower():
                 self.calibrate_btn.set_label(self.CALIBRATE_TEXT)
@@ -190,7 +190,7 @@ class InputShaperPanel(ScreenPanel):
                 self.freq_xy_combo['shaper_type_' + results['axis']].set_active(SHAPERS.index(results['shaper_type']))
                 if results['axis'] == 'y':
                     self.set_opt_value(None, None)
-                    self.calibrate_btn.set_label(self.lang.gettext('Перезагрузка...'))
+                    self.calibrate_btn.set_label(self.lang.gettext(_("Reboot...")))
                     self.save_config()
 
     def get_updates(self):
