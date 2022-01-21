@@ -12,8 +12,8 @@ def create_panel(*args):
 
 # X and Y frequencies
 XY_FREQ = [
-    {'name': _("Частота для X"), 'config': 'shaper_freq_x', 'min': 0, 'max': 133},
-    {'name': _("Частота для Y"), 'config': 'shaper_freq_y', 'min': 0, 'max': 133},
+    {'name': _("Frequency for X"), 'config': 'shaper_freq_x', 'min': 0, 'max': 133},
+    {'name': _("Frequency for Y"), 'config': 'shaper_freq_y', 'min': 0, 'max': 133},
 ]
 SHAPERS = ['zv', 'mzv', 'zvd', 'ei', '2hump_ei', '3hump_ei']
 
@@ -107,7 +107,7 @@ class InputShaperPanel(ScreenPanel):
         auto_grid.set_vexpand(True)
 
         auto_calibration_label = Gtk.Label()
-        auto_calibration_label.set_markup(_("<big><b>Автоматическая калибровка</b></big>"))
+        auto_calibration_label.set_markup(_("<big><b>Automatic calibration</b></big>"))
         auto_grid.attach(auto_calibration_label, 0, 0, 1, 1)
 
         disclaimer = Gtk.Label('')
