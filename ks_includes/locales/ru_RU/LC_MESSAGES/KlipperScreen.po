@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-29 11:44-0300\n"
-"PO-Revision-Date: 2022-01-19 15:30+0300\n"
+"PO-Revision-Date: 2022-01-21 17:43+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -610,3 +610,45 @@ msgstr "Сервисное меню"
 
 msgid "IP"
 msgstr "IP"
+
+msgid "Frequency"
+msgstr "Частота"
+
+msgid "Shaper"
+msgstr "Тип коррекции"
+
+msgid "Automatic calibration"
+msgstr "Автоматическая калибровка"
+
+msgid "ATTENTION: After auto-calibration, the changes will be saved by themselves. The printer will restart."
+msgstr "ВНИМАНИЕ: После автокалибровки изменения сохранятся сами. Принтер будет перезагружен."
+
+msgid "Search ADXL345"
+msgstr "Поиск ADXL345"
+
+msgid "Status:"
+msgstr "Статус:"
+
+msgid "Calibration in progress"
+msgstr "Осуществляется калибровка"
+
+msgid "Verifying communication with the ADXL345"
+msgstr "Проверка связи с ADXL345"
+
+msgid "ADXL345 Module Not Detected"
+msgstr "Модуль ADXL345 Не обнаружен"
+
+msgid "Reboot... "
+msgstr "Перезагрузка... "
+
+msgid "Manual calibration"
+msgstr "Ручная калибровка"
+
+msgid "ATTENTION: Manual calibration will only be used while working in the panel. Edit the printer.cfg file to save the changes."
+msgstr "ВНИМАНИЕ: Ручная калибровка будет использоваться только во время работы в панели. Отредактируйте файл printer.cfg, чтобы сохранить изменения."
+
+msgid "Frequency for X"
+msgstr "Частота для X"
+
+msgid "Frequency for Y"
+msgstr "Частота для Y"
