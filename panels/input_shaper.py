@@ -16,15 +16,15 @@ def create_panel(*args):
 
 # X and Y frequencies
 XY_FREQ = [
-    {'name': _("Frequency for X"), 'config': 'shaper_freq_x', 'min': 0, 'max': 133},
-    {'name': _("Frequency for Y"), 'config': 'shaper_freq_y', 'min': 0, 'max': 133},
+    {'name':_("Frequency for X"), 'config': 'shaper_freq_x', 'min': 0, 'max': 133},
+    {'name':_("Frequency for Y"), 'config': 'shaper_freq_y', 'min': 0, 'max': 133},
 ]
 SHAPERS = ['zv', 'mzv', 'zvd', 'ei', '2hump_ei', '3hump_ei']
 
 class InputShaperPanel(ScreenPanel):
     def initialize(self, panel_name):
         _ = self.lang.gettext
-        self.CALIBRATE_TEXT = self.lang.gettext(_("Run Auto Calibration"))
+        self.CALIBRATE_TEXT = self._gtk.Label(_("Run Auto Calibration"))
 
         self.has_sensor = False
 
