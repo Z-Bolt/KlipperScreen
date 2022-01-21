@@ -649,3 +649,48 @@ msgstr "Убедитесь, что из экструдера выгружен ф
 
 msgid "Replacing the hotend of the 2nd extruder"
 msgstr "Замена хотенда 2-го экструдера"
+
+msgid "Frequency"
+msgstr "Частота"
+
+msgid "Shaper"
+msgstr "Тип коррекции"
+
+msgid "Automatic calibration"
+msgstr "Автоматическая калибровка"
+
+msgid "ATTENTION: After auto-calibration, the changes will be saved by themselves. The printer will restart."
+msgstr "ВНИМАНИЕ: После автокалибровки изменения сохранятся сами. Принтер будет перезагружен."
+
+msgid "Search ADXL345"
+msgstr "Поиск ADXL345"
+
+msgid "Status:"
+msgstr "Статус:"
+
+msgid "Calibration in progress"
+msgstr "Осуществляется калибровка"
+
+msgid "Verifying communication with the ADXL345"
+msgstr "Проверка связи с ADXL345"
+
+msgid "ADXL345 Module Not Detected"
+msgstr "Модуль ADXL345 Не обнаружен"
+
+msgid "Reboot... "
+msgstr "Перезагрузка... "
+
+msgid "Manual calibration"
+msgstr "Ручная калибровка"
+
+msgid "ATTENTION: Manual calibration will only be used while working in the panel. Edit the printer.cfg file to save the changes."
+msgstr "ВНИМАНИЕ: Ручная калибровка будет использоваться только во время работы в панели. Отредактируйте файл printer.cfg, чтобы сохранить изменения."
+
+msgid "Frequency for X"
+msgstr "Частота для X"
+
+msgid "Frequency for Y"
+msgstr "Частота для Y"
+
+#msgid ""
+#msgstr ""
