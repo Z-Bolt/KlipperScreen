@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib import rc
 from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvas
+from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as FigureCanvas
 from matplotlib.ticker import LinearLocator
 
 from ks_includes.KlippyGcodes import KlippyGcodes
@@ -30,8 +30,6 @@ class BedMeshPanel(ScreenPanel):
         scroll = Gtk.ScrolledWindow()
         scroll.set_property("overlay-scrolling", False)
         scroll.set_vexpand(True)
-        scroll.add_events(Gdk.EventMask.TOUCH_MASK)
-        scroll.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
 
         # Create a grid for all profiles
         self.labels['profiles'] = Gtk.Grid()
@@ -69,7 +67,7 @@ class BedMeshPanel(ScreenPanel):
 
     def activate_mesh(self, profile):
         if profile == "":
-            profile = "default"
+            profile = None
 
         logging.debug("Activating profile: %s %s" % (self.active_mesh, profile))
         if profile != self.active_mesh:
@@ -199,15 +197,9 @@ class BedMeshPanel(ScreenPanel):
         self.remove_create()
 
     def calibrate_mesh(self, widget):
-        if self._screen.printer.get_stat("toolhead", "homed_axes") != "xyz":
-            self._screen._ws.klippy.gcode_script(KlippyGcodes.HOME)
-
         self._screen._ws.klippy.gcode_script(
             "BED_MESH_CALIBRATE"
         )
-
-        if not (self._printer.config_section_exists("probe") or self._printer.config_section_exists("bltouch")):
-            self.menu_item_clicked(widget, "refresh", {"name": "Mesh calibrate", "panel": "zcalibrate"})
 
     def load_meshes(self):
         bm_profiles = self._screen.printer.get_config_section_list("bed_mesh ")
@@ -315,14 +307,7 @@ class BedMeshPanel(ScreenPanel):
                 return
             x_range = [int(abm['mesh_min'][0]), int(abm['mesh_max'][0])]
             y_range = [int(abm['mesh_min'][1]), int(abm['mesh_max'][1])]
-            minz_mesh = min(min(abm['mesh_matrix']))
-            maxz_mesh = max(max(abm['mesh_matrix']))
-            # Do not use a very small zscale, because that could be misleading
-            if minz_mesh > -0.5:
-                minz_mesh = -0.5
-            if maxz_mesh < 0.5:
-                maxz_mesh = 0.5
-            z_range = [minz_mesh, maxz_mesh]
+            z_range = [min(min(abm['mesh_matrix'])), max(max(abm['mesh_matrix']))]
             counts = [len(abm['mesh_matrix'][0]), len(abm['mesh_matrix'])]
             deltas = [(x_range[1] - x_range[0]) / (counts[0]-1), (y_range[1] - y_range[0]) / (counts[1]-1)]
             x = [(i*deltas[0])+x_range[0] for i in range(counts[0])]
@@ -340,23 +325,24 @@ class BedMeshPanel(ScreenPanel):
             x, y = np.meshgrid(x, y)
             z = np.asarray(bm['points'])
 
-        rc('axes', edgecolor="#e2e2e2", labelcolor="#e2e2e2")
-        rc(('xtick', 'ytick'), color="#e2e2e2")
-        fig = plt.figure(facecolor='#12121277')
-        ax = Axes3D(fig, azim=245, elev=23)
-        ax.set(title=profile, xlabel="X", ylabel="Y", facecolor='none')
-        ax.spines['bottom'].set_color("#e2e2e2")
-        fig.add_axes(ax)
-        surf = ax.plot_surface(x, y, z, cmap=cm.coolwarm, vmin=-0.1, vmax=0.1)
+        rc('axes', edgecolor="#fff", labelcolor="#fff")
+        rc(('xtick', 'ytick'), color="#fff")
+        fig = plt.figure()
+        fig.patch.set_facecolor("black")
+        ax = Axes3D(fig, auto_add_to_figure=False)
 
-        chartBox = ax.get_position()
-        ax.set_position([chartBox.x0, chartBox.y0+0.1, chartBox.width, chartBox.height])
+        ax.set_facecolor("black")
+        ax.set(title=profile, xlabel="X", ylabel="Y")
+        ax.spines['bottom'].set_color("#fff")
+
+        fig.add_axes(ax)
+        surf = ax.plot_surface(x, y, z, rstride=1, cstride=1, cmap=cm.coolwarm)
 
         ax.set_zlim(z_range[0], z_range[1])
-        ax.zaxis.set_major_locator(LinearLocator(5))
+        ax.zaxis.set_major_locator(LinearLocator(10))
         # A StrMethodFormatter is used automatically
         ax.zaxis.set_major_formatter('{x:.02f}')
-        fig.colorbar(surf, shrink=0.7, aspect=5, pad=0.25)
+        fig.colorbar(surf, shrink=0.5, aspect=5)
 
         box = Gtk.VBox()
         box.set_hexpand(True)
@@ -384,11 +370,6 @@ class BedMeshPanel(ScreenPanel):
         canvas.set_size_request(alloc.width, self._screen.height/3*2)
         canvas_box.add(canvas)
         canvas_box.show_all()
-        # Remove the "matplotlib-canvas" class which forces a white background.
-        # https://github.com/matplotlib/matplotlib/commit/3c832377fb4c4b32fcbdbc60fdfedb57296bc8c0
-        style_ctx = canvas.get_style_context()
-        for css_class in style_ctx.list_classes():
-            style_ctx.remove_class(css_class)
 
 
     def _close_dialog(self, widget, response):
