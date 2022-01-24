@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-29 11:44-0300\n"
-"PO-Revision-Date: 2022-01-24 12:58+0300\n"
+"PO-Revision-Date: 2022-01-24 13:12+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -658,3 +658,9 @@ msgstr "Сервис"
 
 msgid "Input Shaper"
 msgstr "Калибровка вибраций"
+
+msgid "Are you sure you want to start the hotend PID calibration?"
+msgstr "Вы уверены, что хотите начать калибровку PID хотенда?"
+
+msgid "Are you sure you want to start the bed PID calibration?"
+msgstr "Вы уверены, что хотите начать калибровку PID стола?"
