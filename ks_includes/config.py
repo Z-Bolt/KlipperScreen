@@ -30,7 +30,6 @@ class KlipperScreenConfig:
 
     def __init__(self, configfile, screen=None):
         self.default_config_path = "%s/ks_includes/%s" % (os.getcwd(), "defaults_simple.conf")
-        self.default_expert_config_path = "%s/ks_includes/%s" % (os.getcwd(), "defaults_expert.conf")
         self.config = configparser.ConfigParser()
         self.config_path = self.get_config_file_location(configfile)
         logging.debug("Config path location: %s" % self.config_path)
@@ -142,9 +141,7 @@ class KlipperScreenConfig:
                     {"name": _("Small"), "value": "small"},
                     {"name": _("Medium") + " " + _("(default)"), "value": "medium"},
                     {"name": _("Large"), "value": "large"}]}},
-            {"confirm_estop": {"section": "main", "name": "Подтверждение при экстренном стопе", "type": "binary",
-                               "value": "False"}},
-            {"select_mode": {"section": "main", "name": "Режим эксперта", "type": "binary",
+            {"confirm_estop": {"section": "main", "name": _("Confirm emergency stop"), "type": "binary",
                                "value": "False"}},
             # {"": {"section": "main", "name": _(""), "type": ""}}
         ]
