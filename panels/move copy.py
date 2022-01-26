@@ -36,6 +36,10 @@ class MovePanel(ScreenPanel):
         self.labels['z-'] = self._gtk.ButtonImage("z-closer", _("Z-"), "color3")
         self.labels['z-'].connect("clicked", self.move, "Z", "-")
 
+        self.labels['t0'] = self._gtk.ButtonImage("extruder-0", _("Tool 0"), "color4")
+        self.labels['t0'].connect("clicked", self.tool_0) # Setect tool 0, link KlippyGcodes.py
+        self.labels['t1'] = self._gtk.ButtonImage("extruder-1", _("Tool 1"), "color4")
+        self.labels['t1'].connect("clicked", self.tool_1) # Setect tool 1, link KlippyGcodes.py
 
 
         if self._screen.lang_ltr:
@@ -49,6 +53,8 @@ class MovePanel(ScreenPanel):
         grid.attach(self.labels['z+'], 3, 1, 1, 1)
         grid.attach(self.labels['z-'], 3, 0, 1, 1)
 
+        grid.attach(self.labels['t0'], 0, 0, 1, 1)
+        grid.attach(self.labels['t1'], 2, 0, 1, 1)
 
         distgrid = Gtk.Grid()
         j = 0
@@ -128,3 +134,12 @@ class MovePanel(ScreenPanel):
             )
         )
 
+    def tool_0(self):
+        self._screen._ws.klippy.gcode_script(
+            KlippyGcodes.TOOL_FIRST
+        )
+
+    def tool_1(self):
+        self._screen._ws.klippy.gcode_script(
+            KlippyGcodes.TOOL_SECOND
+        )
