@@ -703,3 +703,9 @@ msgstr "Парковка и движение"
 
 msgid "Are you sure you want a fast printer?"
 msgstr "Вы точно хотите экстренно остановить принтер?"
+
+msgid "Head 0"
+msgstr "Голова 0"
+
+msgid "Head 1"
+msgstr "Голова 1"

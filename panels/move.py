@@ -36,11 +36,11 @@ class MovePanel(ScreenPanel):
         self.labels['z-'] = self._gtk.ButtonImage("z-closer", _("Z-"), "color3")
         self.labels['z-'].connect("clicked", self.move, "Z", "-")
 
-        self.labels['home'] = self._gtk.ButtonImage("home", _("Home All"), "color4")
-        self.labels['home'].connect("clicked", self.home)
+        self.labels['t0'] = self._gtk.ButtonImage("home", _("Tool 0"), "color4")
+        self.labels['t0'].connect("clicked", self.tool_0) # Setect tool 0, link KlippyGcodes.py
+        self.labels['t1'] = self._gtk.ButtonImage("home", _("Tool 1"), "color4")
+        self.labels['t1'].connect("clicked", self.tool_1) # Setect tool 1, link KlippyGcodes.py
 
-        self.labels['home2'] = self._gtk.ButtonImage("home", _("Home All"), "color2")
-        self.labels['home2'].connect("clicked", self.home)
 
         if self._screen.lang_ltr:
             grid.attach(self.labels['x+'], 2, 1, 1, 1)
@@ -53,8 +53,8 @@ class MovePanel(ScreenPanel):
         grid.attach(self.labels['z+'], 3, 1, 1, 1)
         grid.attach(self.labels['z-'], 3, 0, 1, 1)
 
-        grid.attach(self.labels['home'], 0, 0, 1, 1)
-        grid.attach(self.labels['home2'], 2, 0, 1, 1)
+        grid.attach(self.labels['t0'], 0, 0, 1, 1)
+        grid.attach(self.labels['t1'], 2, 0, 1, 1)
 
         distgrid = Gtk.Grid()
         j = 0
