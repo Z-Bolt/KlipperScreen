@@ -54,7 +54,7 @@ class MovePanel(ScreenPanel):
         grid.attach(self.labels['z-'], 3, 0, 1, 1)
 
         grid.attach(self.labels['home'], 0, 0, 1, 1)
-        grid.attach(self.labels['home2'], 0, 0, 1, 1)
+        grid.attach(self.labels['home2'], 2, 0, 1, 1)
 
         distgrid = Gtk.Grid()
         j = 0
