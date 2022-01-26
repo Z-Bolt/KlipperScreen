@@ -133,3 +133,13 @@ class MovePanel(ScreenPanel):
                 "\nG90" if self._printer.get_stat("gcode_move", "absolute_coordinates") is True else ""
             )
         )
+
+    def tool_0(self):
+        self._screen._ws.klippy.gcode_script(
+            "%s" % (KlippyGcodes.TOOL_0)
+        )
+
+    def tool_1(self):
+        self._screen._ws.klippy.gcode_script(
+            "%s" % (KlippyGcodes.TOOL_1)
+        )
