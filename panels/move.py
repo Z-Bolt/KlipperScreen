@@ -135,9 +135,11 @@ class MovePanel(ScreenPanel):
         )
 
     def tool_0(self):
-        self._screen._ws.klippy.gcode_script(KlippyGcodes.TOOL_FIRST)
+        self._screen._ws.klippy.gcode_script(
+            KlippyGcodes.TOOL_FIRST
         )
 
     def tool_1(self):
-        self._screen._ws.klippy.gcode_script(KlippyGcodes.TOOL_SECOND)
+        self._screen._ws.klippy.gcode_script(
+            KlippyGcodes.TOOL_SECOND
         )
