@@ -36,10 +36,10 @@ class MovePanel(ScreenPanel):
         self.labels['z-'] = self._gtk.ButtonImage("z-closer", _("Z-"), "color3")
         self.labels['z-'].connect("clicked", self.move, "Z", "-")
 
-        self.labels['t0'] = self._gtk.ButtonImage("home", _("Tool 0"), "color4")
-        self.labels['t0'].connect("clicked", self.tool_0) # Setect tool 0, link KlippyGcodes.py
-        self.labels['t1'] = self._gtk.ButtonImage("home", _("Tool 1"), "color4")
-        self.labels['t1'].connect("clicked", self.tool_1) # Setect tool 1, link KlippyGcodes.py
+        self.labels['t0'] = self._gtk.ButtonImage("extruder-0", _("Tool 0"), "color4")
+        self.labels['t0'].connect("clicked", self.tool-0) # Setect tool 0, link KlippyGcodes.py
+        self.labels['t1'] = self._gtk.ButtonImage("extruder-1", _("Tool 1"), "color4")
+        self.labels['t1'].connect("clicked", self.tool-1) # Setect tool 1, link KlippyGcodes.py
 
 
         if self._screen.lang_ltr:

@@ -15,8 +15,8 @@ class KlippyGcodes:
     SET_EXT_TEMP = "M104"
     MAX_EXT_TEMP = 450
 
-    TOOL0 = "T0"
-    TOOL1 = "T1"
+    TOOL-0 = "T0"
+    TOOL-1 = "T1"
 
     SET_BED_TEMP = "M140"
     MAX_BED_TEMP = 150
