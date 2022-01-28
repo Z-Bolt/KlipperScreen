@@ -129,8 +129,8 @@ class KlipperScreenConfig:
             {"invert_y": {"section": "main", "name": _("Invert Y"), "type": "binary", "value": "False"}},
             {"invert_z": {"section": "main", "name": _("Invert Z"), "type": "binary", "value": "False"}},
             {"language": {"section": "main", "name": _("Language"), "type": "dropdown", "value": "system_lang",
-                          "callback": screen.restart_warning, "options": [
-                              {"name": _("System") + " " + _("(default)"), "value": "system_lang"}
+                "callback": screen.restart_warning, "options": [
+                {"name": _("System") + " " + _("(default)"), "value": "system_lang"}
             ]}},
             {"move_speed": {
                 "section": "main", "name": _("Move Speed (mm/s)"), "type": "scale", "value": "20",
