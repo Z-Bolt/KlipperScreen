@@ -15,13 +15,14 @@ Follow the instructions to install Klipper and Moonraker.
 * klipper: https://www.klipper3d.org/Installation.html
 * moonraker: https://moonraker.readthedocs.io/en/latest/installation/
 
-Ensure that 127.0.0.1 is a trusted client for moonraker, such as in this example:
+In moonraker.conf ensure that 127.0.0.1 is a trusted client for moonraker, such as in this example:
 ```
 [authorization]
 trusted_clients:
   127.0.0.1
 ```
-Warning: `force_logins: true` is not supported
+
+Note: `force_logins: true` requires the moonraker api key in [KlipperScreen.conf](Configuration.md)
 
 If you wish to use the update manager feature of moonraker for KlipperScreen, add the following block into the moonraker
 configuration:
@@ -50,4 +51,7 @@ This script will install packages that are listed under manual install, create a
 If you need a custom location for the configuration file, you can add -c or --configfile to the systemd file and specify
 the location of your configuration file.
 
-At this point KlipperScreen should be working, check out the [hardware page](Hardware.md) if you still haven't installed the screen, or head to the [troubleshooting page](Troubleshooting.md) if you are having problems
+If your screen needs additional software, proceed with the manufacturer instructions if they are provided
+and check out the [hardware page](Hardware.md)
+
+At this point KlipperScreen should be working, if it doesn't start then go to the [troubleshooting page](Troubleshooting.md)

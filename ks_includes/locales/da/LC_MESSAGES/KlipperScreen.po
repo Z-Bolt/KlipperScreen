@@ -1,0 +1,683 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: KlipperScreen\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-03-31 11:25-0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: SRBJ\n"
+"Language-Team: \n"
+"Language: da\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
+
+#, python-format
+msgid "%s will be updated to version"
+msgstr "%s vil blive opdateret til version"
+
+msgid "(default)"
+msgstr "(standard)"
+
+msgid "24 Hour Time"
+msgstr "24-timers visning"
+
+msgid "A FIRMWARE_RESTART may fix the issue."
+msgstr "En FIRMWARE_RESTART kan løse problemet."
+
+msgid "Abort"
+msgstr "Annuller"
+
+msgid "Accept"
+msgstr "OK"
+
+msgid "Actions"
+msgstr "Muligheder"
+
+msgid "Add Printer"
+msgstr "Tilføj printer"
+
+msgid "Add bed mesh profile"
+msgstr "Tilføj \"bed-mesh\" profil"
+
+msgid "Are you sure you want to run Emergency Stop?"
+msgstr "Er du sikker på, at du vil køre nødstop?"
+
+msgid "Are you sure you wish to cancel this print?"
+msgstr "Er du sikker på du vil annullere det igangværende print?"
+
+msgid "Are you sure you wish to disable motors?"
+msgstr "Er du sikker på, at du vil deaktivere motorer?"
+
+msgid "Are you sure you wish to reboot the system?"
+msgstr "Er du sikker på du vil genstarte systemet?"
+
+msgid "Are you sure you wish to shutdown the system?"
+msgstr "Er du sikker på du vil lukke systemet?"
+
+msgid "Auto"
+msgstr "Auto"
+
+msgid "Auto-scroll"
+msgstr "Auto-scroll"
+
+msgid "Bed Level"
+msgstr "Bed-Level"
+
+msgid "Bed Mesh"
+msgstr "Bed-mesh"
+
+msgid "Bltouch found applied offset"
+msgstr "Bltouch fundet anvendt offset"
+
+msgid "Calibrate"
+msgstr "Kalibrér"
+
+msgid "Calibrated, save configuration to make it permanent"
+msgstr "Kalibreret, gem konfiguration for at gøre den permanent"
+
+msgid "Can't set above the maximum:"
+msgstr "Kan ikke indstilles over maksimum:"
+
+msgid "Cancel"
+msgstr "Annuller"
+
+msgid "Cancel Print"
+msgstr "Annuller print"
+
+msgid "Cancelled"
+msgstr "Annulleret"
+
+msgid "Cancelling"
+msgstr "Annullerer"
+
+msgid "Cannot connect to Moonraker"
+msgstr "Kan ikke oprette forbindelse til Moonraker"
+
+msgid "Channel"
+msgstr "Kanal"
+
+msgid ""
+"Check /tmp/KlipperScreen.log for more information.\n"
+"Please submit an issue on GitHub for help."
+msgstr ""
+"Tjek /tmp/KlipperScreen.log for mere information.\n"
+"Indsend venligst et \"Issue\" på GitHub for hjælp."
+
+msgid "Close"
+msgstr "Luk"
+
+msgid "Complete"
+msgstr "Færdig"
+
+msgid "Configuration"
+msgstr "Konfiguration"
+
+msgid "Confirm Emergency Stop"
+msgstr "Bekræft Nødstop"
+
+msgid "Connected"
+msgstr "Forbundet"
+
+#, python-format
+msgid "Connecting to %s"
+msgstr "Forbinder til %s"
+
+msgid "Console"
+msgstr "Terminal"
+
+msgid "Continue"
+msgstr "Fortsæt"
+
+msgid "Cooldown"
+msgstr "Afkøling"
+
+msgid "Date"
+msgstr "Dato"
+
+msgid "Decrease"
+msgstr "Formindsk"
+
+msgid "Delete"
+msgstr "Slet"
+
+msgid "Deselect"
+msgstr "Fravælg"
+
+msgid "Disable Motors"
+msgstr "Deaktivér motorer"
+
+msgid "Disable XY"
+msgstr "Deaktivér XY"
+
+msgid "Displayed Macros"
+msgstr "Viste makroer"
+
+msgid "Distance (mm)"
+msgstr "Længde (mm)"
+
+#, python-format
+msgid "Do you want to recover %s?"
+msgstr "Vil du gendanne %s?"
+
+msgid "Elapsed:"
+msgstr "Tid:"
+
+msgid "Error"
+msgstr "Fejl"
+
+msgid "Estimated Time Method"
+msgstr "Metode til beregning af tid"
+
+msgid "Extrude"
+msgstr "Ekstrudér"
+
+msgid "Extrusion +"
+msgstr "Ekstrudering +"
+
+msgid "Extrusion -"
+msgstr "Ekstrudering -"
+
+msgid "Failed, adjust position first"
+msgstr "Mislykkedes, juster først positionen"
+
+msgid "Fan"
+msgstr "Blæser"
+
+msgid "Filament Used"
+msgstr "Filament forbrug"
+
+msgid "File"
+msgstr "Fil"
+
+msgid "Fine Tuning"
+msgstr "Finjustering"
+
+msgid "Finish"
+msgstr "Færdig"
+
+msgid ""
+"Firmware\n"
+"Restart"
+msgstr ""
+"Firmware\n"
+"Genstart"
+
+msgid "Font Size"
+msgstr "Skriftstørrelse"
+
+msgid ""
+"Full\n"
+"Update"
+msgstr ""
+"Fuld\n"
+"Opdatering"
+
+msgid "Go Back"
+msgstr "Gå tilbage"
+
+msgid "Hidden"
+msgstr "Skjult"
+
+msgid "Hide"
+msgstr "Skjule"
+
+msgid "Hide sensors in Temp."
+msgstr "Skjul sensorer i Temp."
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Home All"
+msgstr "Home alle"
+
+msgid "Home X"
+msgstr "Home X"
+
+msgid "Home XY"
+msgstr "Home XY"
+
+msgid "Home Y"
+msgstr "Home Y"
+
+msgid "Home Z"
+msgstr "Home Z"
+
+msgid "Homing"
+msgstr "Homing"
+
+msgid "Hostname"
+msgstr "Værtsnavn"
+
+msgid "Icon Theme"
+msgstr "Ikon-tema"
+
+msgid "Increase"
+msgstr "Forøg"
+
+msgid "Initializing"
+msgstr "Initialiserer"
+
+msgid "Initializing printer..."
+msgstr "Initialiserer printer..."
+
+msgid "Interface"
+msgstr "Interface"
+
+msgid "Invalid"
+msgstr "Ugyldig"
+
+msgid "Invert X"
+msgstr "Invertér X"
+
+msgid "Invert Y"
+msgstr "Invertér Y"
+
+msgid "Invert Z"
+msgstr "Invertér Z"
+
+msgid ""
+"Klipper\n"
+"Restart"
+msgstr ""
+"Klipper\n"
+"Genstart"
+
+msgid "Klipper has disconnected"
+msgstr "Klipper er frokoblet"
+
+msgid "Klipper has encountered an error."
+msgstr "Klipper har fundet en fejl."
+
+msgid "Klipper has shutdown"
+msgstr "Klipper er lukket ned"
+
+msgid "Klipper is attempting to start"
+msgstr "Klipper forsøger at starte"
+
+msgid "Klipper will reboot"
+msgstr "Klipper vil genstarte"
+
+msgid "Language"
+msgstr "Sprog"
+
+msgid "Large"
+msgstr "Stor"
+
+msgid "Left:"
+msgstr "Resterende:"
+
+msgid "Limits"
+msgstr "Grænser"
+
+msgid "Load"
+msgstr "Indlæs"
+
+msgid "Lower Nozzle"
+msgstr "Sænk Nozzle"
+
+msgid "Macro shortcut on sidebar"
+msgstr "Makrogenvej på sidelinjen"
+
+msgid "Macros"
+msgstr "Makroer"
+
+msgid "Main Menu"
+msgstr "Hovedmenu"
+
+msgid "Max Accelation"
+msgstr "Maks. acceleration"
+
+msgid "Max Acceleration to Deceleration"
+msgstr "Maks. acceleration til decceleration"
+
+msgid "Max Velocity"
+msgstr "Maks. hastighed"
+
+msgid "Medium"
+msgstr "Mellem"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Modified"
+msgstr "Ændret"
+
+msgid "Moonraker: connected"
+msgstr "Moonraker: tilsluttet"
+
+msgid "Move"
+msgstr "Flytning"
+
+msgid "Move Distance (mm)"
+msgstr "Flyt længde (mm)"
+
+msgid "Name"
+msgstr "Navn"
+
+msgid "Network"
+msgstr "Netværk"
+
+msgid "Nothing selected"
+msgstr "Intet valgt"
+
+msgid "Off"
+msgstr "Sluk"
+
+#, python-format
+msgid "Outdated by %d"
+msgstr "Forældet med %d"
+
+msgid "PSK for"
+msgstr "PSK for"
+
+msgid "Package will be updated"
+msgid_plural "Packages will be updated"
+msgstr[0] "Pakken vil blive opdateret"
+msgstr[1] "Pakker vil blive opdateret"
+
+msgid "Password saved"
+msgstr "Adgangskode gemt"
+
+msgid "Pause"
+msgstr "Pause"
+
+msgid "Paused"
+msgstr "På pause"
+
+msgid "Perform a full upgrade?"
+msgstr "Vil du udføre en fuld opgradering?"
+
+msgid "Please recompile and flash the micro-controller."
+msgstr "Genkompilér og flash mikrocontrolleren."
+
+msgid "Power"
+msgstr "Strømstyring"
+
+msgid "Power On Printer"
+msgstr "Tænd printer"
+
+msgid "Print"
+msgstr "Print"
+
+msgid "Print Control"
+msgstr "Print styring"
+
+msgid "Print Time"
+msgstr "Printtid"
+
+msgid "Printer Connections"
+msgstr "Printer forbindelser"
+
+msgid "Printing"
+msgstr "Printer"
+
+msgid "Probe found applied offset"
+msgstr "Probe fundet anvendt offset"
+
+msgid "Profile Name:"
+msgstr "Profilnavn:"
+
+msgid "Quad Gantry Level"
+msgstr "Justering af 4-søjlers konstruktion"
+
+msgid "Raise Nozzle"
+msgstr "Hæv Nozzle"
+
+msgid "Recover Hard"
+msgstr "Nulstil alt"
+
+msgid "Recover Soft"
+msgstr "Nulstil"
+
+msgid "Reference"
+msgstr "Reference"
+
+msgid "Restart"
+msgstr "Genstart"
+
+msgid "Resume"
+msgstr "Genoptag"
+
+msgid "Retract"
+msgstr "Retract"
+
+#, python-format
+msgid "Retry #%s"
+msgstr "Prøv igen #%s"
+
+msgid "Save"
+msgstr "Gem"
+
+msgid "Save Config"
+msgstr "Gem Konfiguration"
+
+msgid "Save configuration"
+msgstr "Gem Konfiguration"
+
+msgid "Screen DPMS"
+msgstr "Skærm DPMS"
+
+msgid "Screen Power Off Time"
+msgstr "Skærm timeout"
+
+msgid "Screws Adjust"
+msgstr "Skruejustering"
+
+msgid "Select"
+msgstr "Vælg"
+
+msgid "Send"
+msgstr "Sende"
+
+#, python-format
+msgid "Sending Power ON signal to: %s"
+msgstr "Sender Power ON-signal til: %s"
+
+msgid "Set Temp"
+msgstr "Indstil Temp"
+
+msgid "Settings"
+msgstr "Indstillinger"
+
+msgid "Show"
+msgstr "At vise"
+
+msgid "Size"
+msgstr "Størrelse"
+
+msgid "Slicer"
+msgstr "Slicer"
+
+msgid "Slicer Time correction (%)"
+msgstr "Slicer Tidskorrektion (%)"
+
+msgid "Small"
+msgstr "Lille"
+
+msgid "Sort by: "
+msgstr "Sortér efter: "
+
+msgid "Speed (mm/s)"
+msgstr "Hastighed (mm/s)"
+
+msgid "Speed +"
+msgstr "Hastighed +"
+
+msgid "Speed -"
+msgstr "Hastighed -"
+
+msgid "Square Corner Velocity"
+msgstr "Hastighed for 90° hjørne"
+
+msgid "Start"
+msgstr "Start"
+
+msgid "Starting WiFi Association"
+msgstr "Starter WiFi Association"
+
+msgid "Starting recovery for"
+msgstr "Gendanner"
+
+msgid "Starting update for"
+msgstr "Opdaterer"
+
+msgid "System"
+msgstr "System"
+
+msgid ""
+"System\n"
+"Restart"
+msgstr ""
+"Genstart\n"
+"system"
+
+msgid ""
+"System\n"
+"Shutdown"
+msgstr ""
+"Luk\n"
+"system ned"
+
+msgid "Temp (°C)"
+msgstr "Temp (°C)"
+
+msgid "Temperature"
+msgstr "Temperatur"
+
+#, python-format
+msgid "To apply %s KlipperScreen needs to be restarted"
+msgstr "KlipperScreen skal genstartes for at anvende %s"
+
+msgid "Tool"
+msgstr "Ekstruder"
+
+msgid "Total:"
+msgstr "Total:"
+
+msgid "Unknown Heater"
+msgstr "Ukendt varmelegeme"
+
+msgid "Unload"
+msgstr "Tilbagetræk"
+
+msgid "Up To Date"
+msgstr "Up-to-Date"
+
+msgid "Update"
+msgstr "Opdater"
+
+msgid "Updating"
+msgstr "Opdatering"
+
+msgid "Uploaded"
+msgstr "Uploadet"
+
+msgid "View Mesh"
+msgstr "Vis mesh"
+
+msgid "X+"
+msgstr "X+"
+
+msgid "X-"
+msgstr "X-"
+
+msgid "XY Move Speed (mm/s)"
+msgstr "XY Flyt hastighed (mm/s)"
+
+msgid "Y+"
+msgstr "Y+"
+
+msgid "Y-"
+msgstr "Y-"
+
+msgid "Z Calibrate"
+msgstr "Kalibrér Z"
+
+msgid "Z Move Speed (mm/s)"
+msgstr "Z Flyt hastighed (mm/s)"
+
+msgid "Z Position"
+msgstr "Z-position"
+
+msgid "Z Tilt"
+msgstr "Z-tilt"
+
+msgid "Z+"
+msgstr "Z+"
+
+msgid "Z-"
+msgstr "Z-"
+
+msgid "commit"
+msgid_plural "commits"
+msgstr[0] "ændring"
+msgstr[1] "ændringer"
+
+msgid "dBm"
+msgstr "dBm"
+
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] "time"
+msgstr[1] "timer"
+
+msgid "minutes"
+msgstr "minutter"
+
+msgid "mm"
+msgstr "mm"
+
+msgid "mm/s"
+msgstr "mm/s"
+
+msgid "mm/s^2"
+msgstr "mm/s^2"
+
+#~ msgid "IPv4"
+#~ msgstr "IPv4"
+
+#~ msgid "IPv6"
+#~ msgstr "IPv6"
+
+#~ msgid "Z Offset"
+#~ msgstr "Z-offset"
+
+#~ msgid "Unknown Heater "
+#~ msgstr "Ukendt varmelegeme "
+
+#~ msgid "Disconnect"
+#~ msgstr "Afbryd forbindelse"
+
+#~ msgid "Duration Only"
+#~ msgstr "Kun varighed"
+
+#~ msgid "Klipper Version"
+#~ msgstr "Klipper version"
+
+#~ msgid ""
+#~ "Klipper has encountered an error with the micro-controller.\n"
+#~ "Please recompile and flash."
+#~ msgstr ""
+#~ "Klipper har fundet en fejl med mcu.\n"
+#~ "Kompilér og flash venligst firmware på ny."
+
+#~ msgid ""
+#~ "Klipper has encountered an error.\n"
+#~ "Issue a FIRMWARE_RESTART to attempt fixing the issue."
+#~ msgstr ""
+#~ "Klipper har fundet en fejl.\n"
+#~ "Tryk på \"Genstart alt\" for at forsøge at udbedre fejlen."
+
+#~ msgid "KlipperScreen Version"
+#~ msgstr "KlipperScreen version"
+
+#~ msgid "Show Only Heaters in Temp."
+#~ msgstr "Vis kun varmelegemer i Temp."
+
+#~ msgid "Target"
+#~ msgstr "Mål"
+
+#~ msgid "Temp"
+#~ msgstr "Temp"

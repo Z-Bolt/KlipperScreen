@@ -1,9 +1,6 @@
 # Hardware
 
-There are no recommended screens, but here are some guidelines:
-
-* There is no support for vertical/portrait mode, only widescreen
-* Minimum resolution of 480x320
+There are no recommended screens, but the minimum supported resolution is 480x320
 
 #### Hardware known to work
 
@@ -14,7 +11,7 @@ There are no recommended screens, but here are some guidelines:
 * [3.5" RPi Display](http://www.lcdwiki.com/3.5inch_RPi_Display)
 * [5" HDMI Display-B](http://lcdwiki.com/5inch_HDMI_Display-B)
 * [VoCore](https://klipper.discourse.group/t/hardware-known-to-work-with-klipperscreen/35/7)
-* [Android Phone](https://klipper.discourse.group/t/hardware-known-to-work-with-klipperscreen/35/8)
+* [Android Phone](https://klipper.discourse.group/t/how-to-klipperscreen-on-android-smart-phones/1196)
 * [WAVESHARE 4.3 inch DSI LCD](https://www.waveshare.com/4.3inch-dsi-lcd.htm)
 * [DFrobot DFR0550](https://wiki.dfrobot.com/5%27%27TFT-Display_with_Touchscreen_V1.0_SKU_DFR0550)
 
@@ -24,58 +21,48 @@ There are no recommended screens, but here are some guidelines:
 
 Follow the manufacturer instructions on how to install your screen. In general if you see a white screen, then it's not properly installed, ensure that you at least see a console, Then ![install](Installation.md) KlipperScreen, if you are having troubles refer to the ![troubleshooting page](Troubleshooting.md) for further information.
 
-#### Touchscreen Calibration
-Most people don't need to calibrate, but if you do need to calibrate your touchscreen, follow the below steps.
-
-Run this command:
-```
-DISPLAY=:0 xinput_calibrator --list
-```
-It will output something such as:
-```
-Device "wch.cn USB2IIC_CTP_CONTROL" id=6
-```
-
-Find the ID of your display and put it in the following command:
-```
-DISPLAY=:0 xinput_calibrator -v --device <id from last command>
-```
 
 #### Touchscreen touch rotation
 If your touchscreen isn't registering touches properly after the screen has been rotated, you will need to apply a
-transformation matrix. You can have the matrix be one of the following:
+transformation matrix.
+
+First you will need your device name.
+
+Run: `DISPLAY=:0 xinput`
+
+Output
+```
+⎡ Virtual core pointer                          id=2    [master pointer  (3)]
+⎜   ↳ Virtual core XTEST pointer                id=4    [slave  pointer  (2)]
+⎜   ↳ ADS7846 Touchscreen                       id=6    [slave  pointer  (2)]
+⎣ Virtual core keyboard                         id=3    [master keyboard (2)]
+    ↳ Virtual core XTEST keyboard               id=5    [slave  keyboard (3)]
+```
+In this case the device is the ADS7846 Touchscreen, yours may be different
+
+You can test a change by running:
+
+`DISPLAY=:0 xinput set-prop "<device name>" 'Coordinate Transformation Matrix' <matrix>`
+
+Where the matrix can be one of the following options:
 
 * 0°: `1 0 0 0 1 0 0 0 1`
 * 90° Clockwise: `0 -1 1 1 0 0 0 0 1`
 * 90° Counter-Clockwise: `0 1 0 -1 0 1 0 0 1`
-* 180°: `-1 0 1 0 -1 1 0 0 1`
+* 180° (Inverts X and Y): `-1 0 1 0 -1 1 0 0 1`
+* invert Y: `-1 0 1 1 1 0 0 0 1`
+* invert X: `-1 0 1 0 1 0 0 0 1`
 
-To check the current matrix, you will need your `<screen name>`
-(which can be found via the last section, ex: "wch.cn USB2IIC_CTP_CONTROL").
-Run the following command: `xinput list-props "wch.cn USB2IIC_CTP_CONTROL"`
+For example:
 
-It will output something such as:
-```
-Device '<screen name>':
-        Device Enabled (115):   1
-        Coordinate Transformation Matrix (116): 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000
-        libinput Calibration Matrix (247):      -1.000000, 0.000000, 1.000000, 0.000000, -1.000000, 1.000000, 0.000000, 0.000000, 1.000000
-        libinput Calibration Matrix Default (248):      -1.000000, 0.000000, 1.000000, 0.000000, -1.000000, 1.000000, 0.000000, 0.000000, 1.000000
-        libinput Send Events Modes Available (249):     1, 0
-        libinput Send Events Mode Enabled (250):        0, 0
-        libinput Send Events Mode Enabled Default (251):        0, 0
-        Device Node (252):      "/dev/input/event0"
-        Device Product ID (253):        6790, 58083
-```
-
-You can verify by checking that the 'Coordinate Transformation Matrix' or 'libinput Calibration Matrix'.
-
-You can test a change by running: `xinput set-prop "<screen name>" 'Coordinate Transformation Matrix' <matrix>`
-
-Replace matrix with one of the options above, such as: `1 0 0 0 1 0 0 0 1`
+`DISPLAY=:0 xinput set-prop "ADS7846 Touchscreen" 'Coordinate Transformation Matrix' -1 0 1 0 -1 1 0 0 1`
 
 To make this permanent, modify the file `/etc/udev/rules.d/51-touchscreen.rules` and add following line:
 
 ```
-ACTION=="add", ATTRS{name}=="<screen name>", ENV{LIBINPUT_CALIBRATION_MATRIX}="<matrix>"
+ACTION=="add", ATTRS{name}=="<device name>", ENV{LIBINPUT_CALIBRATION_MATRIX}="<matrix>"
 ```
+More info about input transformation can be found in:
+
+* [Ubuntu wiki InputCoordinateTransformation]("https://wiki.ubuntu.com/X/InputCoordinateTransformation")
+* [Libinput docs]("https://wayland.freedesktop.org/libinput/doc/1.9.0/absolute_axes.html")

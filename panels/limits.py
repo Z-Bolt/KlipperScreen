@@ -2,9 +2,8 @@ import gi
 import logging
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, Gdk, GLib, Pango
+from gi.repository import Gdk, Gtk, Pango
 
-from ks_includes.KlippyGcodes import KlippyGcodes
 from ks_includes.screen_panel import ScreenPanel
 
 def create_panel(*args):
@@ -21,6 +20,8 @@ class LimitsPanel(ScreenPanel):
         scroll = Gtk.ScrolledWindow()
         scroll.set_property("overlay-scrolling", False)
         scroll.set_vexpand(True)
+        scroll.add_events(Gdk.EventMask.TOUCH_MASK)
+        scroll.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
 
         # Create a grid for all devices
         self.labels['devices'] = Gtk.Grid()
@@ -71,17 +72,16 @@ class LimitsPanel(ScreenPanel):
         self.values[option] = int(value)
         self.devices[option]['scale'].disconnect_by_func(self.set_opt_value)
         self.devices[option]['scale'].set_value(self.values[option])
-        self.devices[option]['scale'].connect("value-changed", self.set_opt_value, option)
+        self.devices[option]['scale'].connect("button-release-event", self.set_opt_value, option)
 
     def add_option(self, option, optname, units, value):
         logging.info("Adding option: %s" % option)
 
         frame = Gtk.Frame()
-        frame.set_property("shadow-type", Gtk.ShadowType.NONE)
         frame.get_style_context().add_class("frame-item")
 
         name = Gtk.Label()
-        name.set_markup("<big><b>%s</b></big>" % (optname))
+        name.set_markup("<big><b>%s</b></big> (%s)" % (optname, units))
         name.set_hexpand(True)
         name.set_vexpand(True)
         name.set_halign(Gtk.Align.START)
@@ -97,7 +97,7 @@ class LimitsPanel(ScreenPanel):
         scale.set_hexpand(True)
         scale.set_has_origin(True)
         scale.get_style_context().add_class("option_slider")
-        scale.connect("value-changed", self.set_opt_value, option)
+        scale.connect("button-release-event", self.set_opt_value, option)
 
         labels = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         labels.add(name)
@@ -121,7 +121,7 @@ class LimitsPanel(ScreenPanel):
         self.labels['devices'].attach(self.devices[option]['row'], 0, pos, 1, 1)
         self.labels['devices'].show_all()
 
-    def set_opt_value(self, widget, opt):
+    def set_opt_value(self, widget, event, opt):
         value = self.devices[opt]['scale'].get_value()
 
         if opt == "max_accel":

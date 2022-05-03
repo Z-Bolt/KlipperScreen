@@ -1,11 +1,8 @@
 import gi
-import logging
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, Gdk, GLib
-from jinja2 import Environment, Template
+from gi.repository import Gtk
 
-from ks_includes.KlippyGtk import KlippyGtk
 from ks_includes.KlippyGcodes import KlippyGcodes
 
 class ScreenPanel:
@@ -20,11 +17,12 @@ class ScreenPanel:
         self._gtk = screen.gtk
         self.control = {}
         self.title = title
+        self.devices = {}
+        self.active_heaters = []
 
         self.layout = Gtk.Layout()
         self.layout.set_size(self._screen.width, self._screen.height)
 
-        action_bar_width = self._gtk.get_action_bar_width() if action_bar is True else 0
         self.content = Gtk.Box(spacing=0)
 
     def initialize(self, panel_name):
@@ -35,10 +33,23 @@ class ScreenPanel:
         _ = self.lang.gettext
 
         if self._config.get_main_config_option('confirm_estop') == "True":
-            self._screen._confirm_send_action(widget, _("Вы точно хотите экстренно остановить принтер?"),
+            self._screen._confirm_send_action(widget, _("Are you sure you want to run Emergency Stop?"),
                                               "printer.emergency_stop")
         else:
             self._screen._ws.klippy.emergency_stop()
+
+    def format_target(self, temp):
+        if temp <= 0:
+            return ""
+        else:
+            return ("(%s)" % str(int(temp)))
+
+    def format_temp(self, temp, places=1):
+        if places == 0:
+            n = int(temp)
+        else:
+            n = round(temp, places)
+        return "%s<small>°C</small>" % str(n)
 
     def get(self):
         return self.layout
@@ -64,6 +75,15 @@ class ScreenPanel:
 
     def home(self, widget):
         self._screen._ws.klippy.gcode_script(KlippyGcodes.HOME)
+
+    def homexy(self, widget):
+        self._screen._ws.klippy.gcode_script(KlippyGcodes.HOME_XY)
+
+    def z_tilt(self, widget):
+        self._screen._ws.klippy.gcode_script(KlippyGcodes.Z_TILT)
+
+    def quad_gantry_level(self, widget):
+        self._screen._ws.klippy.gcode_script(KlippyGcodes.QUAD_GANTRY_LEVEL)
 
     def menu_item_clicked(self, widget, panel, item):
         print("### Creating panel " + item['panel'] + " : %s %s" % (panel, item))

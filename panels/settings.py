@@ -2,9 +2,8 @@ import gi
 import logging
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, Gdk, GLib, Pango
+from gi.repository import Gdk, Gtk, Pango
 
-from ks_includes.KlippyGcodes import KlippyGcodes
 from ks_includes.screen_panel import ScreenPanel
 
 def create_panel(*args):
@@ -12,7 +11,7 @@ def create_panel(*args):
 
 class SettingsPanel(ScreenPanel):
     def initialize(self, panel_name):
-        _ = self.lang.gettext
+        _ = self.lang.gettext   
         self.settings = {}
         self.macros = {}
         self.menu_cur = 'main_box'
@@ -44,6 +43,9 @@ class SettingsPanel(ScreenPanel):
 
         for macro in self._printer.get_config_section_list("gcode_macro "):
             macro = macro[12:]
+            # Support for hiding macros by name
+            if macro.startswith("_"):
+                continue
             self.macros[macro] = {
                 "name": macro,
                 "section": "displayed_macros %s" % self._screen.connected_printer,
@@ -83,6 +85,8 @@ class SettingsPanel(ScreenPanel):
         scroll = Gtk.ScrolledWindow()
         scroll.set_property("overlay-scrolling", False)
         scroll.set_vexpand(True)
+        scroll.add_events(Gdk.EventMask.TOUCH_MASK)
+        scroll.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
 
         # Create a grid for all macros
         self.labels[name] = Gtk.Grid()
@@ -101,11 +105,10 @@ class SettingsPanel(ScreenPanel):
             return
 
         frame = Gtk.Frame()
-        frame.set_property("shadow-type", Gtk.ShadowType.NONE)
         frame.get_style_context().add_class("frame-item")
 
         name = Gtk.Label()
-        name.set_markup("<b>%s</b>" % (option['name']))
+        name.set_markup("<big><b>%s</b></big>" % (option['name']))
         name.set_hexpand(True)
         name.set_vexpand(True)
         name.set_halign(Gtk.Align.START)
@@ -134,8 +137,8 @@ class SettingsPanel(ScreenPanel):
                 switch.set_active(self._config.get_config().getboolean(option['section'], opt_name))
             switch.connect("notify::active", self.switch_config_option, option['section'], opt_name,
                            option['callback'] if "callback" in option else None)
-            switch.set_property("width-request", round(self._gtk.get_image_width()*2.5))
-            switch.set_property("height-request", round(self._gtk.get_image_height()*1.25))
+            switch.set_property("width-request", round(self._gtk.get_font_size()*7))
+            switch.set_property("height-request", round(self._gtk.get_font_size()*3.5))
             box.add(switch)
             dev.add(box)
         elif option['type'] == "dropdown":
@@ -150,14 +153,14 @@ class SettingsPanel(ScreenPanel):
                              option['callback'] if "callback" in option else None)
             dropdown.set_entry_text_column(0)
             dev.add(dropdown)
-            logging.debug("Children: %s" % dropdown.get_children())
         elif option['type'] == "scale":
             val = int(self._config.get_config().get(option['section'], opt_name, fallback=option['value']))
             adj = Gtk.Adjustment(val, option['range'][0], option['range'][1], option['step'], option['step']*5)
             scale = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL, adjustment=adj)
             scale.set_hexpand(True)
             scale.set_digits(0)
-            scale.connect("value-changed", self.scale_moved, option['section'], opt_name)
+            scale.connect("button-release-event", self.scale_moved, option['section'], opt_name)
+            scale.set_property("width-request", round(self._screen.width/2.2))
             dev.add(scale)
         elif option['type'] == "printer":
             logging.debug("Option: %s" % option)
@@ -224,7 +227,7 @@ class SettingsPanel(ScreenPanel):
             if callback is not None:
                 callback(value)
 
-    def scale_moved(self, widget, section, option):
+    def scale_moved(self, widget, event, section, option):
         logging.debug("[%s] %s changed to %s" % (section, option, widget.get_value()))
         if section not in self._config.get_config().sections():
             self._config.get_config().add_section(section)

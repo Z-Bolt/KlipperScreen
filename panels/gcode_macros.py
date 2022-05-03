@@ -2,9 +2,8 @@ import gi
 import logging
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, Gdk, GLib, Pango
+from gi.repository import Gdk, Gtk, Pango
 
-from ks_includes.KlippyGcodes import KlippyGcodes
 from ks_includes.screen_panel import ScreenPanel
 
 def create_panel(*args):
@@ -20,6 +19,8 @@ class MacroPanel(ScreenPanel):
         scroll = Gtk.ScrolledWindow()
         scroll.set_property("overlay-scrolling", False)
         scroll.set_vexpand(True)
+        scroll.add_events(Gdk.EventMask.TOUCH_MASK)
+        scroll.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
 
         # Create a grid for all macros
         self.labels['macros'] = Gtk.Grid()
@@ -37,9 +38,10 @@ class MacroPanel(ScreenPanel):
         self.load_gcode_macros()
 
     def add_gcode_macro(self, macro):
-
+        # Support for hiding macros by name
+        if macro.startswith("_"):
+            return
         frame = Gtk.Frame()
-        frame.set_property("shadow-type", Gtk.ShadowType.NONE)
         frame.get_style_context().add_class("frame-item")
 
         name = Gtk.Label()

@@ -2,9 +2,8 @@ import gi
 import logging
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, Gdk, GLib, Pango
+from gi.repository import Gdk, Gtk, Pango
 
-from ks_includes.KlippyGcodes import KlippyGcodes
 from ks_includes.screen_panel import ScreenPanel
 
 def create_panel(*args):
@@ -19,6 +18,8 @@ class PowerPanel(ScreenPanel):
         scroll = Gtk.ScrolledWindow()
         scroll.set_property("overlay-scrolling", False)
         scroll.set_vexpand(True)
+        scroll.add_events(Gdk.EventMask.TOUCH_MASK)
+        scroll.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
 
         # Create a grid for all devices
         self.labels['devices'] = Gtk.Grid()
@@ -33,9 +34,16 @@ class PowerPanel(ScreenPanel):
 
         self.content.add(box)
 
+    def activate(self):
+        devices = self._screen.printer.get_power_devices()
+        for x in devices:
+            self.devices[x]['switch'].disconnect_by_func(self.on_switch)
+            self.devices[x]['switch'].set_active(True if self._screen.printer.get_power_device_status(x) == "on"
+                                                 else False)
+            self.devices[x]['switch'].connect("notify::active", self.on_switch, x)
+
     def add_device(self, device):
         frame = Gtk.Frame()
-        frame.set_property("shadow-type", Gtk.ShadowType.NONE)
         frame.get_style_context().add_class("frame-item")
 
         name = Gtk.Label()
@@ -51,8 +59,8 @@ class PowerPanel(ScreenPanel):
         switch.set_hexpand(False)
         switch.set_active(True if self._screen.printer.get_power_device_status(device) == "on" else False)
         switch.connect("notify::active", self.on_switch, device)
-        switch.set_property("width-request", round(self._gtk.get_image_width()*2.5))
-        switch.set_property("height-request", round(self._gtk.get_image_height()*1.25))
+        switch.set_property("width-request", round(self._gtk.get_font_size()*7))
+        switch.set_property("height-request", round(self._gtk.get_font_size()*3.5))
 
         labels = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         labels.add(name)
@@ -60,6 +68,7 @@ class PowerPanel(ScreenPanel):
         dev = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         dev.set_hexpand(True)
         dev.set_vexpand(False)
+        dev.set_valign(Gtk.Align.CENTER)
         dev.add(labels)
         dev.add(switch)
         frame.add(dev)

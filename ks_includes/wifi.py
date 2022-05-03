@@ -1,25 +1,16 @@
 import os
-import signal
-import json
 import logging
 import re
 import socket
-import subprocess
 import threading
-import time
 
-from contextlib import suppress
 from threading import Thread
 
-from subprocess import PIPE, Popen, STDOUT
-from queue import Queue, Empty
+from queue import Queue
 
 import gi
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, Gdk, GLib
-
-RESCAN_INTERVAL = 180
-KS_SOCKET_FILE = "/tmp/.KS_wpa_supplicant"
+from gi.repository import GLib, Gdk
 
 class WifiManager():
     networks_in_supplicant = []
@@ -51,6 +42,7 @@ class WifiManager():
         self.timeout = None
         self.scan_time = 0
 
+        KS_SOCKET_FILE = "/tmp/.KS_wpa_supplicant"
         if os.path.exists(KS_SOCKET_FILE):
             os.remove(KS_SOCKET_FILE)
 
@@ -69,7 +61,7 @@ class WifiManager():
         self.wpa_cli("ATTACH", False)
         self.wpa_cli("SCAN", False)
         GLib.idle_add(self.read_wpa_supplicant)
-        self.timeout = GLib.timeout_add_seconds(RESCAN_INTERVAL, self.rescan)
+        self.timeout = GLib.timeout_add_seconds(180, self.rescan)
 
     def add_callback(self, name, callback):
         if name in self._callbacks and callback not in self._callbacks[name]:
@@ -151,14 +143,31 @@ class WifiManager():
         return self.connected_ssid
 
     def get_current_wifi(self, interface="wlan0"):
+        con_ssid = os.popen("sudo iwgetid -r").read().strip()
+        con_bssid = os.popen("sudo iwgetid -r -a").read().strip()
+        # wpa_cli status output is unstable use it as backup only
         status = self.wpa_cli("STATUS").split('\n')
         vars = {}
         for line in status:
             arr = line.split('=')
             vars[arr[0]] = "=".join(arr[1:])
-
         prev_ssid = self.connected_ssid
-        if "ssid" in vars and "bssid" in vars:
+
+        if con_ssid != "":
+            self.connected = True
+            self.connected_ssid = con_ssid
+            for ssid, val in self.networks.items():
+                if ssid == con_ssid:
+                    self.networks[ssid]['connected'] = True
+                else:
+                    self.networks[ssid]['connected'] = False
+            if prev_ssid != self.connected_ssid:
+                for cb in self._callbacks['connected']:
+                    Gdk.threads_add_idle(
+                        GLib.PRIORITY_DEFAULT_IDLE,
+                        cb, self.connected_ssid, prev_ssid)
+            return [con_ssid, con_bssid]
+        elif "ssid" in vars and "bssid" in vars:
             self.connected = True
             self.connected_ssid = vars['ssid']
             for ssid, val in self.networks.items():
