@@ -52,8 +52,8 @@ class BasePanel(ScreenPanel):
 
         self.control['estop'] = self._gtk.ButtonImage('emergency', None, None, 1)
         self.control['estop'].connect("clicked", self.emergency_stop)
-        self.control['off'] = self._gtk.ButtonImage('shutdown', None, None, 1)
-        self.control['off'].connect("clicked", self.shutdown)
+        self.control['shutdown'] = self._gtk.ButtonImage('shutdown', None, None, 1)
+        self.control['shutdown'].connect("clicked", self.shutdown)
         self.control['wifi'] = self._gtk.ButtonImage('network', None, None, 1)
         self.control['wifi'].connect("clicked", self.menu_item_clicked, "network",{
                 "name": "Network",
@@ -81,9 +81,9 @@ class BasePanel(ScreenPanel):
         else:
             self.control_grid.attach(self.control['estop'], 0, 5, 1, 2)
         if self._screen.vertical_mode:
-            self.control_grid.attach(self.control['off'], 4, 0, 1, 1)
+            self.control_grid.attach(self.control['shutdown'], 4, 0, 1, 1)
         else:
-            self.control_grid.attach(self.control['off'], 0, 4, 1, 1)    
+            self.control_grid.attach(self.control['shutdown'], 0, 4, 1, 1)    
         if self._screen.vertical_mode:
             self.control_grid.attach(self.control['wifi'], 3, 0, 1, 1)
         else:
