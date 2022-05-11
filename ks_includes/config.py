@@ -144,7 +144,7 @@ class KlipperScreenConfig:
                     {"name": _("Medium") + " " + _("(default)"), "value": "medium"},
                     {"name": _("Large"), "value": "large"}]}},
             {"confirm_estop": {"section": "main", "name": _("Confirm Emergency Stop"), "type": "binary",
-                               "value": "False"}},
+                               "value": "True"}},
             {"only_heaters": {"section": "main", "name": _("Hide sensors in Temp."), "type": "binary",
                               "value": "False", "callback": screen.restart_warning}},
             # {"use_dpms": {"section": "main", "name": _("Screen DPMS"), "type": "binary",
