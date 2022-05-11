@@ -53,6 +53,7 @@ class BasePanel(ScreenPanel):
         self.control['estop'] = self._gtk.ButtonImage('emergency', None, None, 1)
         self.control['estop'].connect("clicked", self.emergency_stop)
         self.control['shutdown'] = self._gtk.ButtonImage('shutdown', None, None, 1)
+        _ = self.lang.gettext
         self.control['shutdown'].connect("clicked", self._screen._confirm,_("Are you sure you wish to reboot the system?", self._screen._ws.klippy.gcode_script("SHUTDOWN")))
         # _ = self.lang.gettext
         # self.control['shutdown'].connect("clicked", self._screen._confirm_send_action,
