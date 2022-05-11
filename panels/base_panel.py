@@ -53,7 +53,7 @@ class BasePanel(ScreenPanel):
         self.control['estop'] = self._gtk.ButtonImage('emergency', None, None, 1)
         self.control['estop'].connect("clicked", self.emergency_stop)
         self.control['shutdown'] = self._gtk.ButtonImage('shutdown', None, None, 1)
-        self.control['shutdown'].connect("clicked", self.shutdown)
+        self.control['shutdown'].connect("clicked", self._screen._confirm,_("Are you sure you wish to reboot the system?", self._screen._ws.klippy.gcode_script("SHUTDOWN")))
         # _ = self.lang.gettext
         # self.control['shutdown'].connect("clicked", self._screen._confirm_send_action,
         #                _("Are you sure you wish to shutdown the system?"), "machine.shutdown")
@@ -421,36 +421,36 @@ class BasePanel(ScreenPanel):
         return True
     def shutdown(self,widget):
         _ = self.lang.gettext
-        self._screen._confirm_send_action,_("Are you sure you wish to reboot the system?")
+        self._screen._confirm,_("Are you sure you wish to reboot the system?", self._screen._ws.klippy.gcode_script("SHUTDOWN"))
         self._screen._ws.klippy.gcode_script("SHUTDOWN")
         
-    # def _confirm_send_action(self, widget, text, method, params={}):
-    #     _ = self.lang.gettext
+    def _confirm(self, widget, text, method):
+        _ = self.lang.gettext
 
-    #     buttons = [
-    #         {"name": _("Continue"), "response": Gtk.ResponseType.OK},
-    #         {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL}
-    #     ]
+        buttons = [
+            {"name": _("Continue"), "response": Gtk.ResponseType.OK},
+            {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL}
+        ]
 
-    #     try:
-    #         env = Environment(extensions=["jinja2.ext.i18n"])
-    #         env.install_gettext_translations(self.lang)
-    #         j2_temp = env.from_string(text)
-    #         text = j2_temp.render()
-    #     except Exception:
-    #         logging.debug("Error parsing jinja for confirm_send_action")
+        try:
+            env = Environment(extensions=["jinja2.ext.i18n"])
+            env.install_gettext_translations(self.lang)
+            j2_temp = env.from_string(text)
+            text = j2_temp.render()
+        except Exception:
+            logging.debug("Error parsing jinja for confirm_send_action")
 
-    #     label = Gtk.Label()
-    #     label.set_markup(text)
-    #     label.set_hexpand(True)
-    #     label.set_halign(Gtk.Align.CENTER)
-    #     label.set_vexpand(True)
-    #     label.set_valign(Gtk.Align.CENTER)
-    #     label.set_line_wrap(True)
-    #     label.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        label = Gtk.Label()
+        label.set_markup(text)
+        label.set_hexpand(True)
+        label.set_halign(Gtk.Align.CENTER)
+        label.set_vexpand(True)
+        label.set_valign(Gtk.Align.CENTER)
+        label.set_line_wrap(True)
+        label.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
 
-    #     self.gtk.Dialog(self, buttons, label, self._confirm_send_action_response, method, params)
+        self.gtk.Dialog(self, buttons, label, self._confirm_response, method, self)
 
-    # def _confirm_send_action_response(self, widget, response_id, method, params):
-    #     if response_id == Gtk.ResponseType.OK:
-    #         self._send_action(widget, method, params)    
+    def _confirm_response(self, widget, response_id, method):
+        if response_id == Gtk.ResponseType.OK:
+            self._send_action(widget, method)    
