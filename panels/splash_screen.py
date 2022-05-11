@@ -1,6 +1,7 @@
 import gi
 import logging
 import os
+import time
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gdk, Gtk, Pango
@@ -94,6 +95,9 @@ class SplashScreenPanel(ScreenPanel):
             self.labels['actions'].add(self.labels['restart'])
             self.labels['actions'].add(self.labels['firmware_restart'])
             self.labels['actions'].add(self.labels['menu'])
+            time.sleep(3)
+            self.firmware_restart
+        
         else:
             self.labels['actions'].add(self.labels['restart_system'])
             self.labels['actions'].add(self.labels['shutdown'])
