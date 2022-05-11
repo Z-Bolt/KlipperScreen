@@ -417,9 +417,9 @@ class BasePanel(ScreenPanel):
             else:
                 self.control['time'].set_text(now.strftime("%I:%M %p"))
         return True
-    def shutdown(self,widget):
-        _ = self.lang.gettext
-        self.control['shutdown'].connect(self._screen._confirm_send_action_("Are you sure you wish to shutdown the system?"), "SHUTDOWN")
+    # def shutdown(self,widget):
+    #     _ = self.lang.gettext
+    #     self.control['shutdown'].connect(self._screen._confirm_send_action_("Are you sure you wish to shutdown the system?"), "SHUTDOWN")
 
-        self._screen._ws.klippy.gcode_script("SHUTDOWN")
+    #     self._screen._ws.klippy.gcode_script("SHUTDOWN")
         
