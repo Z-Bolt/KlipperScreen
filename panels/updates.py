@@ -38,9 +38,9 @@ class SystemPanel(ScreenPanel):
         # shutdown.set_vexpand(False)
 
 
-        grid.attach(restart, 3, 2, 0, 0)
-        grid.attach(firmrestart, 1, 2, 0, 0)
-        grid.attach(reboot, 2, 2, 0, 0)
+        grid.attach(restart, 3, 2, 1, 0)
+        grid.attach(firmrestart, 1, 2, 1, 0)
+        grid.attach(reboot, 2, 2, 1, 0)
         # grid.attach(shutdown, 3, 2, 1, 1)
         self.content.add(grid)
 
