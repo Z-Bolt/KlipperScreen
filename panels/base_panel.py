@@ -418,6 +418,6 @@ class BasePanel(ScreenPanel):
         return True
     def shutdown(self,widget):
         _ = self.lang.gettext
-        self._screen._confirm_send_action_("Are you sure you wish to reboot the system?")
+        self._screen._confirm_send_action_("Are you sure you wish to shutdown the system?"), "machine.reboot"
         self._screen._ws.klippy.gcode_script("SHUTDOWN")
         
