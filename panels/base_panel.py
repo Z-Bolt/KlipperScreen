@@ -38,6 +38,7 @@ class BasePanel(ScreenPanel):
         self.control['back'].connect("clicked", self.back)
         self.control['home'] = self._gtk.ButtonImage('main', None, None, 1)
         self.control['home'].connect("clicked", self.menu_return, True)
+        
 
         if len(self._config.get_printers()) > 1:
             self.control['printer_select'] = self._gtk.ButtonImage('shuffle', None, None, 1)
@@ -51,14 +52,21 @@ class BasePanel(ScreenPanel):
 
         self.control['estop'] = self._gtk.ButtonImage('emergency', None, None, 1)
         self.control['estop'].connect("clicked", self.emergency_stop)
+        self.control['off'] = self._gtk.ButtonImage('shutdown', None, None, 1)
+        self.control['off'].connect("clicked", self.shutdown)
+        self.control['wifi'] = self._gtk.ButtonImage('network', None, None, 1)
+        self.control['wifi'].connect("clicked", self.menu_item_clicked, "network",{
+                "name": "Network",
+                "panel": "network"
+                })
 
         self.locations = {
             'macro_shortcut': 2,
             'printer_select': 2
         }
-        button_range = 3
+        button_range = 4
         if len(self._config.get_printers()) > 1:
-            self.locations['macro_shortcut'] = 3
+            self.locations['macro_shortcut'] = 4
             if self._config.get_main_config_option('side_macro_shortcut') == "True":
                 button_range = 4
 
@@ -69,9 +77,17 @@ class BasePanel(ScreenPanel):
             else:
                 self.control_grid.attach(self.control['space%s' % i], 0, i, 1, 1)
         if self._screen.vertical_mode:
-            self.control_grid.attach(self.control['estop'], 4, 0, 1, 1)
+            self.control_grid.attach(self.control['estop'], 5, 0, 1, 2)
         else:
-            self.control_grid.attach(self.control['estop'], 0, 4, 1, 1)
+            self.control_grid.attach(self.control['estop'], 0, 5, 1, 2)
+        if self._screen.vertical_mode:
+            self.control_grid.attach(self.control['off'], 4, 0, 1, 1)
+        else:
+            self.control_grid.attach(self.control['off'], 0, 4, 1, 1)    
+        if self._screen.vertical_mode:
+            self.control_grid.attach(self.control['wifi'], 3, 0, 1, 1)
+        else:
+            self.control_grid.attach(self.control['wifi'], 0, 3, 1, 1)               
 
         try:
             env = Environment(extensions=["jinja2.ext.i18n"])
@@ -400,3 +416,6 @@ class BasePanel(ScreenPanel):
             else:
                 self.control['time'].set_text(now.strftime("%I:%M %p"))
         return True
+    def shutdown(self,widget):
+        self._screen._ws.klippy.gcode_script("SHUTDOWN")
+        
