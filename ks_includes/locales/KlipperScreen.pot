@@ -277,8 +277,7 @@ msgid "Invert Z"
 msgstr ""
 
 msgid ""
-"Klipper\n"
-"Restart"
+"Klipper Restart"
 msgstr ""
 
 msgid "Klipper has disconnected"
@@ -354,6 +353,9 @@ msgid "Name"
 msgstr ""
 
 msgid "Network"
+msgstr ""
+
+msgid "Number Pad"
 msgstr ""
 
 msgid "Nothing selected"
