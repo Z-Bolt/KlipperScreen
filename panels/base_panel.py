@@ -2,12 +2,14 @@
 import datetime
 import gi
 import logging
+import os
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import GLib, Gtk, Pango
 from jinja2 import Environment
 
 from ks_includes.screen_panel import ScreenPanel
+
 class BasePanel(ScreenPanel):
     def __init__(self, screen, title, back=True, action_bar=True, printer_name=True):
         super().__init__(screen, title, back, action_bar, printer_name)
@@ -52,7 +54,7 @@ class BasePanel(ScreenPanel):
         self.control['estop'] = self._gtk.ButtonImage('emergency', None, None, 1)
         self.control['estop'].connect("clicked", self.emergency_stop)
         self.control['shutdown'] = self._gtk.ButtonImage('shutdown', None, None, 1)
-        self.control['shutdown'].connect("clicked", self._screen.power_on)
+        self.control['shutdown'].connect("clicked", self.shutdown)
        
         self.control['wifi'] = self._gtk.ButtonImage('network', None, None, 1)
         self.control['wifi'].connect("clicked", self.menu_item_clicked, "network",{
@@ -416,6 +418,6 @@ class BasePanel(ScreenPanel):
             else:
                 self.control['time'].set_text(now.strftime("%I:%M %p"))
         return True
-    def shutdown(self,widget):
-        self._screen._ws.klippy.gcode_script("SHUTDOWN")
-    
+    def shutdown(self, widget):
+        os.system("sudo shutdown -P now")
+        
