@@ -8,7 +8,6 @@ from gi.repository import GLib, Gtk, Pango
 from jinja2 import Environment
 
 from ks_includes.screen_panel import ScreenPanel
-
 class BasePanel(ScreenPanel):
     def __init__(self, screen, title, back=True, action_bar=True, printer_name=True):
         super().__init__(screen, title, back, action_bar, printer_name)
@@ -419,4 +418,4 @@ class BasePanel(ScreenPanel):
         return True
     def shutdown(self,widget):
         self._screen._ws.klippy.gcode_script("SHUTDOWN")
-        
+    

@@ -95,8 +95,6 @@ class SplashScreenPanel(ScreenPanel):
             self.labels['actions'].add(self.labels['restart'])
             self.labels['actions'].add(self.labels['firmware_restart'])
             self.labels['actions'].add(self.labels['menu'])
-            # time.sleep(3)
-            # self.firmware_restart
         
         else:
             self.labels['actions'].add(self.labels['restart_system'])
