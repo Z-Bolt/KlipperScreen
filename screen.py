@@ -513,7 +513,7 @@ class KlipperScreen(Gtk.Window):
 
         # Find current menu item
         if "main_panel" in self._cur_panels:
-            menu = "__main config"
+            menu = "__main"
         elif "splash_screen" in self._cur_panels:
             menu = "__splashscreen"
         else:
