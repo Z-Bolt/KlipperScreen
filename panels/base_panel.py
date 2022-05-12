@@ -54,8 +54,8 @@ class BasePanel(ScreenPanel):
         self.control['estop'] = self._gtk.ButtonImage('emergency', None, None, 1)
         self.control['estop'].connect("clicked", self.emergency_stop)
         self.control['shutdown'] = self._gtk.ButtonImage('shutdown', None, None, 1)
-        self.control['shutdown'].connect("clicked", self.shutdown)
-       
+        _ = self.lang.gettext
+        self.control['shutdown'].connect("clicked", self._screen._confirm_send_action,_("Are you sure you wish to reboot the system?"), self.shutdown)
         self.control['wifi'] = self._gtk.ButtonImage('network', None, None, 1)
         self.control['wifi'].connect("clicked", self.menu_item_clicked, "network",{
                 "name": "Network",
@@ -418,10 +418,5 @@ class BasePanel(ScreenPanel):
             else:
                 self.control['time'].set_text(now.strftime("%I:%M %p"))
         return True
-    def shutdown(self,widget):
-        _ = self.lang.gettext
-        self._screen._confirm_send_action,_("Are you sure you wish to reboot the system?")
-        set_vexpand(False)
-        # self._screen._confirm_send_action(widget, _("Are you sure you want shutdown sistem?") "M81")
-                                       
+    def shutdown(self,widget):                            
         self._screen._ws.klippy.gcode_script("M81")
