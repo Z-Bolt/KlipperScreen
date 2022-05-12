@@ -419,4 +419,9 @@ class BasePanel(ScreenPanel):
                 self.control['time'].set_text(now.strftime("%I:%M %p"))
         return True
     def shutdown(self,widget):
-        self._screen._ws.klippy.gcode_script("M81")
+        _ = self.lang.gettext
+        if self._config.get_main_config_option('confirm_estop') == "True":
+            self._screen._confirm_send_action(widget, _("Are you sure you want shutdown sistem?"),
+                                              "M81")
+        else:                                      
+            self._screen._ws.klippy.gcode_script("M81")
