@@ -56,6 +56,7 @@ class BasePanel(ScreenPanel):
         self.control['shutdown'] = self._gtk.ButtonImage('shutdown', None, None, 1)
         _ = self.lang.gettext
         self.control['shutdown'].connect("clicked", self._screen._confirm_send_action,_("Are you sure you wish to reboot the system?"), self.shutdown)
+        self.control['shutdown'].set_vexpand(False)
         self.control['wifi'] = self._gtk.ButtonImage('network', None, None, 1)
         self.control['wifi'].connect("clicked", self.menu_item_clicked, "network",{
                 "name": "Network",
