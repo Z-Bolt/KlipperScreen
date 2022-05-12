@@ -420,6 +420,8 @@ class BasePanel(ScreenPanel):
         return True
     def shutdown(self,widget):
         _ = self.lang.gettext
-        if self._config.get_main_config_option('confirm_estop') == "True":
-            self._screen._confirm_send_action(widget , _("Are you sure you want shutdown sistem?")  )                                 
-            self._screen._ws.klippy.gcode_script("M81")
+        self._screen._confirm_send_action,_("Are you sure you wish to reboot the system?")
+        set_vexpand(False)
+        # self._screen._confirm_send_action(widget, _("Are you sure you want shutdown sistem?") "M81")
+                                       
+        self._screen._ws.klippy.gcode_script("M81")
