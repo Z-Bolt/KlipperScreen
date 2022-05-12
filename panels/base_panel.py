@@ -53,7 +53,7 @@ class BasePanel(ScreenPanel):
         self.control['estop'] = self._gtk.ButtonImage('emergency', None, None, 1)
         self.control['estop'].connect("clicked", self.emergency_stop)
         self.control['shutdown'] = self._gtk.ButtonImage('shutdown', None, None, 1)
-        self.control['shutdown'].connect("clicked", self.shutdown)
+        self.control['shutdown'].connect("clicked", self._screen.power_on)
        
         self.control['wifi'] = self._gtk.ButtonImage('network', None, None, 1)
         self.control['wifi'].connect("clicked", self.menu_item_clicked, "network",{
