@@ -35,7 +35,7 @@ class SplashScreenPanel(ScreenPanel):
         self.labels['menu'].connect("clicked", self._screen._go_to_submenu, "")
         self.labels['restart'] = self._gtk.ButtonImage("refresh", _("Klipper\nRestart"), "color1")
         self.labels['restart'].connect("clicked", self.restart)
-        self.labels['firmware_restart'] = self._gtk.ButtonImage("refresh", _("Firmware\nRestart"), "color2")
+        self.labels['firmware_restart'] = self._gtk.ButtonImage("refresh", _("Restart"), "color2")
         self.labels['firmware_restart'].connect("clicked", self.firmware_restart)
         self.labels['restart_system'] = self._gtk.ButtonImage("refresh", _("System\nRestart"), "color1")
         self.labels['restart_system'].connect("clicked", self.restart_system)
