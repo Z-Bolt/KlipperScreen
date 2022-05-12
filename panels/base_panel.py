@@ -418,7 +418,8 @@ class BasePanel(ScreenPanel):
         return True
     def shutdown(self,widget):
         self._screen._ws.klippy.gcode_script("SHUTDOWN")
-     def power_on(self, widget, devices):
+        
+    def power_on(self, widget, devices):
         _ = self.lang.gettext
         for device in devices:
             if self.printer.get_power_device_status(device) == "on":
