@@ -33,8 +33,8 @@ class SplashScreenPanel(ScreenPanel):
 
         self.labels['menu'] = self._gtk.ButtonImage("settings", _("Menu"), "color4")
         self.labels['menu'].connect("clicked", self._screen._go_to_submenu, "")
-        self.labels['restart'] = self._gtk.ButtonImage("refresh", _("Klipper\nRestart"), "color1")
-        self.labels['restart'].connect("clicked", self.restart)
+        # self.labels['restart'] = self._gtk.ButtonImage("refresh", _("Klipper\nRestart"), "color1")
+        # self.labels['restart'].connect("clicked", self.restart)
         self.labels['firmware_restart'] = self._gtk.ButtonImage("refresh", _("Restart"), "color2")
         self.labels['firmware_restart'].connect("clicked", self.firmware_restart)
         self.labels['restart_system'] = self._gtk.ButtonImage("refresh", _("System\nRestart"), "color1")
@@ -92,7 +92,7 @@ class SplashScreenPanel(ScreenPanel):
                 self.add_power_button(self._screen.search_power_devices(power_devices))
 
         if self._screen.printer is not None and self._screen.printer.state != "disconnected":
-            self.labels['actions'].add(self.labels['restart'])
+            # self.labels['actions'].add(self.labels['restart'])
             self.labels['actions'].add(self.labels['firmware_restart'])
             self.labels['actions'].add(self.labels['menu'])
         
