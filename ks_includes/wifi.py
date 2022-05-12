@@ -340,11 +340,11 @@ class WpaSocket(Thread):
                                 break
                 elif "Trying to associate" in msg:
                     self.callback("connecting_status", msg)
-                elif "CTRL-EVENT-REGDOM-CHANGE" in msg:
+                elif "Успешно подключено" in msg:
                     self.callback("connecting_status", msg)
-                elif "CTRL-EVENT-CONNECTED" in msg:
-                    Gdk.threads_add_idle(GLib.PRIORITY_DEFAULT_IDLE, self.wm.get_current_wifi_idle_add)
-                    self.callback("connecting_status", msg)
+                # elif "CTRL-EVENT-CONNECTED" in msg:
+                #     Gdk.threads_add_idle(GLib.PRIORITY_DEFAULT_IDLE, self.wm.get_current_wifi_idle_add)
+                #     self.callback("connecting_status", msg)
             else:
                 if self.skip_commands > 0:
                     self.skip_commands = self.skip_commands - 1
