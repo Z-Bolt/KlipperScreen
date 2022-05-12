@@ -52,7 +52,7 @@ class BasePanel(ScreenPanel):
         self.control['estop'] = self._gtk.ButtonImage('emergency', None, None, 1)
         self.control['estop'].connect("clicked", self.emergency_stop)
         self.control['shutdown'] = self._gtk.ButtonImage('shutdown', None, None, 1)
-        self.control['shutdown'].connect("clicked", self.power_on)
+        self.control['shutdown'].connect("clicked", self._screen.power_on)
        
         self.control['wifi'] = self._gtk.ButtonImage('network', None, None, 1)
         self.control['wifi'].connect("clicked", self.menu_item_clicked, "network",{
@@ -418,15 +418,4 @@ class BasePanel(ScreenPanel):
         return True
     def shutdown(self,widget):
         self._screen._ws.klippy.gcode_script("SHUTDOWN")
-        
-    def power_on(self, widget, devices):
-        _ = self.lang.gettext
-        for device in devices:
-            if self.printer.get_power_device_status(device) == "on":
-                self.show_popup_message(_("Sending Power OFF signal to: %s") % devices, level=1)
-                logging.info("%s is ON, Sending Power OFF signal", device)
-                self._ws.klippy.power_device_on(device)
-            elif self.printer.get_power_device_status(device) == "off":
-                logging.info("%s is OFF", device)
-    
     
