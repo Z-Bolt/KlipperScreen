@@ -887,11 +887,11 @@ class KlipperScreen(Gtk.Window):
     def shutdown_test(self,widget):
         self._ws.klippy.gcode_script("M81")    
 
-    def _confirm_test(self, widget, text, method, params={}):
+    def _confirm_test(self, widget, text):
         _ = self.lang.gettext
 
         buttons = [
-            {"name": _("Continue"), "response": Gtk.ResponseType.OK},
+            {"name": _("ПРИВЕТ"), "response": Gtk.ResponseType.OK},
             {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL}
         ]
 
@@ -912,9 +912,9 @@ class KlipperScreen(Gtk.Window):
         label.set_line_wrap(True)
         label.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
 
-        self.gtk.Dialog(self, buttons, label, self._confirm_send_test, method, params)
+        self.gtk.Dialog(self, buttons, label, self._confirm_send_test)
 
-    def _confirm_send_test(self, widget, response_id, method, params):
+    def _confirm_send_test(self, widget, response_id):
         if response_id == Gtk.ResponseType.OK:
             self.shutdown_test
 
