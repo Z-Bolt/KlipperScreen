@@ -889,7 +889,7 @@ class KlipperScreen(Gtk.Window):
         _ = self.lang.gettext
 
         buttons = [
-            {"name": _("ПРИВЕТ"), "response": Gtk.ResponseType.OK},
+            {"name": _("Continue"), "response": Gtk.ResponseType.OK},
             {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL}
         ]
 
