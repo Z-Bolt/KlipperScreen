@@ -883,7 +883,7 @@ class KlipperScreen(Gtk.Window):
 
     def _send_action(self, widget, method, params):
         self._ws.send_method(method, params)
-        
+
     def _shutdown(self,widget):                                  
         self._screen._ws.klippy.gcode_script("M81")
 
@@ -912,7 +912,7 @@ class KlipperScreen(Gtk.Window):
         label.set_line_wrap(True)
         label.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
 
-    self.gtk.Dialog(self, buttons, label, self._confirm_send, method, params)
+        self.gtk.Dialog(self, buttons, label, self._confirm_send, method, params)
 
     def _confirm_send(self, widget, response_id, method, params):
         if response_id == Gtk.ResponseType.OK:
