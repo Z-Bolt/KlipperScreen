@@ -884,8 +884,6 @@ class KlipperScreen(Gtk.Window):
     def _send_action(self, widget, method, params):
         self._ws.send_method(method, params)
 
-    
-
     def printer_initializing(self, text=None, disconnect=False):
         self.close_popup_message()
         self.show_panel('splash_screen', "splash_screen", "Splash Screen", 2)
@@ -1101,7 +1099,6 @@ def main():
     win.connect("destroy", Gtk.main_quit)
     win.show_all()
     Gtk.main()
-
 
 
 if __name__ == "__main__":
