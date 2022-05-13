@@ -12,6 +12,8 @@ import signal
 import subprocess
 import pathlib
 import traceback  # noqa
+import time
+
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk, GLib, Pango
@@ -914,6 +916,7 @@ class KlipperScreen(Gtk.Window):
 
     def _confirm_send_test(self, widget, response_id):
         if response_id == Gtk.ResponseType.OK:
+            time.sleep(5) 
             self._ws.klippy.gcode_script("M81")
 
         widget.destroy()    
