@@ -883,9 +883,7 @@ class KlipperScreen(Gtk.Window):
 
     def _send_action(self, widget, method, params):
         self._ws.send_method(method, params)
-
-    def shutdown_test(self,widget):
-        self._ws.klippy.gcode_script("M81")    
+            
 
     def _confirm_test(self, widget, text):
         _ = self.lang.gettext
@@ -916,7 +914,7 @@ class KlipperScreen(Gtk.Window):
 
     def _confirm_send_test(self, widget, response_id):
         if response_id == Gtk.ResponseType.OK:
-            self.shutdown_test
+            self._ws.klippy.gcode_script("M81")
 
         widget.destroy()    
 
