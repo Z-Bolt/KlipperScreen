@@ -55,8 +55,8 @@ class BasePanel(ScreenPanel):
         self.control['estop'].connect("clicked", self.emergency_stop)
         _ = self.lang.gettext
         self.control['shutdown'] = self._gtk.ButtonImage('shutdown', None, None, 1)
-        # self.control['shutdown'].connect ( "clicked", self._screen._confirm_send_action, _("Are you sure you wish to shutdown the system?"),  {"script":"M81"})
-        self.control['shutdown'].connect ( "clicked", self.shutdown)
+        self.control['shutdown'].connect ( "clicked", self._confirm, _("Are you sure you wish to shutdown the system?"),  "M81")
+        # self.control['shutdown'].connect ( "clicked", self.shutdown)
         self.control['wifi'] = self._gtk.ButtonImage('network', None, None, 1)
         self.control['wifi'].connect("clicked", self.menu_item_clicked, "network",{
                 "name": "Network",
@@ -421,3 +421,36 @@ class BasePanel(ScreenPanel):
         return True
     def shutdown(self,widget):                                  
         self._screen._ws.klippy.gcode_script("M81")
+
+    def _confirm(self, widget, text, method, params={}):
+        _ = self.lang.gettext
+
+        buttons = [
+            {"name": _("Continue"), "response": Gtk.ResponseType.OK},
+            {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL}
+        ]
+
+        try:
+            env = Environment(extensions=["jinja2.ext.i18n"])
+            env.install_gettext_translations(self.lang)
+            j2_temp = env.from_string(text)
+            text = j2_temp.render()
+        except Exception:
+            logging.debug("Error parsing jinja for confirm_send_action")
+
+        label = Gtk.Label()
+        label.set_markup(text)
+        label.set_hexpand(True)
+        label.set_halign(Gtk.Align.CENTER)
+        label.set_vexpand(True)
+        label.set_valign(Gtk.Align.CENTER)
+        label.set_line_wrap(True)
+        label.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
+
+        self.gtk.Dialog(self, buttons, label, self._confirm_send, method, params)
+
+    def _confirm_send(self, widget, response_id, method, params):
+        if response_id == Gtk.ResponseType.OK:
+            self.shutdown
+
+        widget.destroy()
