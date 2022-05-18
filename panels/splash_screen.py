@@ -73,7 +73,6 @@ class SplashScreenPanel(ScreenPanel):
 
     def update_text(self, text):
         # self.labels['text'].set_markup("%s" % text)
-        # self.labels['text'] = Gtk.Label("HEllo")
         self.show_restart_buttons()
 
     def clear_action_bar(self):
