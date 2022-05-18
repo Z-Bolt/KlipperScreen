@@ -114,7 +114,7 @@ class KlippyGtk:
         return la
 
     def Image(self, image_name, scale=1):
-        filename = os.path.join(self.themedir, str(image_name) + ".svg")
+        filename = os.path.join(self.themedir, str(image_name) + ".svg", formatTemperatureString(0, 0))
         if os.path.exists(filename):
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(filename,
                                                              int(round(self.img_width * scale)),
