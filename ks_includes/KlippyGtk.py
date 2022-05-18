@@ -120,7 +120,7 @@ class KlippyGtk:
                                                              int(round(self.img_width * scale)),
                                                              int(round(self.img_height * scale)),
                                                              True)
-            return Gtk.Image.new_from_pixbuf(pixbuf + self.formatTemperatureString(0, 0))
+            return Gtk.Image.new_from_pixbuf(pixbuf)
         else:
             logging.error("Unable to find image %s", filename)
             return Gtk.Image()
