@@ -176,13 +176,13 @@ class BasePanel(ScreenPanel):
                     ext_img = self._gtk.Image("extruder", .5)
                 self.labels[device + '_box'].pack_start(ext_img, True, True, 3)
             elif device.startswith("heater_bed"):
-                bed_img = self._gtk.Image("bed", .5)
+                bed_img = self._gtk.Image("bed", .5, self._gtk.formatTemperatureString(0, 0))
                 self.labels[device + '_box'].pack_start(bed_img, True, True, 3)
             elif device.startswith("temperature_fan"):
                 fan_img = self._gtk.Image("fan", .5)
                 self.labels[device + '_box'].pack_start(fan_img, True, True, 3)
             elif device.startswith("heater_generic"):
-                heat_img = self._gtk.Image("heater", .5, self._gtk.formatTemperatureString(0, 0))
+                heat_img = self._gtk.Image("heater", .5)
                 self.labels[device + '_box'].pack_start(heat_img, True, True, 3)
             else:
                 temp_img = self._gtk.Image("heat-up", .5)
