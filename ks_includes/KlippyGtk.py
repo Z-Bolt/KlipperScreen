@@ -118,7 +118,7 @@ class KlippyGtk:
         if os.path.exists(filename):
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(filename,
                                                              int(round(self.img_width * scale)),
-                                                             int(round(self.img_height * scale)),
+                                                             int(round(self.img_height * scale)),  self._gtk.formatTemperatureString(0, 0),
                                                              True)
             return Gtk.Image.new_from_pixbuf(pixbuf)
         else:
