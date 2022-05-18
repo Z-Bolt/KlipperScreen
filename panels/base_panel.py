@@ -203,7 +203,7 @@ class BasePanel(ScreenPanel):
             n += 1
 
         if self._screen.printer.has_heated_bed():
-            self.control['temp_box'].pack_start(self.labels['heater_bed_box'], self._gtk.formatTemperatureString(0, 0), True, True, 3)
+            self.control['temp_box'].pack_start(self.labels['heater_bed_box'], True, True, 3)
             n += 1
 
             
