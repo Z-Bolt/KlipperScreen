@@ -162,7 +162,7 @@ class BasePanel(ScreenPanel):
 
         for device in self._screen.printer.get_temp_store_devices():
             logging.info(device)
-            self.labels[device + '_box'] = Gtk.Box(spacing=0)
+            self.labels[device + '_box' + self._gtk.formatTemperatureString(0, 0)] = Gtk.Box(spacing=0)
             self.labels[device] = Gtk.Label(label="100º")
             self.labels[device].set_ellipsize(True)
             self.labels[device].set_ellipsize(Pango.EllipsizeMode.START)
