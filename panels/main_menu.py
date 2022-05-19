@@ -25,16 +25,32 @@ class MainPanel(MenuPanel):
         eq_grid.set_hexpand(True)
         eq_grid.set_vexpand(True)
 
+        popover = Gtk.Popover()
+        self.labels['popover_vbox'] = Gtk.VBox()
+        popover.add(self.labels['popover_vbox'])
+        popover.set_position(Gtk.PositionType.BOTTOM)
+        self.labels['popover'] = popover
+
         self.heaters = []
+        _ = self.lang.gettext
+        self.labels['graph_settemp'] = self._gtk.Button(label=_("Set Temp"))
+        self.labels['graph_settemp'].connect("clicked", self.show_numpad)
 
         i = 0
         for x in self._printer.get_tools():
             self.labels[x] = self._gtk.ButtonImage("extruder-"+str(i), self._gtk.formatTemperatureString(0, 0))
-            self.labels[x].connect("clicked", self.menu_item_clicked, "temperature", {
-            "name": "Temperature",
-            "panel": "temperature"
+            # self.labels[x].connect("clicked", self.menu_item_clicked, "temperature", {
+            # "name": "Temperature",
+            # "panel": "temperature"
             
-            })
+            # })
+            pobox = self.labels['popover_vbox']
+            if self.devices[self.popover_device]['type'] != "sensor":
+                pobox.pack_start(self.labels['graph_settemp'], True, True, 5)
+            else:
+                pobox.pack_start(self.labels['graph_show'], True, True, 5)
+            if self.devices[self.popover_device]['type'] != "sensor":
+                pobox.pack_start(self.labels['graph_settemp'], True, True, 5)
             self.heaters.append(x)
             i += 1
 
@@ -80,6 +96,26 @@ class MainPanel(MenuPanel):
 
     def activate(self):
         return
+
+    def show_numpad(self, widget):
+        _ = self.lang.gettext
+
+        if self.active_heater is not None:
+            self.devices[self.active_heater]['name'].get_style_context().remove_class("active_device")
+        self.active_heater = self.popover_device
+        self.devices[self.active_heater]['name'].get_style_context().add_class("active_device")
+
+        if "keypad" not in self.labels:
+            self.labels["keypad"] = Keypad(self._screen, self.change_target_temp, self.hide_numpad)
+        self.labels["keypad"].clear()
+
+        if self._screen.vertical_mode:
+            self.grid.remove_row(1)
+            self.grid.attach(self.labels["keypad"], 0, 1, 1, 1)
+        else:
+            self.grid.remove_column(1)
+            self.grid.attach(self.labels["keypad"], 1, 0, 1, 1)
+        self.grid.show_all()    
 
     def process_update(self, action, data):
         if action != "notify_status_update":
