@@ -72,7 +72,8 @@ class SplashScreenPanel(ScreenPanel):
         self.content.add(main)
 
     def update_text(self, text):
-        if text == "Initializing printer...":
+        _ = self.lang.gettext
+        if text == _("Initializing printer...") :
             self.labels['text'].set_markup("Menuska misha")
         self.show_restart_buttons()
 
