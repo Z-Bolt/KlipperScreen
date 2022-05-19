@@ -25,8 +25,8 @@ class SplashScreenPanel(ScreenPanel):
 
         image = self._gtk.Image("klipper", 10)
 
-        # self.labels['text'] = Gtk.Label(_("Initializing printer..."))
-        self.labels['text'] = Gtk.Label("Hello")
+        self.labels['text'] = Gtk.Label(_("Initializing printer..."))
+        # self.labels['text'] = Gtk.Label("Hello")
         self.labels['text'].set_line_wrap(True)
         self.labels['text'].set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
         self.labels['text'].set_halign(Gtk.Align.CENTER)
@@ -72,7 +72,7 @@ class SplashScreenPanel(ScreenPanel):
         self.content.add(main)
 
     def update_text(self, text):
-        if text == "Klipper":
+        if text == " Klipper ":
             self.labels['text'].set_markup("Menuska misha")
         self.show_restart_buttons()
 
