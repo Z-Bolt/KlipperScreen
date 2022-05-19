@@ -25,7 +25,7 @@ class SplashScreenPanel(ScreenPanel):
 
         image = self._gtk.Image("klipper", 10)
 
-        self.labels['text'] = Gtk.Label(_("Initializing printer..."))
+        # self.labels['text'] = Gtk.Label(_("Initializing printer..."))
         # self.labels['text'] = Gtk.Label("Hello")
         self.labels['text'].set_line_wrap(True)
         self.labels['text'].set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
