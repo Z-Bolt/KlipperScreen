@@ -72,7 +72,7 @@ class SplashScreenPanel(ScreenPanel):
         self.content.add(main)
 
     def update_text(self, text):
-        if self.labels['text'].set_markup("%s" % text) == "Klipper" :
+        if self.set_markup("%s" % text) == "Klipper" :
             self.labels['text'] = Gtk.Label("Hello man")
 
         self.show_restart_buttons()
