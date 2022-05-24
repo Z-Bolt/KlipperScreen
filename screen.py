@@ -933,7 +933,7 @@ class KlipperScreen(Gtk.Window):
         label.set_line_wrap(True)
         label.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
 
-        self.gtk.Dialog(self, buttons, label, self._confirm_send_testimage)
+        self.gtk.Dialog(self, label)
    
     def _confirm_send_test(self, widget, response_id):
          if response_id == Gtk.ResponseType.OK:
