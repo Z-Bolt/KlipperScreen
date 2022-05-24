@@ -943,7 +943,6 @@ class KlipperScreen(Gtk.Window):
    
     def _confirm_send_test(self, widget, response_id):
         if response_id == Gtk.ResponseType.OK:
-            self._confirm_image, _("Shutdown????????")
             self._ws.klippy.gcode_script("M81")
             os.system("sudo shutdown -P now")
         widget.destroy()
