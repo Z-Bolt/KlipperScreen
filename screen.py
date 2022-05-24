@@ -916,6 +916,12 @@ class KlipperScreen(Gtk.Window):
 
     def _confirm_image(self, widget, text):
         _ = self.lang.gettext
+
+        buttons = [
+            {"name": _("Continue"), "response": Gtk.ResponseType.OK},
+            {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL}
+        ]
+
         try:
             env = Environment(extensions=["jinja2.ext.i18n"])
             env.install_gettext_translations(self.lang)
@@ -933,10 +939,11 @@ class KlipperScreen(Gtk.Window):
         label.set_line_wrap(True)
         label.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
 
-        self.gtk.Dialog(self, label)
+        self.gtk.Dialog(self, buttons, label)
    
     def _confirm_send_test(self, widget, response_id):
         if response_id == Gtk.ResponseType.OK:
+            self._confirm_image, _("Shutdown????????")
             self._ws.klippy.gcode_script("M81")
             os.system("sudo shutdown -P now")
         widget.destroy()
