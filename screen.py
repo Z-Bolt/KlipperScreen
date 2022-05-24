@@ -917,12 +917,10 @@ class KlipperScreen(Gtk.Window):
     def _confirm_send_test(self, widget, response_id):
         if response_id == Gtk.ResponseType.OK:
             self._ws.klippy.gcode_script("M81")
+            widget.destroy()
             time.sleep(7)
             os.system("sudo shutdown -P now")
-             
            
-
-        widget.destroy()    
 
     def printer_initializing(self, text=None, disconnect=False):
         self.close_popup_message()
