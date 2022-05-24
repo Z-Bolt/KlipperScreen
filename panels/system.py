@@ -32,10 +32,10 @@ class SystemPanel(ScreenPanel):
         reboot.connect("clicked", self._screen._confirm_send_action,
                        _("Are you sure you wish to reboot the system?"), "machine.reboot")
         reboot.set_vexpand(False)
-        shutdown = self._gtk.ButtonImage('shutdown', _('System\nShutdown'), 'color4')
-        shutdown.connect("clicked", self._screen._confirm_send_action,
-                         _("Are you sure you wish to shutdown the system?"), "machine.shutdown")
-        shutdown.set_vexpand(False)
+        # shutdown = self._gtk.ButtonImage('shutdown', _('System\nShutdown'), 'color4')
+        # shutdown.connect("clicked", self._screen._confirm_send_action,
+        #                  _("Are you sure you wish to shutdown the system?"), "machine.shutdown")
+        # shutdown.set_vexpand(False)
 
 
         grid.attach(restart, 3, 2, 1, 1)
