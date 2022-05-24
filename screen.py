@@ -913,13 +913,11 @@ class KlipperScreen(Gtk.Window):
         label.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
 
         self.gtk.Dialog(self, buttons, label, self._confirm_send_test)
-
+   
     def _confirm_send_test(self, widget, response_id):
         if response_id == Gtk.ResponseType.OK:
-            widget.destroy()
-            time.sleep(0.3)
+            widget.destroy() 
             self._ws.klippy.gcode_script("M81")
-            time.sleep(7)
             os.system("sudo shutdown -P now")
            
 
