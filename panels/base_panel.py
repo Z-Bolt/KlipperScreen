@@ -419,5 +419,3 @@ class BasePanel(ScreenPanel):
             else:
                 self.control['time'].set_text(now.strftime("%I:%M %p"))
         return True
-    # def shutdown(self,widget):
-    #     self._screen._ws.klippy.gcode_script("M81")
