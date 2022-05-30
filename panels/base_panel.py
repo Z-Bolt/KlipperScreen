@@ -13,6 +13,7 @@ from ks_includes.screen_panel import ScreenPanel
 class BasePanel(ScreenPanel):
     def __init__(self, screen, title, back=True, action_bar=True, printer_name=True):
         super().__init__(screen, title, back, action_bar, printer_name)
+        _ = self.lang.gettext
         self.current_panel = None
         self.time_min = -1
         self.time_format = self._config.get_main_config_option("24htime")
@@ -59,7 +60,7 @@ class BasePanel(ScreenPanel):
         # self.control['shutdown'].connect ( "clicked", self.shutdown)
         self.control['wifi'] = self._gtk.ButtonImage('network', None, None, 1)
         self.control['wifi'].connect("clicked", self.menu_item_clicked, "network",{
-                "name": "Network",
+                "name": _('Network'),
                 "panel": "network"
                 })
 
