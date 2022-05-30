@@ -383,8 +383,8 @@ class KlipperScreenConfig:
         else:
             path = os.path.expanduser("~/")
             klipper_config = os.path.join(path, "klipper_config")
-            # if os.path.exists(klipper_config):
-            #     path = os.path.join(klipper_config, "KlipperScreen.conf")
+            if os.path.exists(klipper_config):
+                path = os.path.join(klipper_config, "KlipperScreen.conf")
             # else:
             #     path = os.path.join(path, "KlipperScreen.conf")
 
