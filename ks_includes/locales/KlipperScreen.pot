@@ -286,12 +286,6 @@ msgstr ""
 msgid "Klipper has disconnected"
 msgstr ""
 
-msgid "Klipper: disconnected"
-msgstr ""
-
-msgid "Klipper:"
-msgstr ""
-
 msgid "Klipper has encountered an error."
 msgstr ""
 
@@ -516,10 +510,7 @@ msgstr ""
 msgid "Speed -"
 msgstr ""
 
-msgid "SplashScreen"
-msgstr ""
-
-msgid "splash_screen"
+msgid "Splash Screen"
 msgstr ""
 
 msgid "Square Corner Velocity"
