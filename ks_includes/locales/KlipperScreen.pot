@@ -289,6 +289,9 @@ msgstr ""
 msgid "Klipper: disconnected"
 msgstr ""
 
+msgid "Klipper:"
+msgstr ""
+
 msgid "Klipper has encountered an error."
 msgstr ""
 
@@ -359,9 +362,6 @@ msgid "Name"
 msgstr ""
 
 msgid "Network"
-msgstr ""
-
-msgid "network"
 msgstr ""
 
 msgid "Number Pad"
@@ -516,7 +516,10 @@ msgstr ""
 msgid "Speed -"
 msgstr ""
 
-msgid "Splash Screen"
+msgid "SplashScreen"
+msgstr ""
+
+msgid "splash_screen"
 msgstr ""
 
 msgid "Square Corner Velocity"
@@ -551,9 +554,6 @@ msgid "Temp (°C)"
 msgstr ""
 
 msgid "Temperature"
-msgstr ""
-
-msgid "temperature"
 msgstr ""
 
 #, python-format
