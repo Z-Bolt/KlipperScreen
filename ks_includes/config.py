@@ -385,8 +385,8 @@ class KlipperScreenConfig:
             klipper_config = os.path.join(path, "klipper_config")
             if os.path.exists(klipper_config):
                 path = os.path.join(klipper_config, "KlipperScreen.conf")
-            # else:
-            #     path = os.path.join(path, "KlipperScreen.conf")
+            else:
+                path = os.path.join(path, "KlipperScreen.conf")
 
         try:
             file = open(path, 'w')
