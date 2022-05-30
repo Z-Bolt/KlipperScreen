@@ -355,6 +355,9 @@ msgstr ""
 msgid "Network"
 msgstr ""
 
+msgid "network"
+msgstr ""
+
 msgid "Number Pad"
 msgstr ""
 
@@ -507,6 +510,9 @@ msgstr ""
 msgid "Speed -"
 msgstr ""
 
+msgid "Splash Screen"
+msgstr ""
+
 msgid "Square Corner Velocity"
 msgstr ""
 
@@ -539,6 +545,9 @@ msgid "Temp (°C)"
 msgstr ""
 
 msgid "Temperature"
+msgstr ""
+
+msgid "temperature"
 msgstr ""
 
 #, python-format
