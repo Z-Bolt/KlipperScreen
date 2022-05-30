@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-31 11:25-0300\n"
-"PO-Revision-Date: 2022-05-30 15:27+0300\n"
+"PO-Revision-Date: 2022-05-30 16:23+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -293,8 +293,11 @@ msgstr ""
 msgid "Klipper has disconnected"
 msgstr "Нет связи с Klipper"
 
-msgid "Klipper: disconnected"
-msgstr "Klipper: отключился"
+msgid "Klipper:disconnected"
+msgstr "Банда"
+
+msgid "Klipper disconnected"
+msgstr "Здарова"
 
 msgid "Klipper has encountered an error."
 msgstr "Klipper обнаружил ошибку."
@@ -366,9 +369,6 @@ msgid "Name"
 msgstr "Имя"
 
 msgid "Network"
-msgstr "Сеть"
-
-msgid "network"
 msgstr "Сеть"
 
 msgid "Number Pad"
@@ -524,8 +524,11 @@ msgstr "Скорость +"
 msgid "Speed -"
 msgstr "Скорость -"
 
-msgid "Splash Screen"
-msgstr "Экран Загрузки"
+msgid "SplashScreen"
+msgstr "Экран сетки"
+
+msgid "splash_screen"
+msgstr "Пупсики"
 
 msgid "Square Corner Velocity"
 msgstr "Квадратная угловая скорость"
@@ -561,9 +564,6 @@ msgid "Temp (°C)"
 msgstr "Темп  (°С)"
 
 msgid "Temperature"
-msgstr "Tемпература"
-
-msgid "temperature"
 msgstr "Tемпература"
 
 #, python-format
