@@ -142,6 +142,9 @@ msgstr ""
 msgid "Decrease"
 msgstr ""
 
+msgid "Disconnected"
+msgstr ""
+
 msgid "Delete"
 msgstr ""
 
@@ -281,6 +284,9 @@ msgid ""
 msgstr ""
 
 msgid "Klipper has disconnected"
+msgstr ""
+
+msgid "Klipper: disconnected"
 msgstr ""
 
 msgid "Klipper has encountered an error."
