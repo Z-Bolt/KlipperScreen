@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-31 11:25-0300\n"
-"PO-Revision-Date: 2022-05-30 15:21+0300\n"
+"PO-Revision-Date: 2022-05-30 15:27+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -292,6 +292,9 @@ msgstr ""
 
 msgid "Klipper has disconnected"
 msgstr "Нет связи с Klipper"
+
+msgid "Klipper: disconnected"
+msgstr "Klipper: отключился"
 
 msgid "Klipper has encountered an error."
 msgstr "Klipper обнаружил ошибку."
