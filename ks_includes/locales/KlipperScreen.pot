@@ -365,7 +365,7 @@ msgstr ""
 msgid "Nothing selected"
 msgstr ""
 
-msgid "Number Pud"
+msgid "Number Pad"
 msgstr ""
 
 msgid "Off"
