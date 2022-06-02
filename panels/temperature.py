@@ -97,7 +97,7 @@ class TemperaturePanel(ScreenPanel):
         self.labels["control_grid"].attach(self.labels["increase"], 3, 0, 1, 1)
         self.labels["control_grid"].attach(self.labels["decrease"], 3, 1, 1, 1)
         self.labels["control_grid"].attach(self.labels["npad"], 3, 2, 1, 1)
-        self.labels["control_grid"].attach(self.labels["extr"], 3, 3, 1, 2)
+        self.labels["control_grid"].attach(self.labels["extr"], 1, 3, 1, 1)
 
         grid.attach(eq_grid, 0, 0, 1, 1)
         grid.attach(self.labels["control_grid"], 1, 0, 1, 1)
