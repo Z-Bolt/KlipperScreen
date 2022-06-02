@@ -281,6 +281,9 @@ msgid ""
 "Restart"
 msgstr ""
 
+msgid "Klipper: disconnected"
+msgstr ""
+
 msgid "Klipper has disconnected"
 msgstr ""
 
@@ -312,6 +315,9 @@ msgid "Load"
 msgstr ""
 
 msgid "Lower Nozzle"
+msgstr ""
+
+msgid "Lost Connection to Moonraker"
 msgstr ""
 
 msgid "Macro shortcut on sidebar"
@@ -357,6 +363,9 @@ msgid "Network"
 msgstr ""
 
 msgid "Nothing selected"
+msgstr ""
+
+msgid "Number Pud"
 msgstr ""
 
 msgid "Off"
@@ -414,6 +423,9 @@ msgid "Probe found applied offset"
 msgstr ""
 
 msgid "Profile Name:"
+msgstr ""
+
+msgid "Preheat"
 msgstr ""
 
 msgid "Quad Gantry Level"

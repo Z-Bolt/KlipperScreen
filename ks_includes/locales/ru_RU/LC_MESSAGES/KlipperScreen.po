@@ -1,23 +1,22 @@
+# SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# Jakob Kais <schpuntik@freenet.de>, 2021.
 msgid ""
 msgstr ""
-"Project-Id-Version: KlipperScreen\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-31 11:25-0300\n"
-"PO-Revision-Date: 2022-03-31 11:10-0300\n"
-"Last-Translator: Jakob Kais <schpuntik@freenet.de>\n"
+"PO-Revision-Date: 2022-06-02 16:48+0300\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 "X-Generator: Poedit 3.0.1\n"
-"X-Poedit-Flags-xgettext: --add-comments\n"
 
 #, python-format
 msgid "%s will be updated to version"
@@ -118,7 +117,7 @@ msgid "Complete"
 msgstr "Готово"
 
 msgid "Configuration"
-msgstr "Параметр"
+msgstr "Параметры"
 
 msgid "Confirm Emergency Stop"
 msgstr "Подтвердить аварийную остановку"
@@ -207,8 +206,8 @@ msgid ""
 "Firmware\n"
 "Restart"
 msgstr ""
-"Прошивка\n"
-"Рестарт"
+"Рестарт\n"
+"Прошивки"
 
 msgid "Font Size"
 msgstr "Размер шрифта"
@@ -217,8 +216,8 @@ msgid ""
 "Full\n"
 "Update"
 msgstr ""
-"Полный\n"
-"Обновлять"
+"Полное\n"
+"Обновление"
 
 msgid "Go Back"
 msgstr "Назад"
@@ -290,6 +289,9 @@ msgstr ""
 "Klipper\n"
 "Рестарт"
 
+msgid "Klipper: disconnected"
+msgstr "Klipper: отключился"
+
 msgid "Klipper has disconnected"
 msgstr "Нет связи с Klipper"
 
@@ -323,6 +325,9 @@ msgstr "Загрузить"
 msgid "Lower Nozzle"
 msgstr "Опустить сопло"
 
+msgid "Lost Connection to Moonraker"
+msgstr "Потеряна связь с Moonraker"
+
 msgid "Macro shortcut on sidebar"
 msgstr "Показать макросы в панели"
 
@@ -332,8 +337,8 @@ msgstr "Макросы"
 msgid "Main Menu"
 msgstr "Главное меню"
 
-msgid "Max Accelation"
-msgstr "Ускорения"
+msgid "Max Acceleration"
+msgstr "Максимальное ускорение"
 
 msgid "Max Acceleration to Deceleration"
 msgstr "Ускорения торможения"
@@ -354,7 +359,7 @@ msgid "Moonraker: connected"
 msgstr "Мунрейкер: подключен"
 
 msgid "Move"
-msgstr "Двигать"
+msgstr "Движение"
 
 msgid "Move Distance (mm)"
 msgstr "Дистанция перемещения (мм)"
@@ -367,6 +372,9 @@ msgstr "Сеть"
 
 msgid "Nothing selected"
 msgstr "Ничего не выбрано"
+
+msgid "Number Pud"
+msgstr "Клавиатура"
 
 msgid "Off"
 msgstr "Выкл"
@@ -381,8 +389,8 @@ msgstr "PSK для"
 msgid "Package will be updated"
 msgid_plural "Packages will be updated"
 msgstr[0] "Пакет будет обновлен"
-msgstr[1] "Пакеты будут обновляться"
-msgstr[2] "Пакеты будут обновляться"
+msgstr[1] ""
+msgstr[2] ""
 
 msgid "Password saved"
 msgstr "Пароль сохранен"
@@ -425,6 +433,9 @@ msgstr "Probe обнаружил примененное смещение"
 
 msgid "Profile Name:"
 msgstr "Имя профиля:"
+
+msgid "Preheat"
+msgstr "Преднагрев"
 
 msgid "Quad Gantry Level"
 msgstr "Уровень Quad Gantry"
@@ -473,7 +484,7 @@ msgid "Screws Adjust"
 msgstr "Настроить винты"
 
 msgid "Select"
-msgstr "Выбирать"
+msgstr "Выбрать"
 
 msgid "Send"
 msgstr "Отправлять"
@@ -489,7 +500,7 @@ msgid "Settings"
 msgstr "Настройки"
 
 msgid "Show"
-msgstr "Показывать"
+msgstr "Показать"
 
 msgid "Size"
 msgstr "Размер"
@@ -618,8 +629,8 @@ msgstr "Z-"
 msgid "commit"
 msgid_plural "commits"
 msgstr[0] "изменение"
-msgstr[1] "изменение"
-msgstr[2] "изменение"
+msgstr[1] ""
+msgstr[2] ""
 
 msgid "dBm"
 msgstr "dBm"
@@ -627,8 +638,8 @@ msgstr "dBm"
 msgid "hour"
 msgid_plural "hours"
 msgstr[0] "час"
-msgstr[1] "часа"
-msgstr[2] "часа"
+msgstr[1] ""
+msgstr[2] ""
 
 msgid "minutes"
 msgstr "минут"
@@ -641,98 +652,3 @@ msgstr "мм/с"
 
 msgid "mm/s^2"
 msgstr "мм/с^2"
-
-#~ msgid "IPv4"
-#~ msgstr "IPv4"
-
-#~ msgid "IPv6"
-#~ msgstr "IPv6"
-
-#~ msgid "Z Offset"
-#~ msgstr "Офсет Z"
-
-#~ msgid "Unknown Heater "
-#~ msgstr "Неизвестный обогреватель "
-
-#~ msgid "Disconnect"
-#~ msgstr "Отключить"
-
-#~ msgid "Duration Only"
-#~ msgstr "Продолжительность печати"
-
-#~ msgid "Klipper Version"
-#~ msgstr "Версия Klipper"
-
-#~ msgid ""
-#~ "Klipper has encountered an error with the micro-controller.\n"
-#~ "Please recompile and flash."
-#~ msgstr ""
-#~ "Klipper определил ошибку в микроконтроллере.\n"
-#~ "Прошейте заново."
-
-#~ msgid ""
-#~ "Klipper has encountered an error.\n"
-#~ "Issue a FIRMWARE_RESTART to attempt fixing the issue."
-#~ msgstr ""
-#~ "Klipper обнаружил ошибку.\n"
-#~ "Выполните перезагрузку прошивки, чтобы попытаться исправить проблему."
-
-#~ msgid "KlipperScreen Version"
-#~ msgstr "Версия KlipperScreen"
-
-#~ msgid "Show Only Heaters in Temp."
-#~ msgstr "Показать только нагреватели в темп."
-
-#~ msgid "Target"
-#~ msgstr "Цель"
-
-#~ msgid "Temp"
-#~ msgstr "Темп"
-
-#~ msgid "Number Pad"
-#~ msgstr "Клавиатура"
-
-#~ msgid "Preheat"
-#~ msgstr "Разогрев"
-
-#~ msgid "Screen will show in less than one second"
-#~ msgstr "Экран отобразится через одну секунду"
-
-#~ msgid "Medium (default)"
-#~ msgstr "Средний (по умолчанию)"
-
-#~ msgid "File Estimation (default)"
-#~ msgstr "По файлу (по умолчанию)"
-
-#~ msgid "..."
-#~ msgstr "..."
-
-#~ msgid "Change Printer"
-#~ msgstr "Сменить принтер"
-
-#~ msgid "Fan Off"
-#~ msgstr "Bыключить"
-
-#~ msgid "Fan On"
-#~ msgstr "Bключи"
-
-#~ msgid "Fast"
-#~ msgstr "Быстро"
-
-#~ msgid "Set Speed"
-#~ msgstr "Скорость"
-
-#~ msgid "Slow"
-#~ msgstr "Mедленно"
-
-#~ msgid "?"
-#~ msgstr "?"
-
-#~ msgid "Cancel Change"
-#~ msgstr "Отменить изменения"
-
-#~ msgid "Control"
-#~ msgstr "Управление"
-
-#~ msgid "Load Average"
-#~ msgstr "Средняя нагрузка"
