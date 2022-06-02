@@ -371,6 +371,8 @@ class JobStatusPanel(ScreenPanel):
                 self.set_state("cancelling")
             elif "action:paused" in data:
                 self.set_state("paused")
+            elif "action:resumed" in data:
+                self.set_state("printing")
             return
         elif action != "notify_status_update":
             return
@@ -420,7 +422,7 @@ class JobStatusPanel(ScreenPanel):
             self.labels['fan'].set_text("%3d%%" % self.fan)
 
         self.state_check()
-        if self.state in ["cancelling", "cancelled", "complete", "error"]:
+        if self.state not in ["printing", "paused"]:
             return
 
         if ps['filename'] and (ps['filename'] != self.filename):
@@ -525,8 +527,8 @@ class JobStatusPanel(ScreenPanel):
             return False
         elif ps['state'] == "paused":
             self.set_state("paused")
-        # elif ps['state'] == "standby":
-        #     self.set_state("standby")
+        elif ps['state'] == "standby":
+            self.set_state("standby")
         return True
 
     def set_state(self, state):
