@@ -146,7 +146,7 @@ class Printer:
         return updates
 
     def evaluate_state(self):
-       wh_state = self.data['webhooks']['state'].lower()  # possible values: startup, ready, shutdown, error
+        wh_state = self.data['webhooks']['state'].lower()  # possible values: startup, ready, shutdown, error
 
         if wh_state == "ready":
             new_state = "ready"
