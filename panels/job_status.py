@@ -371,8 +371,6 @@ class JobStatusPanel(ScreenPanel):
                 self.set_state("cancelling")
             elif "action:paused" in data:
                 self.set_state("paused")
-            elif "action:resumed" in data:
-                self.set_state("printing")
             return
         elif action != "notify_status_update":
             return
@@ -485,8 +483,7 @@ class JobStatusPanel(ScreenPanel):
         return str(self._gtk.formatTimeString((total_duration - duration)))
 
     def state_check(self):
-        ps = self._printer.get_stat("print_stats")
-
+         ps = self._printer.get_stat("print_stats")
         if ps['state'] == self.state:
             return True
         _ = self.lang.gettext
@@ -495,40 +492,45 @@ class JobStatusPanel(ScreenPanel):
             if self.state == "cancelling":
                 return True
             self.set_state("printing")
-            self.update_filename()
         elif ps['state'] == "complete":
             self.progress = 1
             self.update_progress()
             self.set_state("complete")
             self._screen.wake_screen()
-            self.remove_close_timeout()
             timeout = self._config.get_main_config().getint("job_complete_timeout", 30)
             if timeout != 0:
-                self.close_timeouts.append(GLib.timeout_add_seconds(timeout, self.close_panel))
+                self.close_timeouts.append(GLib.timeout_add(timeout * 1000, self.close_panel))
             return False
         elif ps['state'] == "error":
             logging.debug("Error!")
             self.set_state("error")
             self.labels['status'].set_text("%s - %s" % (_("Error"), ps['message']))
             self._screen.wake_screen()
-            self.remove_close_timeout()
             timeout = self._config.get_main_config().getint("job_error_timeout", 0)
             if timeout != 0:
-                self.close_timeouts.append(GLib.timeout_add_seconds(timeout, self.close_panel))
+                self.close_timeouts.append(GLib.timeout_add(timeout * 1000, self.close_panel))
             return False
-        elif ps['state'] == "cancelled":
+        elif ps['state'] == "cancelled" or ps['state'] == "standby":
             # Print was cancelled
             self.set_state("cancelled")
             self._screen.wake_screen()
-            self.remove_close_timeout()
             timeout = self._config.get_main_config().getint("job_cancelled_timeout", 0)
             if timeout != 0:
-                self.close_timeouts.append(GLib.timeout_add_seconds(timeout, self.close_panel))
+                self.close_timeouts.append(GLib.timeout_add(timeout * 1000, self.close_panel))
             return False
         elif ps['state'] == "paused":
             self.set_state("paused")
-        elif ps['state'] == "standby":
-            self.set_state("standby")
+
+        # TODO: Remove this in the future
+        if self.filename != ps['filename']:
+            if ps['filename'] != "":
+                self.filename = ps['filename']
+                self.file_metadata = {}
+                self.update_text("file", self.filename.split("/")[-1])
+            else:
+                file = "Unknown"
+                self.update_text("file", "Unknown file")
+
         return True
 
     def set_state(self, state):
