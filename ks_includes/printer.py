@@ -3,7 +3,6 @@ import logging
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gdk, GLib
-from ks_includes.KlippyGcodes import KlippyGcodes
 
 
 class Printer:
@@ -122,10 +121,11 @@ class Printer:
             'toolhead',
             'virtual_sdcard',
             'webhooks',
-            'fimware_retraction'
+            'fimware_retraction',
+            'motion_report'
         ]
 
-        for x in (self.get_tools() + self.get_heaters()):
+        for x in (self.get_tools() + self.get_heaters() + self.get_filament_sensors()):
             if x in data:
                 for i in data[x]:
                     self.set_dev_stat(x, i, data[x][i])
@@ -211,11 +211,6 @@ class Printer:
             return self.config[section]
         return False
 
-    def get_config_section(self, section):
-        if section not in self.config:
-            return False
-        return self.config[section]
-
     def get_data(self):
         return self.data
 
@@ -243,6 +238,14 @@ class Printer:
         for h in self.get_config_section_list("temperature_fan "):
             heaters.append(h)
         return heaters
+
+    def get_filament_sensors(self):
+        sensors = []
+        for s in self.get_config_section_list("filament_switch_sensor "):
+            sensors.append(s)
+        for s in self.get_config_section_list("filament_motion_sensor "):
+            sensors.append(s)
+        return sensors
 
     def get_printer_status_data(self):
         data = {
