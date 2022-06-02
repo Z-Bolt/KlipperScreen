@@ -137,7 +137,7 @@ class Printer:
                 self.data[x] = {}
             self.data[x].update(data[x])
 
-        if "webhooks" in data or "idle_timeout" in data or "print_stats" in data:
+        if "webhooks" in data or "idle_timeout" in data or "print_stats" in data or "pause_resume" in data:
             self.evaluate_state()
 
     def get_updates(self):
@@ -146,21 +146,25 @@ class Printer:
         return updates
 
     def evaluate_state(self):
-        wh_state = self.data['webhooks']['state'].lower()  # possible values: startup, ready, shutdown, error
-        idle_state = self.data['idle_timeout']['state'].lower()  # possible values: Idle, printing, ready
-        print_state = self.data['print_stats']['state'].lower()  # possible values: complete, paused, printing, standby
+       wh_state = self.data['webhooks']['state'].lower()  # possible values: startup, ready, shutdown, error
 
         if wh_state == "ready":
             new_state = "ready"
-            if print_state == "paused":
+            if self.data['pause_resume']['is_paused']:
                 new_state = "paused"
-            elif idle_state == "printing":
-                if print_state == "complete":
-                    new_state = "ready"
-                elif print_state != "printing":  # Not printing a file, toolhead moving
-                    new_state = "busy"
-                else:
-                    new_state = "printing"
+            elif self.data['print_stats']:
+                print_state = self.data['print_stats']['state'].lower()  # complete, error, paused, printing, standby
+                if print_state == "paused":
+                    new_state = "paused"
+                if self.data['idle_timeout']:
+                    idle_state = self.data['idle_timeout']['state'].lower()  # idle, printing, ready
+                    if idle_state == "printing":
+                        if print_state == "complete":
+                            new_state = "ready"
+                        elif print_state != "printing":  # Not printing a file, toolhead moving
+                            new_state = "busy"
+                        else:
+                            new_state = "printing"
 
             if new_state != "busy":
                 self.change_state(new_state)
@@ -257,12 +261,15 @@ class Printer:
                     "count": len(self.get_gcode_macros())
                 },
                 "idle_timeout": self.get_stat("idle_timeout").copy(),
-                "pause_resume": self.get_stat("pause_resume").copy(),
+                "pause_resume": {
+                    "is_paused": True if self.state == "paused" else False
+                },
                 "power_devices": {
                     "count": len(self.get_power_devices())
                 },
                 "probe": self.config_section_exists("probe"),
-                "firmware_retraction": self.config_section_exists("firmware_retraction")
+                "firmware_retraction": self.config_section_exists("firmware_retraction"),
+                "input_shaper": self.config_section_exists("input_shaper")
             }
         }
 
