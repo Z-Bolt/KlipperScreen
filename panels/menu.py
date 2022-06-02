@@ -21,18 +21,14 @@ class MenuPanel(ScreenPanel):
 
         self.grid = self._gtk.HomogeneousGrid()
 
-        scroll = Gtk.ScrolledWindow()
-        scroll.set_property("overlay-scrolling", False)
-        scroll.set_hexpand(True)
-        scroll.set_vexpand(True)
+        scroll = self._gtk.ScrolledWindow()
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scroll.add(self.grid)
 
         self.content.add(scroll)
 
     def activate(self):
-        if not self.j2_data:
-            self.j2_data = self._printer.get_printer_status_data()
+        self.j2_data = self._printer.get_printer_status_data()
         self.j2_data.update({
             'moonraker_connected': self._screen._ws.is_connected()
         })
@@ -96,8 +92,11 @@ class MenuPanel(ScreenPanel):
         if enable is False:
             return False
 
-        if not self.j2_data:
-            self.j2_data = self._printer.get_printer_status_data()
+        if enable == "{{ moonraker_connected }}":
+            logging.info("moonraker is_connected %s", self._screen._ws.is_connected())
+            return self._screen._ws.is_connected()
+
+        self.j2_data = self._printer.get_printer_status_data()
         try:
             logging.debug("Template: '%s'" % enable)
             logging.debug("Data: %s" % self.j2_data)
