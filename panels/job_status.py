@@ -420,7 +420,7 @@ class JobStatusPanel(ScreenPanel):
             self.labels['fan'].set_text("%3d%%" % self.fan)
 
         self.state_check()
-        if self.state not in ["printing", "paused"]:
+        if self.state in ["cancelling", "cancelled", "complete", "error"]:
             return
 
         if ps['filename'] and (ps['filename'] != self.filename):
