@@ -63,12 +63,6 @@ class TemperaturePanel(ScreenPanel):
         self.labels["decrease"].connect("clicked", self.change_target_temp, "-")
         self.labels["npad"] = self._gtk.ButtonImage("hashtag", _("Number Pad"), "color2")
         self.labels["npad"].connect("clicked", self.show_numpad)
-        self.labels["extr"] = self._gtk.ButtonImage("filament", _("Extrude"), "color4")
-        self.labels["extr"].connect("clicked", self.menu_item_clicked, "extrude",{
-            "name":  _('Extrude'),
-            "panel": "extrude"
-            
-            })
 
         tempgrid = Gtk.Grid()
         j = 0
@@ -97,7 +91,6 @@ class TemperaturePanel(ScreenPanel):
         self.labels["control_grid"].attach(self.labels["increase"], 3, 0, 1, 1)
         self.labels["control_grid"].attach(self.labels["decrease"], 3, 1, 1, 1)
         self.labels["control_grid"].attach(self.labels["npad"], 3, 2, 1, 1)
-        self.labels["control_grid"].attach(self.labels["extr"], 3, 3, 1, 1)
 
         grid.attach(eq_grid, 0, 0, 1, 1)
         grid.attach(self.labels["control_grid"], 1, 0, 1, 1)
