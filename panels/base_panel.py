@@ -2,7 +2,6 @@
 import datetime
 import gi
 import logging
-import os
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import GLib, Gtk, Pango
@@ -10,10 +9,10 @@ from jinja2 import Environment
 
 from ks_includes.screen_panel import ScreenPanel
 
+
 class BasePanel(ScreenPanel):
     def __init__(self, screen, title, back=True, action_bar=True, printer_name=True):
         super().__init__(screen, title, back, action_bar, printer_name)
-        _ = self.lang.gettext
         self.current_panel = None
         self.time_min = -1
         self.time_format = self._config.get_main_config_option("24htime")
@@ -40,7 +39,6 @@ class BasePanel(ScreenPanel):
         self.control['back'].connect("clicked", self.back)
         self.control['home'] = self._gtk.ButtonImage('main', None, None, 1)
         self.control['home'].connect("clicked", self.menu_return, True)
-        
 
         if len(self._config.get_printers()) > 1:
             self.control['printer_select'] = self._gtk.ButtonImage('shuffle', None, None, 1)
@@ -57,7 +55,6 @@ class BasePanel(ScreenPanel):
         _ = self.lang.gettext
         self.control['shutdown'] = self._gtk.ButtonImage('shutdown', None, None, 1)
         self.control['shutdown'].connect ( "clicked", self._screen._confirm_test, _("Are you sure you wish to shutdown the system?"))
-        # self.control['shutdown'].connect ( "clicked", self.shutdown)
         self.control['wifi'] = self._gtk.ButtonImage('network', None, None, 1)
         self.control['wifi'].connect("clicked", self.menu_item_clicked, "network",{
                 "name": _('Network'),
@@ -68,9 +65,9 @@ class BasePanel(ScreenPanel):
             'macro_shortcut': 2,
             'printer_select': 2
         }
-        button_range = 4
+        button_range = 3
         if len(self._config.get_printers()) > 1:
-            self.locations['macro_shortcut'] = 4
+            self.locations['macro_shortcut'] = 3
             if self._config.get_main_config_option('side_macro_shortcut') == "True":
                 button_range = 4
 
@@ -91,7 +88,7 @@ class BasePanel(ScreenPanel):
         if self._screen.vertical_mode:
             self.control_grid.attach(self.control['wifi'], 3, 0, 1, 1)
         else:
-            self.control_grid.attach(self.control['wifi'], 0, 3, 1, 1)               
+            self.control_grid.attach(self.control['wifi'], 0, 3, 1, 1)     
 
         try:
             env = Environment(extensions=["jinja2.ext.i18n"])
@@ -105,7 +102,6 @@ class BasePanel(ScreenPanel):
         self.titlelbl.set_hexpand(True)
         self.titlelbl.set_vexpand(True)
         self.titlelbl.set_halign(Gtk.Align.CENTER)
-        self.titlelbl.set_ellipsize(True)
         self.titlelbl.set_ellipsize(Pango.EllipsizeMode.END)
         self.set_title(title)
 
@@ -149,7 +145,6 @@ class BasePanel(ScreenPanel):
             self.layout.put(self.titlebar, action_bar_width, 0)
             self.layout.put(self.content, action_bar_width + self.hmargin, self.title_spacing)
 
-
     def initialize(self, panel_name):
         self.update_time()
         return
@@ -158,14 +153,13 @@ class BasePanel(ScreenPanel):
         for child in self.control['temp_box'].get_children():
             self.control['temp_box'].remove(child)
 
-        if (not show or self._screen.printer.get_temp_store_devices() is None):
+        if not show or self._screen.printer.get_temp_store_devices() is None:
             return
 
         for device in self._screen.printer.get_temp_store_devices():
             logging.info(device)
             self.labels[device + '_box'] = Gtk.Box(spacing=0)
             self.labels[device] = Gtk.Label(label="100º")
-            self.labels[device].set_ellipsize(True)
             self.labels[device].set_ellipsize(Pango.EllipsizeMode.START)
             if device.startswith("extruder"):
                 if self._screen.printer.extrudercount > 1:
@@ -178,7 +172,7 @@ class BasePanel(ScreenPanel):
                 self.labels[device + '_box'].pack_start(ext_img, True, True, 3)
             elif device.startswith("heater_bed"):
                 bed_img = self._gtk.Image("bed", .5)
-                self.labels[device + '_box'].pack_start(bed_img, True, True, 3, )
+                self.labels[device + '_box'].pack_start(bed_img, True, True, 3)
             elif device.startswith("temperature_fan"):
                 fan_img = self._gtk.Image("fan", .5)
                 self.labels[device + '_box'].pack_start(fan_img, True, True, 3)
@@ -206,8 +200,6 @@ class BasePanel(ScreenPanel):
         if self._screen.printer.has_heated_bed():
             self.control['temp_box'].pack_start(self.labels['heater_bed_box'], True, True, 3)
             n += 1
-
-            
 
         # Options in the config have priority
         printer_cfg = self._config.get_printer_config(self._screen.connected_printer)
@@ -290,7 +282,6 @@ class BasePanel(ScreenPanel):
                 self.control['temp_box'].pack_start(self.labels["%s_box" % self.current_extruder], True, True, 3)
                 self.control['temp_box'].reorder_child(self.labels["%s_box" % self.current_extruder], 0)
                 self.control['temp_box'].show_all()
-
 
     def remove(self, widget):
         self.content.remove(widget)

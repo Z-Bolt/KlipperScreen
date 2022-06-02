@@ -142,9 +142,6 @@ msgstr ""
 msgid "Decrease"
 msgstr ""
 
-msgid "Disconnected"
-msgstr ""
-
 msgid "Delete"
 msgstr ""
 
@@ -280,7 +277,8 @@ msgid "Invert Z"
 msgstr ""
 
 msgid ""
-"Klipper Restart"
+"Klipper\n"
+"Restart"
 msgstr ""
 
 msgid "Klipper has disconnected"
@@ -325,7 +323,7 @@ msgstr ""
 msgid "Main Menu"
 msgstr ""
 
-msgid "Max Accelation"
+msgid "Max Acceleration"
 msgstr ""
 
 msgid "Max Acceleration to Deceleration"
@@ -356,9 +354,6 @@ msgid "Name"
 msgstr ""
 
 msgid "Network"
-msgstr ""
-
-msgid "Number Pad"
 msgstr ""
 
 msgid "Nothing selected"
@@ -508,9 +503,6 @@ msgid "Speed +"
 msgstr ""
 
 msgid "Speed -"
-msgstr ""
-
-msgid "Splash Screen"
 msgstr ""
 
 msgid "Square Corner Velocity"

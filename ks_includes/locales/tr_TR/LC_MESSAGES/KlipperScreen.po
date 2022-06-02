@@ -8,10 +8,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-03-31 11:25-0300\n"
-"PO-Revision-Date: 2022-04-15 17:25+0200\n"
+"PO-Revision-Date: 2022-05-06 21:48+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: sv_SE\n"
+"Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,89 +20,86 @@ msgstr ""
 
 #, python-format
 msgid "%s will be updated to version"
-msgstr "%s uppdateras till version"
+msgstr "%s sürüme güncellenecektir"
 
 msgid "(default)"
-msgstr "(standard)"
+msgstr "(varsayılan)"
 
 msgid "24 Hour Time"
-msgstr "24 timmars tid"
+msgstr "24 Saat Zaman"
 
 msgid "A FIRMWARE_RESTART may fix the issue."
-msgstr "En FIRMWARE_RESTART kan lösa problemet."
+msgstr "Bir FIRMWARE_RESTART sorunu çözebilir."
 
 msgid "Abort"
-msgstr "Avbryt"
+msgstr "İptal et"
 
 msgid "Accept"
-msgstr "Godkänn"
+msgstr "Kabul et"
 
 msgid "Actions"
-msgstr "Åtgärder"
+msgstr "Eylemler"
 
 msgid "Add Printer"
-msgstr "Lägg till skrivare"
+msgstr "Yazıcı Ekle"
 
 msgid "Add bed mesh profile"
-msgstr "Lägg till mesh profil"
+msgstr "Yatak Örgüsü profili ekle"
 
 msgid "Are you sure you want to run Emergency Stop?"
-msgstr "Är du säker på att du vill köra Nödstopp?"
+msgstr "Acil Durdurma'yı çalıştırmak istediğinizden emin misiniz?"
 
 msgid "Are you sure you wish to cancel this print?"
-msgstr "Är du säker på att du vill avbryta denna utskrift?"
+msgstr "Bu baskıyı iptal etmek istediğinizden emin misiniz?"
 
 msgid "Are you sure you wish to disable motors?"
-msgstr "Är du säker på att du vill inaktivera motorer?"
+msgstr "Motorları devre dışı bırakmak istediğinizden emin misiniz?"
 
 msgid "Are you sure you wish to reboot the system?"
-msgstr "Är du säker på att du vill starta om systemet?"
+msgstr "Sistemi yeniden başlatmak istediğinizden emin misiniz?"
 
 msgid "Are you sure you wish to shutdown the system?"
-msgstr "Är du säker på att du vill stänga av systemet?"
+msgstr "Sistemi kapatmak istediğinizden emin misiniz?"
 
 msgid "Auto"
-msgstr "Automatisk"
+msgstr "Otomatik"
 
 msgid "Auto-scroll"
-msgstr "Auto-scrolla"
+msgstr "Otomatik kaydırma"
 
-#, fuzzy
 msgid "Bed Level"
-msgstr "Bed Level"
+msgstr "Yatak Ayarı"
 
-#, fuzzy
 msgid "Bed Mesh"
-msgstr "Bed Mesh"
+msgstr "Yatak Örgüsü"
 
 msgid "Bltouch found applied offset"
-msgstr "Bltouch hittade tillämpad offset"
+msgstr "Bltouch uygulanmış ofseti buldu"
 
 msgid "Calibrate"
-msgstr "Kalibrera"
+msgstr "Kalibre et"
 
 msgid "Calibrated, save configuration to make it permanent"
-msgstr "Kalibrerad, spara konfiguration för att göra den permanent"
+msgstr "Kalibre edildi, kalıcı hale getirmek için yapılandırmayı kaydedin"
 
 msgid "Can't set above the maximum:"
-msgstr "Kan inte ställa in över maxgränsen:"
+msgstr "Maksimumun üzerine ayarlanamaz:"
 
 msgid "Cancel"
-msgstr "Avbryt"
+msgstr "İptal"
 
 msgid "Cancel Print"
-msgstr "Avbryt utskrift"
+msgstr "Baskıyı iptal et"
 
 msgid "Cancelled"
-msgstr "Avbruten"
+msgstr "İptal edildi"
 
 msgid "Cancelling"
-msgstr "Avbryter"
+msgstr "İptal ediliyor"
 
 msgid "Cannot connect to Moonraker"
-msgstr "Kan inte ansluta till Moonraker"
+msgstr "Moonraker'a bağlanılamıyor"
 
-#, fuzzy
 msgid "Channel"
 msgstr "Kanal"
 
@@ -110,507 +107,480 @@ msgid ""
 "Check /tmp/KlipperScreen.log for more information.\n"
 "Please submit an issue on GitHub for help."
 msgstr ""
-"Kontrollera /tmp/KlipperScreen.log för mer information.\n"
-"Skicka in ett problem på GitHub för hjälp."
+"Daha fazla bilgi için /tmp/KlipperScreen.log'a bakın.\n"
+"Lütfen yardım için GitHub'da bir sorun gönderin."
 
 msgid "Close"
-msgstr "Stäng"
+msgstr "Kapat"
 
 msgid "Complete"
-msgstr "Färdig"
+msgstr "Tamamlandı"
 
 msgid "Configuration"
-msgstr "Konfiguration"
+msgstr "Yapılandırma"
 
 msgid "Confirm Emergency Stop"
-msgstr "Bekräfta nödstopp"
+msgstr "Acil Durdurmayı Onaylayın"
 
 msgid "Connected"
-msgstr "Ansluten"
+msgstr "Bağlandı"
 
 #, python-format
 msgid "Connecting to %s"
-msgstr "Ansluter till %s"
+msgstr "%s'e Bağlanılıyor"
 
 msgid "Console"
 msgstr "Konsol"
 
 msgid "Continue"
-msgstr "Fortsätt"
+msgstr "Devam et"
 
 msgid "Cooldown"
-msgstr "Nedkylning"
+msgstr "Soğutma"
 
 msgid "Date"
-msgstr "Datum"
+msgstr "Tarih"
 
 msgid "Decrease"
-msgstr "Minska"
+msgstr "Azalt"
 
 msgid "Delete"
-msgstr "Radera"
+msgstr "Sil"
 
 msgid "Deselect"
-msgstr "Avmarkera"
+msgstr "Seçimi kaldır"
 
 msgid "Disable Motors"
-msgstr "Inaktivera motorer"
+msgstr "Motorları Devre Dışı Bırak"
 
 msgid "Disable XY"
-msgstr "Inaktivera XY"
+msgstr "XY Devre dışı bırak"
 
 msgid "Displayed Macros"
-msgstr "Makron visas"
+msgstr "Görüntülenen Makrolar"
 
 msgid "Distance (mm)"
-msgstr "Avstånd (mm)"
+msgstr "Uzaklık (mm)"
 
 #, python-format
 msgid "Do you want to recover %s?"
-msgstr "Vill du återställa %s?"
+msgstr "%s Kurtarmak istiyor musunuz?"
 
 msgid "Elapsed:"
-msgstr "Förfluten:"
+msgstr "Geçen:"
 
 msgid "Error"
-msgstr "Fel"
+msgstr "Hata"
 
-#, fuzzy
 msgid "Estimated Time Method"
-msgstr "Uppskattad tid metod"
+msgstr "Tahmini Zaman Metodu"
 
 msgid "Extrude"
-msgstr "Extrudera"
+msgstr "Ekstrüzyon"
 
 msgid "Extrusion +"
-msgstr "Extrudering +"
+msgstr "Ekstrüzyon +"
 
 msgid "Extrusion -"
-msgstr "Extrudering -"
+msgstr "Ekstrüzyon -"
 
 msgid "Failed, adjust position first"
-msgstr "Misslyckades, justera positionen först"
+msgstr "Başarısız, önce konumu ayarlayın"
 
 msgid "Fan"
-msgstr "Fläkt"
+msgstr "Fan"
 
-#, fuzzy
 msgid "Filament Used"
-msgstr "Filament använt"
+msgstr "Kullanılan Filament"
 
 msgid "File"
-msgstr "Fil"
+msgstr "Dosya"
 
 msgid "Fine Tuning"
-msgstr "Finjustering"
+msgstr "İnce Ayar"
 
 msgid "Finish"
-msgstr "Slutför"
+msgstr "Bitir"
 
 msgid ""
 "Firmware\n"
 "Restart"
 msgstr ""
 "Firmware\n"
-"Omstart"
+"Yeniden Başlat"
 
 msgid "Font Size"
-msgstr "Textstorlek"
+msgstr "Yazı boyutu"
 
 msgid ""
 "Full\n"
 "Update"
 msgstr ""
-"Fullständig\n"
-"Uppdatering"
+"Tam\n"
+"Güncelleme"
 
 msgid "Go Back"
-msgstr "Gå tillbaka"
+msgstr "Geri git"
 
 msgid "Hidden"
-msgstr "Dold"
+msgstr "Gizli"
 
 msgid "Hide"
-msgstr "Dölj"
+msgstr "Gizle"
 
 msgid "Hide sensors in Temp."
-msgstr "Dölj sensorer i Temp."
+msgstr "Sıcaklıktaki sensörleri gizleyin."
 
 msgid "Home"
-msgstr "Hem"
+msgstr "Ana Ekran"
 
 msgid "Home All"
-msgstr "Hem Alla"
+msgstr "Eksenleri Sıfırla"
 
 msgid "Home X"
-msgstr "Hem X"
+msgstr "X Sıfırla"
 
 msgid "Home XY"
-msgstr "Hem XY"
+msgstr "XY Sıfırla"
 
 msgid "Home Y"
-msgstr "Hem Y"
+msgstr "Y Sıfırla"
 
 msgid "Home Z"
-msgstr "Hem Z"
+msgstr "Z  Sıfırla"
 
-#, fuzzy
 msgid "Homing"
-msgstr "Homing"
+msgstr "Eksen Sıfırlama"
 
 msgid "Hostname"
-msgstr "Värdnamn"
+msgstr "Ana bilgisayar adı"
 
 msgid "Icon Theme"
-msgstr "Ikon tema"
+msgstr "Simge Teması"
 
 msgid "Increase"
-msgstr "Öka"
+msgstr "Artır"
 
 msgid "Initializing"
-msgstr "Initierar"
+msgstr "Başlatılıyor"
 
 msgid "Initializing printer..."
-msgstr "Initierar skrivaren..."
+msgstr "Yazıcı başlatılıyor..."
 
 msgid "Interface"
-msgstr "Gränssnitt"
+msgstr "Arayüz"
 
 msgid "Invalid"
-msgstr "Ogiltig"
+msgstr "Geçersiz"
 
 msgid "Invert X"
-msgstr "Invertera X"
+msgstr "X Ters çevir"
 
 msgid "Invert Y"
-msgstr "Invertera Y"
+msgstr "Y Ters çevir"
 
 msgid "Invert Z"
-msgstr "Invertera Z"
+msgstr "Z Ters çevir"
 
 msgid ""
 "Klipper\n"
 "Restart"
 msgstr ""
 "Klipper\n"
-"Omstart"
+"Yeniden başlat"
 
-#, fuzzy
 msgid "Klipper has disconnected"
-msgstr "Klipper har kopplat från"
+msgstr "Klipper bağlantısı kesildi"
 
 msgid "Klipper has encountered an error."
-msgstr "Klipper har stött på ett fel."
+msgstr "Klipper bir hatayla karşılaştı."
 
 msgid "Klipper has shutdown"
-msgstr "Klipper har stängts av"
+msgstr "Klipper Kapandı"
 
 msgid "Klipper is attempting to start"
-msgstr "Klipper försöker starta"
+msgstr "Klipper başlatılmaya çalışılıyor"
 
 msgid "Klipper will reboot"
-msgstr "Klipper kommer att starta om"
+msgstr "Klipper yeniden başlayacak"
 
 msgid "Language"
-msgstr "Språk"
+msgstr "Dil"
 
 msgid "Large"
-msgstr "Stor"
+msgstr "Büyük"
 
 msgid "Left:"
-msgstr "Återstående:"
+msgstr "Kalan:"
 
 msgid "Limits"
-msgstr "Begränsningar"
+msgstr "Limitler"
 
 msgid "Load"
-msgstr "Ladda"
+msgstr "Yükle"
 
 msgid "Lower Nozzle"
-msgstr "Sänk munstycket"
+msgstr "Nozzle düşür"
 
 msgid "Macro shortcut on sidebar"
-msgstr "Makro genväg på sidofältet"
+msgstr "Kenar çubuğunda makro kısayolu"
 
 msgid "Macros"
-msgstr "Makron"
+msgstr "Makrolar"
 
 msgid "Main Menu"
-msgstr "Huvudmeny"
+msgstr "Ana Menü"
 
-#, fuzzy
 msgid "Max Accelation"
-msgstr "Maximal acceleration"
+msgstr "Maksimum Hızlanma"
 
-#, fuzzy
 msgid "Max Acceleration to Deceleration"
-msgstr "Maximal acceleration till inbromsning"
+msgstr "Maksimum Hızlanma ve Yavaşlama"
 
-#, fuzzy
 msgid "Max Velocity"
-msgstr "Maximal hastighet"
+msgstr "Maksimum Hız"
 
 msgid "Medium"
-msgstr "Medium"
+msgstr "Orta"
 
 msgid "Menu"
-msgstr "Meny"
+msgstr "Menü"
 
 msgid "Modified"
-msgstr "Ändrad"
+msgstr "Değiştirilmiş"
 
 msgid "Moonraker: connected"
-msgstr "Moonraker: ansluten"
+msgstr "Moonraker: bağlandı"
 
 msgid "Move"
-msgstr "Flytta"
+msgstr "Hareket"
 
 msgid "Move Distance (mm)"
-msgstr "Förflyttningsavstånd (mm)"
+msgstr "Hareket Mesafesi (mm)"
 
 msgid "Name"
-msgstr "Namn"
+msgstr "İsim"
 
 msgid "Network"
-msgstr "Nätverk"
+msgstr "Ağ"
 
 msgid "Nothing selected"
-msgstr "Inget valt"
+msgstr "Hiçbir şey seçilmedi"
 
 msgid "Off"
-msgstr "Avstängd"
+msgstr "Kapa"
 
-#, fuzzy, python-format
+#, python-format
 msgid "Outdated by %d"
-msgstr "Föråldrad med %d"
+msgstr "Güncelliğini yitiren %d"
 
 msgid "PSK for"
-msgstr "PSK för"
+msgstr "PSK için"
 
 msgid "Package will be updated"
 msgid_plural "Packages will be updated"
-msgstr[0] "Paketet kommer att uppdateras"
-msgstr[1] "Paketen kommer att uppdateras"
+msgstr[0] "Paket yükseltilecek"
+msgstr[1] "Paketler yükseltilecek"
 
 msgid "Password saved"
-msgstr "Lösenordet har sparats"
+msgstr "Şifre kaydedildi"
 
 msgid "Pause"
-msgstr "Pausa"
+msgstr "Duraklat"
 
 msgid "Paused"
-msgstr "Pausad"
+msgstr "Duraklatıldı"
 
 msgid "Perform a full upgrade?"
-msgstr "Utför en fullständig uppgradering?"
+msgstr "Tam yükseltme yap?"
 
 msgid "Please recompile and flash the micro-controller."
-msgstr "Vänligen kompilera om och flasha mikrokontrollern."
+msgstr "Lütfen mikro denetleyiciyi yeniden derleyin ve flaşlayın."
 
 msgid "Power"
-msgstr "Ström"
+msgstr "Güç"
 
 msgid "Power On Printer"
-msgstr "Slå på skrivaren"
+msgstr "Yazıcıya Güç Ver (aç)"
 
 msgid "Print"
-msgstr "Skriv ut"
+msgstr "Yazdır"
 
 msgid "Print Control"
-msgstr "Utskriftskontroll"
+msgstr "Yazdırma Kontrolü"
 
-#, fuzzy
 msgid "Print Time"
-msgstr "Tid för utskrift"
+msgstr "Yazdırma Süresi"
 
-#, fuzzy
 msgid "Printer Connections"
-msgstr "Skrivaranslutningar"
+msgstr "Yazıcı Bağlantıları"
 
 msgid "Printing"
-msgstr "Skriver ut"
+msgstr "Yazdırılıyor"
 
-#, fuzzy
 msgid "Probe found applied offset"
-msgstr "Sond hittat tillämpad offset"
+msgstr "Prob uygulanmış ofset bulundu"
 
 msgid "Profile Name:"
-msgstr "Profilens namn:"
+msgstr "Profil ismi:"
 
-#, fuzzy
 msgid "Quad Gantry Level"
-msgstr "Quad Gantry nivå"
+msgstr "Dörtlü Köprü Seviyesi"
 
-#, fuzzy
 msgid "Raise Nozzle"
-msgstr "Höj munstycket"
+msgstr "Nozzle yükselt"
 
-#, fuzzy
 msgid "Recover Hard"
-msgstr "Återhämta Hårt"
+msgstr "Zorla Kurtar"
 
-#, fuzzy
 msgid "Recover Soft"
-msgstr "Återhämta Mjukt"
+msgstr "Yumuşak Kurtar"
 
 msgid "Reference"
-msgstr "Referens"
+msgstr "Referans"
 
 msgid "Restart"
-msgstr "Starta om"
+msgstr "Yeniden Başlat"
 
 msgid "Resume"
-msgstr "Återuppta"
+msgstr "Devam Et"
 
-#, fuzzy
 msgid "Retract"
-msgstr "Dra tillbaka"
+msgstr "Geri çek"
 
-#, fuzzy, python-format
+#, python-format
 msgid "Retry #%s"
-msgstr "Försök #%s"
+msgstr "Yeniden Dene #%s"
 
 msgid "Save"
-msgstr "Spara"
+msgstr "Kaydet"
 
 msgid "Save Config"
-msgstr "Spara konfiguration"
+msgstr "Yapılandırma Kayıt"
 
 msgid "Save configuration"
-msgstr "Spara konfigurationen"
+msgstr "Yapılandırmayı kaydet"
 
-#, fuzzy
 msgid "Screen DPMS"
-msgstr "DPMS för skärm"
+msgstr "Ekran DPMS"
 
 msgid "Screen Power Off Time"
-msgstr "Avstängningstid för skärmen"
+msgstr "Ekran kapatma zamanı"
 
-#, fuzzy
 msgid "Screws Adjust"
-msgstr "Justera skruvar"
+msgstr "Vida Ayarı"
 
 msgid "Select"
-msgstr "Välj"
+msgstr "Seç"
 
 msgid "Send"
-msgstr "Skicka"
+msgstr "Gönder"
 
 #, python-format
 msgid "Sending Power ON signal to: %s"
-msgstr "Skickar ström PÅ-signal till: %s"
+msgstr "Güç AÇ sinyalı gönderilen: %s"
 
-#, fuzzy
 msgid "Set Temp"
-msgstr "Ställ in temp"
+msgstr "Sıcaklık Ayarla"
 
 msgid "Settings"
-msgstr "Inställningar"
+msgstr "Ayarlar"
 
 msgid "Show"
-msgstr "Visa"
+msgstr "Göster"
 
 msgid "Size"
-msgstr "Storlek"
+msgstr "Boyut"
 
-#, fuzzy
 msgid "Slicer"
-msgstr "Slicer"
+msgstr "Dilimleme"
 
-#, fuzzy
 msgid "Slicer Time correction (%)"
-msgstr "Slicer Tidskorrigering (%)"
+msgstr "Dilimleme Zamanı doğrulama (%)"
 
 msgid "Small"
-msgstr "Liten"
+msgstr "Küçük"
 
 msgid "Sort by: "
-msgstr "Sortera efter: "
+msgstr "Sırala: "
 
 msgid "Speed (mm/s)"
-msgstr "Hastighet (mm/s)"
+msgstr "Hız  (mm/s)"
 
 msgid "Speed +"
-msgstr "Hastighet +"
+msgstr "Hız +"
 
 msgid "Speed -"
-msgstr "Hastighet -"
+msgstr "Hız -"
 
-#, fuzzy
 msgid "Square Corner Velocity"
-msgstr "Fyrkantig hörnhastighet"
+msgstr "Kare Köşe Hızı"
 
 msgid "Start"
-msgstr "Starta"
+msgstr "Başlat"
 
-#, fuzzy
 msgid "Starting WiFi Association"
-msgstr "Startar WiFi Association"
+msgstr "WiFi Bağlantısı başlatılıyor"
 
-#, fuzzy
 msgid "Starting recovery for"
-msgstr "Startar återhämtning för"
+msgstr "Kurtarma başlatılıyor"
 
-#, fuzzy
 msgid "Starting update for"
-msgstr "Startar uppdatering för"
+msgstr "Güncelleme başlatılıyor"
 
 msgid "System"
-msgstr "System"
+msgstr "Sistem"
 
 msgid ""
 "System\n"
 "Restart"
 msgstr ""
-"System\n"
-"Omstart"
+"Sistem\n"
+"Yeniden Başlat"
 
 msgid ""
 "System\n"
 "Shutdown"
 msgstr ""
-"System\n"
-"Avstängning"
+"Sistem\n"
+"Kapat"
 
 msgid "Temp (°C)"
-msgstr "Temperatur (°C)"
+msgstr "Sıcaklık (°C)"
 
 msgid "Temperature"
-msgstr "Temperatur"
+msgstr "Sıcaklık"
 
 #, python-format
 msgid "To apply %s KlipperScreen needs to be restarted"
-msgstr "För att tillämpa %s måste KlipperScreen startas om"
+msgstr "Uygulamak için %s KlipperScreen yeniden başlatılmalı"
 
 msgid "Tool"
-msgstr "Verktyg"
+msgstr "Araç"
 
-#, fuzzy
 msgid "Total:"
-msgstr "Sammanlagt:"
+msgstr "Toplam:"
 
 msgid "Unknown Heater"
-msgstr "Okänt värmeelement"
+msgstr "Bilinmeyen Isıtıcı"
 
-#, fuzzy
 msgid "Unload"
-msgstr "Lasta av"
+msgstr "Boşalt"
 
 msgid "Up To Date"
-msgstr "Aktuellt"
+msgstr "Güncel"
 
 msgid "Update"
-msgstr "Uppdatera"
+msgstr "Güncelle"
 
 msgid "Updating"
-msgstr "Uppdaterar"
+msgstr "Yükleniyor"
 
 msgid "Uploaded"
-msgstr "Uppladdad"
+msgstr "Yüklendi"
 
-#, fuzzy
 msgid "View Mesh"
-msgstr "Visa Mesh"
+msgstr "Örgüyü Görüntüle"
 
 msgid "X+"
 msgstr "X+"
@@ -619,7 +589,7 @@ msgid "X-"
 msgstr "X-"
 
 msgid "XY Move Speed (mm/s)"
-msgstr "XY rörelsehastighet (mm/s)"
+msgstr "XY Hareket hızı (mm/s)"
 
 msgid "Y+"
 msgstr "Y+"
@@ -628,17 +598,16 @@ msgid "Y-"
 msgstr "Y-"
 
 msgid "Z Calibrate"
-msgstr "Z Kalibrering"
+msgstr "Z Kalibrasyonu"
 
 msgid "Z Move Speed (mm/s)"
-msgstr "Z rörelsehastighet (mm/s)"
+msgstr "Z Hareket hızı (mm/s)"
 
 msgid "Z Position"
-msgstr "Z Position"
+msgstr "Z Pozisyonu"
 
-#, fuzzy
 msgid "Z Tilt"
-msgstr "Z Lutning"
+msgstr "Z Eğim"
 
 msgid "Z+"
 msgstr "Z+"
@@ -646,7 +615,6 @@ msgstr "Z+"
 msgid "Z-"
 msgstr "Z-"
 
-#, fuzzy
 msgid "commit"
 msgid_plural "commits"
 msgstr[0] "commit"
@@ -657,11 +625,11 @@ msgstr "dBm"
 
 msgid "hour"
 msgid_plural "hours"
-msgstr[0] "timme"
-msgstr[1] "timmar"
+msgstr[0] "saat"
+msgstr[1] "saatler"
 
 msgid "minutes"
-msgstr "minuter"
+msgstr "dakika"
 
 msgid "mm"
 msgstr "mm"
