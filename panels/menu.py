@@ -21,7 +21,10 @@ class MenuPanel(ScreenPanel):
 
         self.grid = self._gtk.HomogeneousGrid()
 
-        scroll = self._gtk.ScrolledWindow()
+        scroll = Gtk.ScrolledWindow()
+        scroll.set_property("overlay-scrolling", False)
+        scroll.set_hexpand(True)
+        scroll.set_vexpand(True)
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scroll.add(self.grid)
 
