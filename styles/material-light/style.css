@@ -90,8 +90,6 @@ combobox box button {
 
 switch {
     background-color: #BDBDBD;
-    border-radius: 2em;
-    border-color: #BDBDBD
 }
 
 switch:checked {
@@ -99,7 +97,7 @@ switch:checked {
 }
 
 switch slider {
-    border-color: #BDBDBD;
+    border: .1em solid #BDBDBD;
 }
 
 entry {
@@ -206,11 +204,14 @@ textview .time {
 }
 
 .message_popup {
-    background-color: #EF9A9A;
     border-bottom-color: #e2e2e2;
 }
 
-.message_popup button {
+.message_popup_echo, .message_popup_echo button {
+    background-color: #a1ef9a;
+}
+
+.message_popup_error, .message_popup_error button {
     background-color: #EF9A9A;
 }
 

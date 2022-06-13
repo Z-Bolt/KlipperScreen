@@ -72,7 +72,7 @@ class PreheatPanel(ScreenPanel):
         i += 1
         temperature = self._gtk.ButtonImage('heat-up', _('Temperature'), "color%d" % ((i % 4)+1))
         temperature.connect("clicked", self.menu_item_clicked, "temperature", {
-            "name": "Temperature",
+            "name": _('Temperature'),
             "panel": "temperature"
         })
         self.labels["control_grid"].attach(temperature, i % 2, int(i/2), 1, 1)

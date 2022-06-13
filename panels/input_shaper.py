@@ -4,7 +4,9 @@ import re
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Pango
 
+from ks_includes.KlippyGcodes import KlippyGcodes
 from ks_includes.screen_panel import ScreenPanel
+
 
 def create_panel(*args):
     return InputShaperPanel(*args)
@@ -12,136 +14,117 @@ def create_panel(*args):
 
 # X and Y frequencies
 XY_FREQ = [
-    {'name': 'Частота для X', 'config': 'shaper_freq_x', 'min': 0, 'max': 133},
-    {'name': 'Частота для Y', 'config': 'shaper_freq_y', 'min': 0, 'max': 133},
+    {'name': 'X', 'config': 'shaper_freq_x', 'min': 0, 'max': 133},
+    {'name': 'Y', 'config': 'shaper_freq_y', 'min': 0, 'max': 133},
 ]
 SHAPERS = ['zv', 'mzv', 'zvd', 'ei', '2hump_ei', '3hump_ei']
+
 
 class InputShaperPanel(ScreenPanel):
     def initialize(self, panel_name):
         _ = self.lang.gettext
-        self.CALIBRATE_TEXT = self.lang.gettext('Запустить автокалибровку')
-
         self.has_sensor = False
+        self.calibrating_axis = None
 
-        grid = self._gtk.HomogeneousGrid()
-        grid.set_row_homogeneous(False)
-        grid.set_vexpand(True)
-        grid.set_hexpand(True)
-        grid.get_style_context().add_class("input-shaper")
-        grid.set_column_spacing(20)
+        auto_calibration_label = Gtk.Label()
+        auto_calibration_label.set_markup('<big><b>Auto Calibration</b></big>')
+        auto_calibration_label.set_hexpand(True)
+
+        self.calibrate_btn = self._gtk.ButtonImage("move", _('Finding ADXL'), "color1", word_wrap=False)
+        self.calibrate_btn.connect("clicked", self.on_popover_clicked)
+        self.calibrate_btn.set_sensitive(False)
+
+        auto_grid = Gtk.Grid()
+        auto_grid.attach(auto_calibration_label, 0, 0, 1, 1)
+        auto_grid.attach(self.calibrate_btn, 1, 0, 1, 1)
+
+        manual_calibration_label = Gtk.Label()
+        manual_calibration_label.set_markup('<big><b>Manual Calibration</b></big>')
+        manual_calibration_label.set_vexpand(True)
+
+        disclaimer = Gtk.Label()
+        disclaimer.set_markup('<small>NOTE: Edit your printer.cfg to save manual calibration changes.</small>')
+        disclaimer.set_line_wrap(True)
+        disclaimer.set_halign(Gtk.Align.CENTER)
 
         input_grid = Gtk.Grid()
-        input_grid.set_vexpand(True)
+        input_grid.attach(manual_calibration_label, 0, 0, 3, 1)
+        input_grid.attach(disclaimer, 0, 1, 3, 1)
 
         self.freq_xy_adj = {}
         self.freq_xy_combo = {}
-
-        manual_calibration_label = Gtk.Label()
-        manual_calibration_label.set_markup('<big><b>Ручная калибровка</b></big>')
-        input_grid.attach(manual_calibration_label, 0, 0, 1, 1)
-
-        disclaimer = Gtk.Label()
-        disclaimer.set_markup('<small>NOTE: Ручная калибровка будет использоваться только во время работы в панели. Отредактируйте файл printer.cfg,'
-                              'чтобы сохранить изменения..</small>')
-        disclaimer.set_line_wrap(True)
-        disclaimer.set_hexpand(True)
-        disclaimer.set_vexpand(False)
-        disclaimer.set_halign(Gtk.Align.START)
-        input_grid.attach(disclaimer, 0, 1, 1, 1)
-
         for i, dim_freq in enumerate(XY_FREQ):
-            frame = Gtk.Frame()
-            frame.set_property("shadow-type", Gtk.ShadowType.NONE)
-            frame.get_style_context().add_class("frame-item")
-
-            labels = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-
-            name = Gtk.Label()
-            name.set_markup("<b>{}</b> (Hz)".format(dim_freq['name']))
-            name.set_hexpand(True)
-            name.set_vexpand(True)
-            name.set_halign(Gtk.Align.START)
-            name.set_valign(Gtk.Align.CENTER)
-            name.set_line_wrap(True)
+            axis_lbl = Gtk.Label()
+            axis_lbl.set_markup("<b>{}</b>".format(dim_freq['name']))
+            axis_lbl.set_hexpand(False)
+            axis_lbl.set_vexpand(True)
+            axis_lbl.set_halign(Gtk.Align.START)
+            axis_lbl.set_valign(Gtk.Align.CENTER)
+            axis_lbl.set_line_wrap(True)
 
             self.freq_xy_adj[dim_freq['config']] = Gtk.Adjustment(0, dim_freq['min'], dim_freq['max'], 0.1)
             scale = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL, adjustment=self.freq_xy_adj[dim_freq['config']])
             scale.set_digits(1)
             scale.set_hexpand(True)
+            scale.set_valign(Gtk.Align.END)
             scale.set_has_origin(True)
             scale.get_style_context().add_class("option_slider")
             scale.connect("button-release-event", self.set_opt_value, dim_freq['config'])
 
-            labels.add(name)
-            labels.add(scale)
-
-            shaper_grid = Gtk.Grid()
-            shaper_grid.set_vexpand(True)
-            name = Gtk.Label()
-            name.set_markup("<b>{}</b>".format(dim_freq['name'].replace('Частота', 'Тип коррекции')))
-            name.set_hexpand(True)
-            name.set_vexpand(True)
-            name.set_halign(Gtk.Align.START)
-            name.set_valign(Gtk.Align.CENTER)
-            name.set_line_wrap(True)
-            name.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
-            shaper_grid.attach(name, 0, 0, 1, 1)
             shaper_slug = dim_freq['config'].replace('_freq_', '_type_')
             self.freq_xy_combo[shaper_slug] = Gtk.ComboBoxText()
             for shaper in SHAPERS:
                 self.freq_xy_combo[shaper_slug].append(shaper, shaper)
                 self.freq_xy_combo[shaper_slug].set_active(0)
-            shaper_grid.attach(self.freq_xy_combo[shaper_slug], 1, 0, 1, 1)
-            labels.add(shaper_grid)
 
-            dev = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-            dev.set_hexpand(True)
-            dev.set_vexpand(False)
-            dev.add(labels)
-            frame.add(dev)
-            input_grid.attach(frame, 0, i + 2, 1, 1)
+            input_grid.attach(axis_lbl, 0, i + 2, 1, 1)
+            input_grid.attach(scale, 1, i + 2, 1, 1)
+            input_grid.attach(self.freq_xy_combo[shaper_slug], 2, i + 2, 1, 1)
 
-        grid.attach(input_grid, 0, 0, 1, 1)
-
-        auto_grid = Gtk.Grid()
-        auto_grid.set_vexpand(True)
-
-        auto_calibration_label = Gtk.Label()
-        auto_calibration_label.set_markup('<big><b>Автоматическая калибровка</b></big>')
-        auto_grid.attach(auto_calibration_label, 0, 0, 1, 1)
-
-        disclaimer = Gtk.Label('')
-        disclaimer.set_markup('<small>NOTE: После автокалибровки изменения сохранятся сами. Принтер будет перезагружен.</small>')
-        disclaimer.set_line_wrap(True)
-        disclaimer.set_hexpand(True)
-        disclaimer.set_vexpand(False)
-        disclaimer.set_halign(Gtk.Align.START)
-
-        auto_grid.attach(disclaimer, 0, 1, 1, 1)
-
-        self.calibrate_btn = self._gtk.ButtonImage("move", _('Поиск ADXL345'), "color1", word_wrap=False)
-        self.calibrate_btn.connect('clicked', self.start_calibration)
-        self.calibrate_btn.set_sensitive(False)
-        auto_grid.attach(self.calibrate_btn, 0, 2, 1, 1)
-
-        grid.attach(auto_grid, 1, 0, 1, 1)
-
-        self.status = Gtk.Label('Статус:')
+        self.status = Gtk.Label("")
         self.status.set_hexpand(True)
         self.status.set_vexpand(False)
         self.status.set_halign(Gtk.Align.START)
         self.status.set_ellipsize(Pango.EllipsizeMode.END)
-        self.status.set_max_width_chars(68)
-        self.status.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
 
-        grid.attach(self.status, 0, 2, 2, 1)
+        box = Gtk.VBox()
+        box.add(auto_grid)
+        box.add(input_grid)
+        box.add(self.status)
 
-        self.content.add(grid)
+        self.content.add(box)
 
-    def start_calibration(self, *_):
-        self._screen._ws.klippy.gcode_script('SHAPER_CALIBRATE HZ_PER_SEC=2')
-        self.calibrate_btn.set_label(self.lang.gettext('Осуществляется калибровка'))
+        pobox = Gtk.VBox()
+        test_x = self._gtk.Button(_("Measure X"))
+        test_x.connect("clicked", self.start_calibration, "x")
+        pobox.pack_start(test_x, True, True, 5)
+        test_y = self._gtk.Button(_("Measure Y"))
+        test_y.connect("clicked", self.start_calibration, "y")
+        pobox.pack_start(test_y, True, True, 5)
+        test_both = self._gtk.Button(_("Measure Both"))
+        test_both.connect("clicked", self.start_calibration, "both")
+        pobox.pack_start(test_both, True, True, 5)
+        self.labels['popover'] = Gtk.Popover()
+        self.labels['popover'].add(pobox)
+        self.labels['popover'].set_position(Gtk.PositionType.LEFT)
+
+    def on_popover_clicked(self, widget):
+        self.labels['popover'].set_relative_to(widget)
+        self.labels['popover'].show_all()
+
+    def start_calibration(self, widget, method):
+        self.labels['popover'].popdown()
+        if self._screen.printer.get_stat("toolhead", "homed_axes") != "xyz":
+            self._screen._ws.klippy.gcode_script(KlippyGcodes.HOME)
+        self.calibrating_axis = method
+        if method == "x":
+            self._screen._ws.klippy.gcode_script('SHAPER_CALIBRATE AXIS=X')
+        if method == "y":
+            self._screen._ws.klippy.gcode_script('SHAPER_CALIBRATE AXIS=Y')
+        if method == "both":
+            self._screen._ws.klippy.gcode_script('SHAPER_CALIBRATE')
+
+        self.calibrate_btn.set_label(self.lang.gettext('Calibrating...'))
         self.calibrate_btn.set_sensitive(False)
 
     def set_opt_value(self, widget, opt, *args):
@@ -156,48 +139,62 @@ class InputShaperPanel(ScreenPanel):
             )
         )
 
-    def save_config(self, *_):
-        self._screen._ws.klippy.gcode_script(
-            'SAVE_CONFIG'
+    def save_config(self):
+        _ = self.lang.gettext
+        script = {"script": "SAVE_CONFIG"}
+        self._screen._confirm_send_action(
+            None,
+            _("Save configuration?") + "\n\n" + _("Klipper will reboot"),
+            "printer.gcode.script",
+            script
         )
 
     def activate(self):
-        self.get_updates()
+        # This will return the current values
+        self._screen._ws.klippy.gcode_script(
+            'SET_INPUT_SHAPER'
+        )
+        # Check for the accelerometer
         self._screen._ws.klippy.gcode_script(
             'ACCELEROMETER_QUERY'
         )
+        # Send at least two commands, with my accelerometer the first command after a reboot will fail
+        self._screen._ws.klippy.gcode_script(
+            'MEASURE_AXES_NOISE'
+        )
 
     def process_update(self, action, data):
+        _ = self.lang.gettext
         if action == "notify_gcode_response":
-            self.status.set_text('Status: {}'.format(data.replace('shaper_', '').replace('damping_', '')))
-            if 'got 0' in data.lower():
-                self.calibrate_btn.set_label(self.lang.gettext('Проверка связи с ADXL345'))
+            self.status.set_text('{}'.format(data.replace('shaper_', '').replace('damping_', '')))
+            data = data.lower()
+            if 'got 0' in data:
+                self.calibrate_btn.set_label(_('Check ADXL Wiring'))
                 self.calibrate_btn.set_sensitive(False)
-            if 'Unknown command:"ACCELEROMETER_QUERY"'.lower() in data.lower():
-                self.calibrate_btn.set_label(self.lang.gettext('ADXL Не обнаружен'))
+            if 'unknown command:"accelerometer_query"' in data:
+                self.calibrate_btn.set_label(_('ADXL Not Configured'))
                 self.calibrate_btn.set_sensitive(False)
-            if 'must home' in data.lower():
-                self.calibrate_btn.set_label(self.CALIBRATE_TEXT)
-                self.calibrate_btn.set_sensitive(True)
-            if 'adxl345 values' in data.lower():
+            if 'adxl345 values' in data or 'axes noise' in data:
                 self.has_sensor = True
                 self.calibrate_btn.set_sensitive(True)
-                self.calibrate_btn.set_label(self.CALIBRATE_TEXT)
-            if 'Recommended shaper_type_' in data:
+                self.calibrate_btn.set_label(_('Auto-calibrate'))
+            # Recommended shaper_type_y = ei, shaper_freq_y = 48.4 Hz
+            if 'recommended shaper_type_' in data:
                 results = re.search(r'shaper_type_(?P<axis>[xy])\s*=\s*(?P<shaper_type>.*?), shaper_freq_.\s*=\s*('
                                     r'?P<shaper_freq>[0-9.]+)', data).groupdict()
                 self.freq_xy_adj['shaper_freq_' + results['axis']].set_value(float(results['shaper_freq']))
                 self.freq_xy_combo['shaper_type_' + results['axis']].set_active(SHAPERS.index(results['shaper_type']))
-                if results['axis'] == 'y':
-                    self.set_opt_value(None, None)
-                    self.calibrate_btn.set_label(self.lang.gettext('Перезагрузка...'))
+                if self.calibrating_axis == results['axis']:
+                    self.calibrate_btn.set_sensitive(True)
+                    self.calibrate_btn.set_label(_('Calibrated'))
                     self.save_config()
-
-    def get_updates(self):
-            config = self._screen.apiclient.send_request("printer/objects/query?configfile")
-            input_shaper_config = config['result']['status']['configfile']['settings']['input_shaper']
-            for _ in XY_FREQ:
-                self.freq_xy_adj[_['config']].set_value(input_shaper_config[_['config']])
-                shaper_slug = _['config'].replace('_freq_', '_type_')
-                self.freq_xy_combo[shaper_slug].set_active(SHAPERS.index(input_shaper_config[shaper_slug]))
-                self.freq_xy_combo[shaper_slug].connect("changed", self.set_opt_value, shaper_slug)
+                elif self.calibrating_axis == "both" and results['axis'] == 'y':
+                    self.calibrate_btn.set_sensitive(True)
+                    self.calibrate_btn.set_label(_('Calibrated'))
+                    self.save_config()
+            # shaper_type_y:ei shaper_freq_y:48.400 damping_ratio_y:0.100000
+            if 'shaper_type_' in data:
+                results = re.search(r'shaper_type_(?P<axis>[xy]):(?P<shaper_type>.*?) shaper_freq_.:('
+                                    r'?P<shaper_freq>[0-9.]+)', data).groupdict()
+                self.freq_xy_adj['shaper_freq_' + results['axis']].set_value(float(results['shaper_freq']))
+                self.freq_xy_combo['shaper_type_' + results['axis']].set_active(SHAPERS.index(results['shaper_type']))

@@ -1,7 +1,8 @@
-humanize==3.12.0
-jinja2==3.0.2
-matplotlib==3.4.3
+numpy==1.21.4
+jinja2==3.1.2
+matplotlib==3.5.0
 netifaces==0.11.0
-requests==2.26.0
-vext==0.7.6
-websocket-client==1.2.1
+requests==2.27.1
+websocket-client==1.3.2
+pycairo==1.21.0
+PyGObject==3.42.1
