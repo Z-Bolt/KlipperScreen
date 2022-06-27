@@ -343,7 +343,7 @@ class KlipperScreen(Gtk.Window):
         self._cur_panels.append(panel_name)
         logging.debug("Current panel hierarchy: %s", str(self._cur_panels))
 
-    def show_popup_message(self, message, level=2):
+    def show_popup_message(self, message, time, level=2):
         if self.popup_message is not None:
             self.close_popup_message()
 
@@ -375,7 +375,7 @@ class KlipperScreen(Gtk.Window):
         self.show_all()
         self.popup_message = box
 
-        GLib.timeout_add_seconds(10, self.close_popup_message)
+        GLib.timeout_add_seconds(time, self.close_popup_message)
 
         return False
 
