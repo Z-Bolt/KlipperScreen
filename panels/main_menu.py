@@ -168,7 +168,7 @@ class MainPanel(MenuPanel):
 
         self.labels['devices'].insert_row(pos)
         self.labels['devices'].attach(name, 0, pos, 1, 1)
-        # self.labels['devices'].attach(temp, 1, pos, 1, 1)
+        self.labels['devices'].attach(temp, 1, pos, 1, 1)
         self.labels['devices'].show_all()
         return True
 
@@ -201,9 +201,9 @@ class MainPanel(MenuPanel):
         self.labels['devices'].get_style_context().add_class('heater-grid')
         self.labels['devices'].set_vexpand(False)
 
-        # name = Gtk.Label("")
-        # temp = Gtk.Label(_("Temp (°C)"))
-        # temp.set_size_request(round(self._gtk.get_font_size() * 7.7), 0)
+        name = Gtk.Label("")
+        temp = Gtk.Label(_("Temp (°C)"))
+        temp.set_size_request(round(self._gtk.get_font_size() * 7.7), 0)
 
         self.labels['devices'].attach(name, 0, 0, 1, 1)
         # self.labels['devices'].attach(temp, 1, 0, 1, 1)
