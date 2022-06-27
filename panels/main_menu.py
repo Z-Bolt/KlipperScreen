@@ -51,7 +51,6 @@ class MainPanel(MenuPanel):
             else:
                 name = " ".join(h.split(" ")[1:])
                 self.labels[h] = self._gtk.ButtonImage("heat-up", name)
-                self.labels[h].connect("clicked",  self._screen.show_popup_message(_("Unknown Heater")))
             self.heaters.append(h)
 
         i = 0
