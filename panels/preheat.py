@@ -111,14 +111,14 @@ class PreheatPanel(ScreenPanel):
                 logging.info("Setting %s to %d" % (heater, 0))
                 if heater.startswith('heater_generic '):
                     self._screen._ws.klippy.set_heater_temp(" ".join(heater.split(" ")[1:]), 0)
-                elif  self._printer.set_dev_stat(heater, "target" > 0):
-                    self._screen.show_popup_message(_("Принтер охлаждается"), time=10,level=1)
                 elif heater.startswith('heater_bed'):
                     self._screen._ws.klippy.set_bed_temp(0)
                     self._printer.set_dev_stat(heater, "target", 0)
+                    self._screen.show_popup_message(_("Принтер охлаждается"), time=10,level=1)
                 else:
                     self._screen._ws.klippy.set_tool_temp(self._printer.get_tool_number(heater), 0)
                     self._printer.set_dev_stat(heater, "target", 0)
+                    self._screen.show_popup_message(_("Принтер охлаждается"), time=10,level=1)
             return
 
         for heater in self.active_heaters:
