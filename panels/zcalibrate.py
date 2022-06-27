@@ -239,12 +239,12 @@ class ZCalibratePanel(ScreenPanel):
                 self.buttons_not_calibrating()
             elif "save_config" in data:
                 self.buttons_not_calibrating()
-                self._screen.show_popup_message(_("Calibrated, save configuration to make it permanent"), level=1)
+                self._screen.show_popup_message(_("Calibrated, save configuration to make it permanent"), time=10,level=1)
             elif "out of range" in data:
                 self._screen.show_popup_message("%s" % data)
                 self.buttons_not_calibrating()
             elif "fail" in data and "use testz" in data:
-                self._screen.show_popup_message(_("Failed, adjust position first"))
+                self._screen.show_popup_message(_("Failed, adjust position first"),time=10)
                 self.buttons_not_calibrating()
             elif "use testz" in data or "use abort" in data or "z position" in data:
                 self.buttons_calibrating()
