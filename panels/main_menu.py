@@ -139,8 +139,8 @@ class MainPanel(MenuPanel):
         child = name.get_children()[0].get_children()[0].get_children()[1]
         child.set_ellipsize(Pango.EllipsizeMode.END)
 
-        temp = self._gtk.Button("")
-        temp.connect('clicked', self.on_popover_clicked, device)
+        # temp = self._gtk.Button("")
+        # temp.connect('clicked', self.on_popover_clicked, device)
 
         labels = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
@@ -153,46 +153,46 @@ class MainPanel(MenuPanel):
             "class": class_name,
             "type": type,
             "name": name,
-            "temp": temp,
+            # "temp": temp,
             "can_target": can_target
         }
 
-        if self.devices[device]["can_target"]:
-            temp.get_child().set_label("%.1f %s" %
-                                       (temperature, self.format_target(self._printer.get_dev_stat(device, "target"))))
-        else:
-            temp.get_child().set_label("%.1f " % temperature)
+        # if self.devices[device]["can_target"]:
+        #     temp.get_child().set_label("%.1f %s" %
+        #                                (temperature, self.format_target(self._printer.get_dev_stat(device, "target"))))
+        # else:
+        #     temp.get_child().set_label("%.1f " % temperature)
 
         devices = sorted(self.devices)
         pos = devices.index(device) + 1
 
         self.labels['devices'].insert_row(pos)
         self.labels['devices'].attach(name, 0, pos, 1, 1)
-        self.labels['devices'].attach(temp, 1, pos, 1, 1)
+        # self.labels['devices'].attach(temp, 1, pos, 1, 1)
         self.labels['devices'].show_all()
         return True
 
-    def change_target_temp(self, temp):
-        _ = self.lang.gettext
+    # def change_target_temp(self, temp):
+    #     _ = self.lang.gettext
 
-        MAX_TEMP = int(float(self._printer.get_config_section(self.active_heater)['max_temp']))
-        if temp > MAX_TEMP:
-            self._screen.show_popup_message(_("Can't set above the maximum:") + (" %s" % MAX_TEMP))
-            return
-        temp = 0 if temp < 0 else temp
+    #     MAX_TEMP = int(float(self._printer.get_config_section(self.active_heater)['max_temp']))
+    #     if temp > MAX_TEMP:
+    #         self._screen.show_popup_message(_("Can't set above the maximum:") + (" %s" % MAX_TEMP))
+    #         return
+    #     temp = 0 if temp < 0 else temp
 
-        if self.active_heater.startswith('extruder'):
-            self._screen._ws.klippy.set_tool_temp(self._printer.get_tool_number(self.active_heater), temp)
-        elif self.active_heater == "heater_bed":
-            self._screen._ws.klippy.set_bed_temp(temp)
-        elif self.active_heater.startswith('heater_generic '):
-            self._screen._ws.klippy.set_heater_temp(" ".join(self.active_heater.split(" ")[1:]), temp)
-        elif self.active_heater.startswith('temperature_fan '):
-            self._screen._ws.klippy.set_temp_fan_temp(" ".join(self.active_heater.split(" ")[1:]), temp)
-        else:
-            logging.info("Unknown heater: %s" % self.active_heater)
-            self._screen.show_popup_message(_("Unknown Heater") + " " + self.active_heater)
-        self._printer.set_dev_stat(self.active_heater, "target", temp)
+    #     if self.active_heater.startswith('extruder'):
+    #         self._screen._ws.klippy.set_tool_temp(self._printer.get_tool_number(self.active_heater), temp)
+    #     elif self.active_heater == "heater_bed":
+    #         self._screen._ws.klippy.set_bed_temp(temp)
+    #     elif self.active_heater.startswith('heater_generic '):
+    #         self._screen._ws.klippy.set_heater_temp(" ".join(self.active_heater.split(" ")[1:]), temp)
+    #     elif self.active_heater.startswith('temperature_fan '):
+    #         self._screen._ws.klippy.set_temp_fan_temp(" ".join(self.active_heater.split(" ")[1:]), temp)
+    #     else:
+    #         logging.info("Unknown heater: %s" % self.active_heater)
+    #         self._screen.show_popup_message(_("Unknown Heater") + " " + self.active_heater)
+    #     self._printer.set_dev_stat(self.active_heater, "target", temp)
 
     def create_left_panel(self):
         _ = self.lang.gettext
@@ -201,9 +201,9 @@ class MainPanel(MenuPanel):
         self.labels['devices'].get_style_context().add_class('heater-grid')
         self.labels['devices'].set_vexpand(False)
 
-        name = Gtk.Label("")
-        temp = Gtk.Label(_("Temp (°C)"))
-        temp.set_size_request(round(self._gtk.get_font_size() * 7.7), 0)
+        # name = Gtk.Label("")
+        # temp = Gtk.Label(_("Temp (°C)"))
+        # temp.set_size_request(round(self._gtk.get_font_size() * 7.7), 0)
 
         self.labels['devices'].attach(name, 0, 0, 1, 1)
         # self.labels['devices'].attach(temp, 1, 0, 1, 1)
@@ -338,11 +338,11 @@ class MainPanel(MenuPanel):
         self.labels['da'].queue_draw()
         return True
 
-    def update_temp(self, device, temp, target):
+    def update_temp(self, device):
         if device not in self.devices:
             return
 
-        if self.devices[device]["can_target"]:
-            self.devices[device]["temp"].get_child().set_label("%.1f %s" % (temp, self.format_target(target)))
-        else:
-            self.devices[device]["temp"].get_child().set_label("%.1f " % temp)
+        # if self.devices[device]["can_target"]:
+        #     self.devices[device]["temp"].get_child().set_label("%.1f %s" % (temp, self.format_target(target)))
+        # else:
+        #     self.devices[device]["temp"].get_child().set_label("%.1f " % temp)
