@@ -493,7 +493,7 @@ class JobStatusPanel(ScreenPanel):
 
         if ps['state'] == "printing":
             _ = self.lang.gettext
-            self._screen.show_popup_message_test(_("Ожидайте принтер скоро начнет печать"))
+            self.show_popup_message_test(_("Ожидайте принтер скоро начнет печать"))
             if self.state == "cancelling":
                 return True
             self.set_state("printing")
