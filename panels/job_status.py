@@ -535,7 +535,6 @@ class JobStatusPanel(ScreenPanel):
             self._screen.close_popup_message_test
         elif ps['state'] == "standby":
             self.set_state("standby")
-            self._screen.close_popup_message_test
         return True
 
     def set_state(self, state):
