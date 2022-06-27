@@ -387,7 +387,7 @@ class KlipperScreen(Gtk.Window):
         self.popup_message = None
         self.show_all()
 
-    def show_popup_message_test(self, message, level=2):
+    def show_popup_message_test(self, message, level=1):
         if self.popup_message is not None:
             self.close_popup_message_test()
 
