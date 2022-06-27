@@ -343,7 +343,7 @@ class KlipperScreen(Gtk.Window):
         self._cur_panels.append(panel_name)
         logging.debug("Current panel hierarchy: %s", str(self._cur_panels))
 
-    def show_popup_message(self, message, level=2):
+    def show_popup_message(self, message, time,level=2):
         if self.popup_message is not None:
             self.close_popup_message()
 
@@ -375,55 +375,11 @@ class KlipperScreen(Gtk.Window):
         self.show_all()
         self.popup_message = box
 
-        GLib.timeout_add_seconds(10, self.close_popup_message)
+        GLib.timeout_add_seconds(time, self.close_popup_message)
 
         return False
 
     def close_popup_message(self, widget=None):
-        if self.popup_message is None:
-            return
-
-        self.base_panel.get().remove(self.popup_message)
-        self.popup_message = None
-        self.show_all()
-
-    def show_popup_message_test(self, message, level=1):
-        if self.popup_message is not None:
-            self.close_popup_message_test()
-
-        box = Gtk.Box()
-        box.get_style_context().add_class("message_popup")
-
-        if level == 1:
-            box.get_style_context().add_class("message_popup_echo")
-        else:
-            box.get_style_context().add_class("message_popup_error")
-
-        box.set_size_request(self.width, self.gtk.get_header_size())
-        label = Gtk.Label()
-        if "must home axis first" in message.lower():
-            message = "Must home all axis first."
-        label.set_text(message)
-
-        close = Gtk.Button.new_with_label("X")
-        close.set_can_focus(False)
-        close.props.relief = Gtk.ReliefStyle.NONE
-        close.connect("clicked", self.close_popup_message_test)
-
-        box.pack_start(label, True, True, 0)
-        box.pack_end(close, False, False, 0)
-        box.set_halign(Gtk.Align.CENTER)
-
-        self.base_panel.get().put(box, 0, 0)
-
-        self.show_all()
-        self.popup_message = box
-
-        GLib.timeout_add_seconds(180, self.close_popup_message_test)
-
-        return False
-
-    def close_popup_message_test(self, widget=None):
         if self.popup_message is None:
             return
 
