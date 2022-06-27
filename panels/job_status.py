@@ -492,6 +492,8 @@ class JobStatusPanel(ScreenPanel):
         _ = self.lang.gettext
 
         if ps['state'] == "printing":
+            _ = self.lang.gettext
+            self._screen.show_popup_message(_("Coldown"))
             if self.state == "cancelling":
                 return True
             self.set_state("printing")
