@@ -493,7 +493,7 @@ class JobStatusPanel(ScreenPanel):
 
         if ps['state'] == "printing":
             _ = self.lang.gettext
-            self._screen.show_popup_message_test(_("Ожидайте принтер что-то делаит("))
+            self._screen.show_popup_message_test(_("Ожидайте идет процесс преднагрева и термостабилизации"))
             if self.state == "cancelling":
                 self._screen.close_popup_message_test
                 return True
