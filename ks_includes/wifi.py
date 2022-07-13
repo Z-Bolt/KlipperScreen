@@ -342,7 +342,7 @@ class WpaSocket(Thread):
                             if self.wm.networks[net]['mac'] == match.group(1):
                                 self.wm.networks[net]['connected'] = False
                                 break
-                elif "Piska" in msg:
+                elif "Trying to associate" in msg:
                     self.callback("connecting_status", msg)
                 elif "CTRL-EVENT-REGDOM-CHANGE" in msg:
                     self.callback("connecting_status", msg)
