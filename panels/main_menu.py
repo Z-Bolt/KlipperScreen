@@ -85,33 +85,7 @@ class MainPanel(MenuPanel):
     def activate(self):
         return
 
-
-    def create_left_panel(self):
-
-        self.labels['devices'] = Gtk.Grid()
-        self.labels['devices'].get_style_context().add_class('heater-grid')
-        self.labels['devices'].set_vexpand(False)
-
-        name = Gtk.Label("")
-        temp = Gtk.Label(_("Temp (°C)"))
-        temp.set_size_request(round(self._gtk.get_font_size() * 7.7), 0)
-
-        self.labels['devices'].attach(name, 0, 0, 1, 1)
-        self.labels['devices'].attach(temp, 1, 0, 1, 1)
-
-        da = HeaterGraph(self._printer, self._gtk.get_font_size())
-        da.set_vexpand(True)
-        self.labels['da'] = da
-
-        scroll = self._gtk.ScrolledWindow()
-        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scroll.add(self.labels['devices'])
-
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        box.set_vexpand(True)
-        box.add(scroll)
-        box.add(self.labels['da'])
-
+    def graph_show_device(self, widget, show=True):
         self.labels['graph_settemp'] = self._gtk.Button(label=_("Set Temp"))
         self.labels['graph_settemp'].connect("clicked", self.show_numpad)
         self.labels['graph_hide'] = self._gtk.Button(label=_("Hide"))
@@ -124,18 +98,10 @@ class MainPanel(MenuPanel):
         popover.add(self.labels['popover_vbox'])
         popover.set_position(Gtk.PositionType.BOTTOM)
         self.labels['popover'] = popover
-
-        i = 0
-        for d in self._printer.get_temp_store_devices():
-            if self.add_device(d):
-                i += 1
-        graph_height = (self._gtk.get_content_height() / 2) - ((i + 2) * 4 * self._gtk.get_font_size())
-        self.labels['da'].set_size_request(-1, graph_height)
-        return box
-
-    def graph_show_device(self, widget, show=True):
         logging.info("Graph show: %s %s" % (self.popover_device, show))
         self.labels['da'].set_showing(self.popover_device, show)
+        
+        
         if show:
             self.devices[self.popover_device]['name'].get_style_context().remove_class("graph_label_hidden")
             self.devices[self.popover_device]['name'].get_style_context().add_class(
