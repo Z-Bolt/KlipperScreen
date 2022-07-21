@@ -25,10 +25,7 @@ class MainPanel(MenuPanel):
         eq_grid = Gtk.Grid()
         eq_grid.set_hexpand(True)
         eq_grid.set_vexpand(True)
-
-        leftpanel = self.create_left_panel()
         
-
         self.heaters = []
 
         i = 0
