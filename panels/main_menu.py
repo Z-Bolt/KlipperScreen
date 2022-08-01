@@ -26,9 +26,9 @@ class MainPanel(MenuPanel):
         eq_grid.set_hexpand(True)
         eq_grid.set_vexpand(True)
         
-        self.heaters = []
-        functions = ["set_temp", "m_temperature"]
-        pobox = Gtk.VBox()
+        # self.heaters = []
+        # functions = ["set_temp", "m_temperature"]
+        # pobox = Gtk.VBox()
 
         i = 0
         for x in self._printer.get_tools():
