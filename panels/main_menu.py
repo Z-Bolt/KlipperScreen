@@ -26,18 +26,16 @@ class MainPanel(MenuPanel):
         eq_grid.set_hexpand(True)
         eq_grid.set_vexpand(True)
         
-        # self.heaters = []
-        # functions = ["set_temp", "m_temperature"]
-        # pobox = Gtk.VBox()
+        self.heaters = []
 
         i = 0
         for x in self._printer.get_tools():
-            self.widget[x] = self._gtk.ButtonImage("extruder-"+str(i), self._gtk.formatTemperatureString(0, 0))
-            # self.widget[x].connect("clicked", self.menu_item_clicked, "temperature", {
-            # "name":  _('Temperature'),
-            # "panel": "temperature"
+            self.labels[x] = self._gtk.ButtonImage("extruder-"+str(i), self._gtk.formatTemperatureString(0, 0))
+            self.labels[x].connect("clicked", self.menu_item_clicked, "temperature", {
+            "name":  _('Temperature'),
+            "panel": "temperature"
             
-            # })
+            })
             self.heaters.append(x)
             i += 1
 
