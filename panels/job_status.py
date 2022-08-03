@@ -139,12 +139,12 @@ class JobStatusPanel(ScreenPanel):
         it1_box = Gtk.Box(spacing=0)
         it1_box.add(self.labels['elapsed'])
         it1_box.add(self.labels['duration'])
-        # it2_box = Gtk.Box(spacing=0)
+        it2_box = Gtk.Box(spacing=0)
         it1_box.add(self.labels['total'])
         it1_box.add(self.labels['est_time'])
         timegrid.attach(clock, 0, 0, 1, 2)
         timegrid.attach(it1_box, 1, 1, 1, 1)
-        # timegrid.attach(it2_box, 1, 1, 1, 1)
+        timegrid.attach(it2_box, 1, 1, 1, 1)
         self.labels['timegrid'] = timegrid
 
         position = self._gtk.Image("move", .6)
@@ -246,7 +246,7 @@ class JobStatusPanel(ScreenPanel):
             self.labels['i2_box'].remove(child)
 
         self.labels['i1_box'].add(self.labels['thumbnail'])
-        # self.labels['i2_box'].add(self.labels['temp_grid'])
+        self.labels['i2_box'].add(self.labels['temp_grid'])
         # self.labels['i2_box'].add(self.labels['pos_box'])
         self.labels['i2_box'].add(self.labels['sfe_grid'])
         self.labels['i2_box'].add(self.labels['timegrid'])
