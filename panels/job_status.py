@@ -495,7 +495,7 @@ class JobStatusPanel(ScreenPanel):
             _ = self.lang.gettext
             # self._screen.show_popup_message(_("Ожидайте: идет процесс преднагрева и термостабилизации"), time = 180, level=1)
             if self.state == "cancelling":
-                self._screen.close_popup_message
+                # self._screen.close_popup_message
                 return True
             self.set_state("printing")
             self.update_filename()
@@ -512,7 +512,7 @@ class JobStatusPanel(ScreenPanel):
         elif ps['state'] == "error":
             logging.debug("Error!")
             self.set_state("error")
-            self._screen.close_popup_message
+            # self._screen.close_popup_message
             self.labels['status'].set_text("%s - %s" % (_("Error"), ps['message']))
             self._screen.wake_screen()
             self.remove_close_timeout()
@@ -522,7 +522,7 @@ class JobStatusPanel(ScreenPanel):
             return False
         elif ps['state'] == "cancelled":
             # Print was cancelled
-            self._screen.close_popup_message
+            # self._screen.close_popup_message
             self.set_state("cancelled")
             self._screen.wake_screen()
             self.remove_close_timeout()
@@ -532,7 +532,7 @@ class JobStatusPanel(ScreenPanel):
             return False
         elif ps['state'] == "paused":
             self.set_state("paused")
-            self._screen.close_popup_message
+            # self._screen.close_popup_message
         elif ps['state'] == "standby":
             self.set_state("standby")
         return True
