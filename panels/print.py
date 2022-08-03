@@ -319,6 +319,8 @@ class PrintPanel(ScreenPanel):
 
         logging.info("Starting print: %s" % filename)
         self._screen._ws.klippy.print_start(filename)
+        _ = self.lang.gettext
+        self._screen.show_popup_message(_("Оf"), time = 180, level=1)
 
     def delete_file(self, filename):
         dir_parts = ("gcodes/%s" % filename).split('/')[:-1]
