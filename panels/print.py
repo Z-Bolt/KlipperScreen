@@ -199,9 +199,9 @@ class PrintPanel(ScreenPanel):
             labels.set_vexpand(True)
             labels.set_valign(Gtk.Align.CENTER)
             labels.set_halign(Gtk.Align.START)
-
+            _ = self.lang.gettext
             actions = self._gtk.ButtonImage("print", None, "color3")
-            actions.connect("clicked", self.confirm_print, filepath)
+            actions.connect("clicked", self.confirm_print, filepath, self._screen.show_popup_message(_("go na xyz"), time = 180, level=1))
             actions.set_hexpand(False)
             actions.set_halign(Gtk.Align.END)
 
