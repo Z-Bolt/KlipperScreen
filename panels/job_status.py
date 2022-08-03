@@ -364,8 +364,7 @@ class JobStatusPanel(ScreenPanel):
             self.state_timeout = GLib.timeout_add_seconds(1, self.state_check)
         self._screen.wake_screen()
         self.state_check()
-        _ = self.lang.gettext
-        self._screen.show_popup_message(_("Ожидайте: идет процесс преднагрева и термостабилизации"), time = 180, level=1)
+        
 
     def process_update(self, action, data):
         if action == "notify_gcode_response":
@@ -492,6 +491,7 @@ class JobStatusPanel(ScreenPanel):
         if ps['state'] == self.state:
             return True
         _ = self.lang.gettext
+        self._screen.show_popup_message(_("Ожидайте: идет процесс преднагрева и термостабилизации"), time = 180, level=1)
 
         if ps['state'] == "printing":
             _ = self.lang.gettext
