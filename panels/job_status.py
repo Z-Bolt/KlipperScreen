@@ -493,10 +493,9 @@ class JobStatusPanel(ScreenPanel):
         
 
         if ps['state'] == "printing":
-            _ = self.lang.gettext
-            self._screen.show_popup_message(_("Ожидайте: идет процесс преднагрева и термостабилизации"), time = 180, level=1)
+            self.msg_on
             if self.state == "cancelling":
-                self._screen.close_popup_message
+                self.msg_off
                 return True
             self.set_state("printing")
             self.update_filename()
@@ -511,7 +510,7 @@ class JobStatusPanel(ScreenPanel):
                 self.close_timeouts.append(GLib.timeout_add_seconds(timeout, self.close_panel))
             return False
         elif ps['state'] == "error":
-            self._screen.close_popup_message
+            self.msg_off
             logging.debug("Error!")
             self.set_state("error")
             self.labels['status'].set_text("%s - %s" % (_("Error"), ps['message']))
@@ -523,7 +522,7 @@ class JobStatusPanel(ScreenPanel):
             return False
         elif ps['state'] == "cancelled":
             # Print was cancelled
-            self._screen.close_popup_message
+            self.msg_off
             self.set_state("cancelled")
             self._screen.wake_screen()
             self.remove_close_timeout()
@@ -532,10 +531,10 @@ class JobStatusPanel(ScreenPanel):
                 self.close_timeouts.append(GLib.timeout_add_seconds(timeout, self.close_panel))
             return False
         elif ps['state'] == "paused":
-            self._screen.close_popup_message
+            self.msg_off
             self.set_state("paused")
         elif ps['state'] == "standby":
-            self._screen.close_popup_message
+            self.msg_off
             self.set_state("standby")
         return True
 
@@ -657,3 +656,9 @@ class JobStatusPanel(ScreenPanel):
         self.labels[x].set_markup(
             "%.1f<big>/</big>%.0f °C" % (temp, target)
         )
+
+    def msg_on(self)   
+        _ = self.lang.gettext
+        self._screen.show_popup_message(_("Ожидайте: идет процесс преднагрева и термостабилизации"), time = 180, level=1)
+    def msg_off(self)
+        self._screen.close_popup_message
