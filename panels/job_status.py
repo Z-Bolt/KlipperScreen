@@ -523,7 +523,6 @@ class JobStatusPanel(ScreenPanel):
             return False
         elif ps['state'] == "cancelled":
             # Print was cancelled
-            self._screen.close_popup_message
             self.set_state("cancelled")
             self._screen.wake_screen()
             self.remove_close_timeout()
