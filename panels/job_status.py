@@ -259,7 +259,7 @@ class JobStatusPanel(ScreenPanel):
         self.labels['cancel'] = self._gtk.ButtonImage("stop", _("Cancel"), "color2")
         self.labels['cancel'].connect("clicked", self.cancel)
         self.labels['control'] = self._gtk.ButtonImage("settings", _("Settings"), "color3")
-        self.labels['control'].connect("clicked", self._screen._go_to_submenu, "")
+        self.labels['control'].connect("clicked", self._screen._go_to_submenu, "",  self._screen.close_popup_message)
         self.labels['fine_tune'] = self._gtk.ButtonImage("fine-tune", _("Fine Tuning"), "color4")
         self.labels['fine_tune'].connect("clicked", self.menu_item_clicked, "fine_tune", {
             "panel": "fine_tune", "name": _("Fine Tuning")})
