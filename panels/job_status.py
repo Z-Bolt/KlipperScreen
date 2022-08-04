@@ -493,9 +493,10 @@ class JobStatusPanel(ScreenPanel):
         
 
         if ps['state'] == "printing":
+            _ = self.lang.gettext
+            self._screen.show_popup_message(_("Ожидайте: идет процесс преднагрева и термостабилизации"), time = 180, level=1)
             if self.state == "cancelling":
-                _ = self.lang.gettext
-                self._screen.show_popup_message(_("Ожидайте: идет процесс преднагрева и термостабилизации"), time = 180, level=1)
+                self._screen.show_popup_message(_("Ожидайте: процесс печати завершится в ближайшее время"), time = 10, level=1)
                 return True
             self.set_state("printing")
             self.update_filename()
