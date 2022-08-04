@@ -2,34 +2,18 @@
 
 SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 KSPATH=$(sed 's/\/scripts//g' <<< $SCRIPTPATH)
-KSENV="${KLIPPERSCREEN_VENV:-${HOME}/.KlipperScreen-env}"
+KSENV="${HOME}/.KlipperScreen-env"
 
-XSERVER="xinit xinput x11-xserver-utils xdotool"
-FBTURBO="xserver-xorg-video-fbturbo"
-FBDEV="xserver-xorg-video-fbdev"
-PYTHON="python3-virtualenv virtualenv python3-distutils"
-PYGOBJECT="libgirepository1.0-dev gcc libcairo2-dev pkg-config python3-dev gir1.2-gtk-3.0"
-MISC="librsvg2-common libopenjp2-7 libatlas-base-dev matchbox-keyboard wireless-tools"
-OPTIONAL="xserver-xorg-legacy fonts-nanum"
+PKGLIST="xserver-xorg-video-fbturbo xdotool xinit xinput x11-xserver-utils libopenjp2-7 python3-distutils python3-gi"
+PKGLIST="${PKGLIST} python3-gi-cairo python3-virtualenv gir1.2-gtk-3.0 virtualenv matchbox-keyboard wireless-tools"
+PKGLIST="${PKGLIST} libatlas-base-dev fonts-freefont-ttf"
 
-Red='\033[0;31m'
-Green='\033[0;32m'
-Cyan='\033[0;36m'
-Normal='\033[0m'
+DGRAY='\033[1;30m'
+NC='\033[0m'
 
 echo_text ()
 {
-    printf "${Normal}$1${Cyan}\n"
-}
-
-echo_error ()
-{
-    printf "${Red}$1${Normal}\n"
-}
-
-echo_ok ()
-{
-    printf "${Green}$1${Normal}\n"
+    printf "${NC}$1${DGRAY}\n"
 }
 
 install_packages()
@@ -44,86 +28,33 @@ install_packages()
         sudo apt-get -f install
         output=$(dpkg-query -W -f='${db:Status-Abbrev} ${binary:Package}\n' | grep -E ^.[^nci])
         if [ $? -eq 0 ]; then
-            echo_error "Unable to fix broken packages. These must be fixed before KlipperScreen can be installed"
+            echo_text "Unable to fix dependencies. These must be fixed before KlipperScreen can be installed"
             exit 1
         fi
     else
-        echo_ok "No broken packages"
+        echo_text "No broken packages"
     fi
 
     echo_text "Installing KlipperScreen dependencies"
-    sudo apt-get install -y $XSERVER
-    if [ $? -eq 0 ]; then
-        echo_ok "Installed X"
-    else
-        echo_error "Installation of X-server dependencies failed ($XSERVER)"
-        exit 1
-    fi
-    sudo apt-get install -y $OPTIONAL
-    sudo apt-get install -y $FBTURBO
-    if [ $? -eq 0 ]; then
-        echo_ok "Installed FBturbo driver"
-    else
-        echo $_
-        echo_error "Installation of $FBTURBO failed, trying $FBDEV"
-        sudo apt-get install -y $FBDEV
-        if [ $? -eq 0 ]; then
-            echo_ok "Installed FBdev"
-        else
-            echo_error "Installation of FBdev failed ($FBDEV)"
-            exit 1
-        fi
-    fi
-    sudo apt-get install -y $PYTHON
-    if [ $? -eq 0 ]; then
-        echo_ok "Installed Python dependincies"
-    else
-        echo_error "Installation of Python dependincies failed ($PYTHON)"
-        exit 1
-    fi
-    sudo apt-get install -y $PYGOBJECT
-    if [ $? -eq 0 ]; then
-        echo_ok "Installed PyGobject dependincies"
-    else
-        echo_error "Installation of PyGobject dependincies failed ($PYGOBJECT)"
-        exit 1
-    fi
-    sudo apt-get install -y $MISC
-    if [ $? -eq 0 ]; then
-        echo_ok "Installed Misc packages"
-    else
-        echo_error "Installation of Misc packages failed ($MISC)"
-        exit 1
-    fi
+    sudo apt-get install -y $PKGLIST
 }
 
 create_virtualenv()
 {
     echo_text "Creating virtual environment"
-    if [ ! -d ${KSENV} ]; then
-        GET_PIP="${HOME}/get-pip.py"
-        virtualenv --no-pip -p /usr/bin/python3 ${KSENV}
-        curl https://bootstrap.pypa.io/pip/3.6/get-pip.py -o ${GET_PIP}
-        ${KSENV}/bin/python ${GET_PIP}
-        rm ${GET_PIP}
-    fi
+    [ ! -d ${KSENV} ] && virtualenv -p /usr/bin/python3 ${KSENV}
 
-    source ${KSENV}/bin/activate
-    while read requirements; do
-        pip --disable-pip-version-check install $requirements
-        if [ $? -gt 0 ]; then
-            echo "Error: pip install exited with status code $?"
-            echo "Unable to install dependencies, aborting install."
-            deactivate
-            exit 1
-        fi
-    done < ${KSPATH}/scripts/KlipperScreen-requirements.txt
-    deactivate
-    echo_ok "Virtual enviroment created"
+    ${KSENV}/bin/pip install -r ${KSPATH}/scripts/KlipperScreen-requirements.txt
+    ${KSENV}/bin/pip install --no-binary :all: "vext.gi==0.7.4"
+    ${KSENV}/bin/vext -e
 }
 
 install_systemd_service()
 {
+    if [ -f "/etc/systemd/system/KlipperScreen.service" ]; then
+        echo_text "KlipperScreen unit file already installed"
+        return
+    fi
     echo_text "Installing KlipperScreen unit file"
 
     SERVICE=$(<$SCRIPTPATH/KlipperScreen.service)
@@ -135,7 +66,6 @@ install_systemd_service()
     SERVICE=$(sed "s/KS_DIR/$KSPATH_ESC/g" <<< $SERVICE)
 
     echo "$SERVICE" | sudo tee /etc/systemd/system/KlipperScreen.service > /dev/null
-    sudo systemctl unmask KlipperScreen.service
     sudo systemctl daemon-reload
     sudo systemctl enable KlipperScreen
 }
@@ -157,20 +87,14 @@ update_x11()
     fi
 }
 
-start_KlipperScreen()
-{
-    echo_text "Starting service..."
-    sudo systemctl stop KlipperScreen
+start_KlipperScreen() {
     sudo systemctl start KlipperScreen
 }
-if [ "$EUID" == 0 ]
-    then echo_error "Plaease do not run this script as root"
-    exit 1
-fi
+
 install_packages
 create_virtualenv
 modify_user
 install_systemd_service
 update_x11
-echo_ok "KlipperScreen was installed"
 start_KlipperScreen
+echo "${NC}"
