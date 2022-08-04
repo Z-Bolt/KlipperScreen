@@ -234,7 +234,6 @@ class JobStatusPanel(ScreenPanel):
 
     def activate(self):
         _ = self.lang.gettext
-        self._screen.show_popup_message(_("Ожидайте: идет процесс преднагрева и термостабилизации"), time = 180, level=1)
         ps = self._printer.get_stat("print_stats")
         self.set_state(ps['state'])
         if self.state_timeout is None:
@@ -495,6 +494,8 @@ class JobStatusPanel(ScreenPanel):
 
         if ps['state'] == "printing":
             if self.state == "cancelling":
+                _ = self.lang.gettext
+                self._screen.show_popup_message(_("Ожидайте: идет процесс преднагрева и термостабилизации"), time = 180, level=1)
                 return True
             self.set_state("printing")
             self.update_filename()
@@ -509,6 +510,7 @@ class JobStatusPanel(ScreenPanel):
                 self.close_timeouts.append(GLib.timeout_add_seconds(timeout, self.close_panel))
             return False
         elif ps['state'] == "error":
+            self._screen.close_popup_message
             logging.debug("Error!")
             self.set_state("error")
             self.labels['status'].set_text("%s - %s" % (_("Error"), ps['message']))
@@ -520,6 +522,7 @@ class JobStatusPanel(ScreenPanel):
             return False
         elif ps['state'] == "cancelled":
             # Print was cancelled
+            self._screen.close_popup_message
             self.set_state("cancelled")
             self._screen.wake_screen()
             self.remove_close_timeout()
@@ -528,14 +531,15 @@ class JobStatusPanel(ScreenPanel):
                 self.close_timeouts.append(GLib.timeout_add_seconds(timeout, self.close_panel))
             return False
         elif ps['state'] == "paused":
+            self._screen.close_popup_message
             self.set_state("paused")
         elif ps['state'] == "standby":
+            self._screen.close_popup_message
             self.set_state("standby")
         return True
 
     def set_state(self, state):
         _ = self.lang.gettext
-
         if self.state != state:
             logging.debug("Changing job_status state from '%s' to '%s'" % (self.state, state))
         if state == "paused":
