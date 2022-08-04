@@ -523,6 +523,7 @@ class JobStatusPanel(ScreenPanel):
             return False
         elif ps['state'] == "cancelled":
             # Print was cancelled
+            self._screen.close_popup_message
             self.set_state("cancelled")
             self._screen.wake_screen()
             self.remove_close_timeout()
@@ -549,10 +550,8 @@ class JobStatusPanel(ScreenPanel):
             self.update_text("status", _("Printing"))
         elif state == "cancelling":
             self.update_text("status", _("Cancelling"))
-            self._screen.close_popup_message
         elif state == "cancelled" or (state == "standby" and self.state == "cancelling"):
             self.update_text("status", _("Cancelled"))
-            self._screen.close_popup_message
         elif state == "complete":
             self.update_text("status", _("Complete"))
             self._screen.close_popup_message
