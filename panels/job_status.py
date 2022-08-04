@@ -545,18 +545,14 @@ class JobStatusPanel(ScreenPanel):
             logging.debug("Changing job_status state from '%s' to '%s'" % (self.state, state))
         if state == "paused":
             self.update_text("status", _("Paused"))
-            self._screen.close_popup_message
         elif state == "printing":
             self.update_text("status", _("Printing"))
         elif state == "cancelling":
             self.update_text("status", _("Cancelling"))
-            self._screen.close_popup_message
         elif state == "cancelled" or (state == "standby" and self.state == "cancelling"):
             self.update_text("status", _("Cancelled"))
-            self._screen.close_popup_message
         elif state == "complete":
             self.update_text("status", _("Complete"))
-            self._screen.close_popup_message
         self.state = state
         self.show_buttons_for_state()
 
