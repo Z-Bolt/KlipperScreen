@@ -493,9 +493,9 @@ class JobStatusPanel(ScreenPanel):
         
 
         if ps['state'] == "printing":
-            self.msg_on
+            self.msg_on()
             if self.state == "cancelling":
-                self.msg_off
+                self.msg_off()
                 return True
             self.set_state("printing")
             self.update_filename()
@@ -510,7 +510,7 @@ class JobStatusPanel(ScreenPanel):
                 self.close_timeouts.append(GLib.timeout_add_seconds(timeout, self.close_panel))
             return False
         elif ps['state'] == "error":
-            self.msg_off
+            self.msg_off()
             logging.debug("Error!")
             self.set_state("error")
             self.labels['status'].set_text("%s - %s" % (_("Error"), ps['message']))
@@ -522,7 +522,7 @@ class JobStatusPanel(ScreenPanel):
             return False
         elif ps['state'] == "cancelled":
             # Print was cancelled
-            self.msg_off
+            self.msg_off()
             self.set_state("cancelled")
             self._screen.wake_screen()
             self.remove_close_timeout()
@@ -531,10 +531,10 @@ class JobStatusPanel(ScreenPanel):
                 self.close_timeouts.append(GLib.timeout_add_seconds(timeout, self.close_panel))
             return False
         elif ps['state'] == "paused":
-            self.msg_off
+            self.msg_off()
             self.set_state("paused")
         elif ps['state'] == "standby":
-            self.msg_off
+            self.msg_off()
             self.set_state("standby")
         return True
 
