@@ -290,6 +290,7 @@ class JobStatusPanel(ScreenPanel):
 
     def resume(self, widget):
         self._screen._ws.klippy.print_resume(self._response_callback, "enable_button", "pause", "cancel")
+        self._screen.close_popup_message
         self._screen.show_all()
 
     def pause(self, widget):
