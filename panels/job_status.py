@@ -234,6 +234,7 @@ class JobStatusPanel(ScreenPanel):
 
     def activate(self):
         _ = self.lang.gettext
+        self._screen.show_popup_message(_("Ожидайте: идет процесс преднагрева и термостабилизации"), time = 180, level=1)
         ps = self._printer.get_stat("print_stats")
         self.set_state(ps['state'])
         if self.state_timeout is None:
@@ -542,8 +543,6 @@ class JobStatusPanel(ScreenPanel):
             self._screen.close_popup_message
         elif state == "printing":
             self.update_text("status", _("Printing"))
-            _ = self.lang.gettext
-            self._screen.show_popup_message(_("Ожидайте: идет процесс преднагрева и термостабилизации"), time = 180, level=1)
         elif state == "cancelling":
             self.update_text("status", _("Cancelling"))
             self._screen.close_popup_message
