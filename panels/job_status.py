@@ -493,9 +493,9 @@ class JobStatusPanel(ScreenPanel):
         
 
         if ps['state'] == "printing":
-            self.msg_on()
             if self.state == "cancelling":
-                self.msg_off()
+                _ = self.lang.gettext
+                self._screen.show_popup_message(_("Ожидайте: идет процесс преднагрева и термостабилизации"), time = 180, level=1)
                 return True
             self.set_state("printing")
             self.update_filename()
@@ -510,7 +510,7 @@ class JobStatusPanel(ScreenPanel):
                 self.close_timeouts.append(GLib.timeout_add_seconds(timeout, self.close_panel))
             return False
         elif ps['state'] == "error":
-            self.msg_off()
+            self._screen.close_popup_message
             logging.debug("Error!")
             self.set_state("error")
             self.labels['status'].set_text("%s - %s" % (_("Error"), ps['message']))
@@ -522,7 +522,7 @@ class JobStatusPanel(ScreenPanel):
             return False
         elif ps['state'] == "cancelled":
             # Print was cancelled
-            self.msg_off()
+            self._screen.close_popup_message
             self.set_state("cancelled")
             self._screen.wake_screen()
             self.remove_close_timeout()
@@ -531,10 +531,10 @@ class JobStatusPanel(ScreenPanel):
                 self.close_timeouts.append(GLib.timeout_add_seconds(timeout, self.close_panel))
             return False
         elif ps['state'] == "paused":
-            self.msg_off()
+            self._screen.close_popup_message
             self.set_state("paused")
         elif ps['state'] == "standby":
-            self.msg_off()
+            self._screen.close_popup_message
             self.set_state("standby")
         return True
 
@@ -544,14 +544,18 @@ class JobStatusPanel(ScreenPanel):
             logging.debug("Changing job_status state from '%s' to '%s'" % (self.state, state))
         if state == "paused":
             self.update_text("status", _("Paused"))
+            self._screen.close_popup_message
         elif state == "printing":
             self.update_text("status", _("Printing"))
         elif state == "cancelling":
             self.update_text("status", _("Cancelling"))
+            self._screen.close_popup_message
         elif state == "cancelled" or (state == "standby" and self.state == "cancelling"):
             self.update_text("status", _("Cancelled"))
+            self._screen.close_popup_message
         elif state == "complete":
             self.update_text("status", _("Complete"))
+            self._screen.close_popup_message
         self.state = state
         self.show_buttons_for_state()
 
@@ -656,9 +660,3 @@ class JobStatusPanel(ScreenPanel):
         self.labels[x].set_markup(
             "%.1f<big>/</big>%.0f °C" % (temp, target)
         )
-
-    def msg_on(self):   
-        _ = self.lang.gettext
-        self._screen.show_popup_message(_("Ожидайте: идет процесс преднагрева и термостабилизации"), time = 180, level=1)
-    def msg_off(self):
-        self._screen.close_popup_message
