@@ -290,7 +290,6 @@ class JobStatusPanel(ScreenPanel):
 
     def resume(self, widget):
         self._screen._ws.klippy.print_resume(self._response_callback, "enable_button", "pause", "cancel")
-        self._screen.close_popup_message
         self._screen.show_all()
 
     def pause(self, widget):
@@ -494,10 +493,10 @@ class JobStatusPanel(ScreenPanel):
         
 
         if ps['state'] == "printing":
-            _ = self.lang.gettext
-            self._screen.show_popup_message(_("Ожидайте: идет процесс преднагрева и термостабилизации"), time = 180, level=1)
+            # _ = self.lang.gettext
+            # self._screen.show_popup_message(_("Ожидайте: идет процесс преднагрева и термостабилизации"), time = 180, level=1)
             if self.state == "cancelling":
-                self._screen.show_popup_message(_("Ожидайте: процесс печати завершится в ближайшее время"), time = 50, level=1)
+                # self._screen.show_popup_message(_("Ожидайте: процесс печати завершится в ближайшее время"), time = 50, level=1)
                 return True
             self.set_state("printing")
             self.update_filename()
@@ -512,7 +511,7 @@ class JobStatusPanel(ScreenPanel):
                 self.close_timeouts.append(GLib.timeout_add_seconds(timeout, self.close_panel))
             return False
         elif ps['state'] == "error":
-            self._screen.close_popup_message
+            # self._screen.close_popup_message
             logging.debug("Error!")
             self.set_state("error")
             self.labels['status'].set_text("%s - %s" % (_("Error"), ps['message']))
@@ -524,7 +523,7 @@ class JobStatusPanel(ScreenPanel):
             return False
         elif ps['state'] == "cancelled":
             # Print was cancelled
-            self._screen.close_popup_message
+            # self._screen.close_popup_message
             self.set_state("cancelled")
             self._screen.wake_screen()
             self.remove_close_timeout()
@@ -533,10 +532,10 @@ class JobStatusPanel(ScreenPanel):
                 self.close_timeouts.append(GLib.timeout_add_seconds(timeout, self.close_panel))
             return False
         elif ps['state'] == "paused":
-            self._screen.close_popup_message
+            # self._screen.close_popup_message
             self.set_state("paused")
         elif ps['state'] == "standby":
-            self._screen.close_popup_message
+            # self._screen.close_popup_message
             self.set_state("standby")
         return True
 
@@ -546,7 +545,7 @@ class JobStatusPanel(ScreenPanel):
             logging.debug("Changing job_status state from '%s' to '%s'" % (self.state, state))
         if state == "paused":
             self.update_text("status", _("Paused"))
-            self._screen.close_popup_message
+            # self._screen.close_popup_message
         elif state == "printing":
             self.update_text("status", _("Printing"))
         elif state == "cancelling":
@@ -555,7 +554,7 @@ class JobStatusPanel(ScreenPanel):
             self.update_text("status", _("Cancelled"))
         elif state == "complete":
             self.update_text("status", _("Complete"))
-            self._screen.close_popup_message
+            # self._screen.close_popup_message
         self.state = state
         self.show_buttons_for_state()
 
