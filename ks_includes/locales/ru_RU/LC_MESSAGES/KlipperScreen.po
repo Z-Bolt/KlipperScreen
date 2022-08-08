@@ -176,7 +176,7 @@ msgid "Estimated Time Method"
 msgstr "Расчётное время"
 
 msgid "Extrude"
-msgstr "Заправить"
+msgstr "Экструзия"
 
 msgid "Extrusion +"
 msgstr "Экструзия +"
@@ -544,6 +544,11 @@ msgstr "Запуск обновления для"
 msgid "System"
 msgstr "Система"
 
+msgid "Splash Screen"
+msgstr "Система123"
+
+msgid "SplashScreen"
+msgstr "Система345"
 msgid ""
 "System\n"
 "Restart"
