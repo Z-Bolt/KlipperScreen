@@ -15,6 +15,7 @@ class MainPanel(MenuPanel):
 
     def initialize(self, panel_name, items, extrudercount):
         print("### Making MainMenu")
+        _ = self.lang.gettext
 
         grid = self._gtk.HomogeneousGrid()
         grid.set_hexpand(True)
@@ -24,14 +25,14 @@ class MainPanel(MenuPanel):
         eq_grid = Gtk.Grid()
         eq_grid.set_hexpand(True)
         eq_grid.set_vexpand(True)
-
+        
         self.heaters = []
 
         i = 0
         for x in self._printer.get_tools():
             self.labels[x] = self._gtk.ButtonImage("extruder-"+str(i), self._gtk.formatTemperatureString(0, 0))
             self.labels[x].connect("clicked", self.menu_item_clicked, "temperature", {
-            "name": "Temperature",
+            "name":  _('Temperature'),
             "panel": "temperature"
             
             })
@@ -43,7 +44,7 @@ class MainPanel(MenuPanel):
             if h == "heater_bed":
                 self.labels[h] = self._gtk.ButtonImage("bed", self._gtk.formatTemperatureString(0, 0))
                 self.labels[h].connect("clicked", self.menu_item_clicked, "temperature", {
-                "name": "Temperature",
+                "name":  _('Temperature'),
                 "panel": "temperature"
             
                 })
@@ -77,10 +78,10 @@ class MainPanel(MenuPanel):
 
         self.content.add(self.grid)
         self.layout.show_all()
-
+    
     def activate(self):
         return
-
+                
     def process_update(self, action, data):
         if action != "notify_status_update":
             return

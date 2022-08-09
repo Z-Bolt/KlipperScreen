@@ -7,11 +7,13 @@ from gi.repository import Gtk, Gdk, GLib, Pango
 from ks_includes.KlippyGcodes import KlippyGcodes
 from ks_includes.screen_panel import ScreenPanel
 
+
 def create_panel(*args):
     return FanPanel(*args)
 
 
 CHANGEABLE_FANS = ["fan", "fan_generic"]
+
 
 class FanPanel(ScreenPanel):
     fan_speed = {}
@@ -21,9 +23,7 @@ class FanPanel(ScreenPanel):
         _ = self.lang.gettext
         self.devices = {}
 
-        scroll = Gtk.ScrolledWindow()
-        scroll.set_property("overlay-scrolling", False)
-        scroll.set_vexpand(True)
+        scroll = self._gtk.ScrolledWindow()
 
         # Create a grid for all devices
         self.labels['devices'] = Gtk.Grid()
@@ -39,12 +39,12 @@ class FanPanel(ScreenPanel):
         self.content.add(box)
 
     def process_update(self, action, data):
-        if (action != "notify_status_update"):
+        if action != "notify_status_update":
             return
 
         for fan in self.devices:
             if fan in data and "speed" in data[fan]:
-                self.update_fan_speed(fan, data[fan]["speed"])
+                self.update_fan_speed(fan, self._printer.get_fan_speed(fan, data[fan]["speed"]))
 
     def update_fan_speed(self, fan, speed):
         if fan not in self.devices:
@@ -55,7 +55,7 @@ class FanPanel(ScreenPanel):
             self.fan_speed[fan] = round(float(speed) * 100)
             self.devices[fan]['scale'].disconnect_by_func(self.set_fan_speed)
             self.devices[fan]['scale'].set_value(self.fan_speed[fan])
-            self.devices[fan]['scale'].connect("value-changed", self.set_fan_speed, fan)
+            self.devices[fan]['scale'].connect("button-release-event", self.set_fan_speed, fan)
         else:
             self.fan_speed[fan] = float(speed)
             self.devices[fan]['scale'].set_fraction(self.fan_speed[fan])
@@ -69,20 +69,16 @@ class FanPanel(ScreenPanel):
                 break
 
         frame = Gtk.Frame()
-        frame.set_property("shadow-type", Gtk.ShadowType.NONE)
         frame.get_style_context().add_class("frame-item")
 
-        try:
-            self.fan_speed[fan] = float(self._printer.get_data()[fan]["speed"])
-        except Exception:
-            self.fan_speed[fan] = 0
+        self.fan_speed[fan] = float(self._printer.get_fan_speed(fan))
 
         name = Gtk.Label()
         if fan == "fan":
             fan_name = "Part Fan"
         else:
             fan_name = " ".join(fan.split(" ")[1:])
-        name.set_markup("<big><b>%s</b></big>" % (fan_name))
+        name.set_markup("<big><b>%s</b></big>" % fan_name)
         name.set_hexpand(True)
         name.set_vexpand(True)
         name.set_halign(Gtk.Align.START)
@@ -99,7 +95,7 @@ class FanPanel(ScreenPanel):
             scale.set_hexpand(True)
             scale.set_has_origin(True)
             scale.get_style_context().add_class("fan_slider")
-            scale.connect("value-changed", self.set_fan_speed, fan)
+            scale.connect("button-release-event", self.set_fan_speed, fan)
         else:
             scale = Gtk.ProgressBar()
             scale.set_fraction(self.fan_speed[fan])
@@ -139,13 +135,23 @@ class FanPanel(ScreenPanel):
     def load_fans(self):
         fans = self._printer.get_fans()
         for fan in fans:
+            # Support for hiding devices by name
+            name = " ".join(fan.split(" ")[1:]) if not (fan == "fan") else fan
+            if name.startswith("_"):
+                continue
             self.add_fan(fan)
 
-    def set_fan_speed(self, widget, fan):
+    def set_fan_speed(self, widget, event, fan):
         value = self.devices[fan]['scale'].get_value()
 
         if fan == "fan":
             self._screen._ws.klippy.gcode_script(KlippyGcodes.set_fan_speed(value))
         else:
             f = " ".join(fan.split(" ")[1:])
-            self._screen._ws.klippy.gcode_script("SET_FAN_SPEED FAN=%s SPEED=%s" % (f, float(value)/100))
+            self._screen._ws.klippy.gcode_script("SET_FAN_SPEED FAN=%s SPEED=%s" % (f, float(value) / 100))
+        # Check the speed in case it wasn't applied
+        GLib.timeout_add_seconds(1, self.check_fan_speed, fan)
+
+    def check_fan_speed(self, fan):
+        self.update_fan_speed(fan, self._printer.get_fan_speed(fan))
+        return False
