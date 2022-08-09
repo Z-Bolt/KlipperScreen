@@ -3,11 +3,11 @@
 }
 
 window {
-    background-color: #101418;
+    background-color: #13181C;
 }
 
 button {
-    background-color: rgba(0,0,0,0);
+    background-color: #13181C;
 }
 
 button:active {
@@ -16,6 +16,7 @@ button:active {
 
 .button_active {
     background-color: #20303D;
+    border-radius: 1em;
 }
 
 button.color1 {
@@ -54,7 +55,6 @@ combobox box button {
 
 switch {
     background-color: #20292F;
-    border: 0;
 }
 
 switch:checked {
@@ -156,12 +156,7 @@ textview .time {
 }
 
 .message_popup {
-    background-color: #367554;
     border-bottom-color: white;
-}
-
-.message_popup button {
-    background-color: #367554;
 }
 
 .numpad_tleft, .numpad_top, .numpad_tright, .numpad_left, .numpad_button, .numpad_right, .numpad_bleft, .numpad_bottom, .numpad_bright {

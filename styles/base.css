@@ -4,6 +4,7 @@
     -GtkComboBox-appears-as-list: 0;
     text-shadow: none;
     box-shadow: none;
+    border: 0;
 }
 
 window {
@@ -32,21 +33,25 @@ button:active {
 button.color1 {
     border-bottom: .4em solid #ED6500;
     margin: .3em;
+    min-height: 3em;
 }
 
 button.color2 {
     border-bottom: .4em solid #B10080;
     margin: .3em;
+    min-height: 3em;
 }
 
 button.color3 {
     border-bottom: .4em solid #009384;
     margin: .3em;
+    min-height: 3em;
 }
 
 button.color4 {
     border-bottom: .4em solid #A7E100;
     margin: .3em;
+    min-height: 3em;
 }
 
 button.active {
@@ -78,6 +83,11 @@ combobox box button {
 
 combobox arrow {
     min-width: 1em;
+}
+
+switch {
+    border: 0;
+    border-radius: 3em;
 }
 
 switch slider {
@@ -146,7 +156,7 @@ scrollbar, scrollbar button, scrollbar trough {
 }
 
 scrollbar slider {
-    min-width: 2.5em;
+    min-width: 1.5em;
     border-radius: .7em;
     background-color: #404E57;
 }
@@ -170,6 +180,10 @@ trough {
 
 .action_bar {
     /*border-right: 2px solid #444;*/
+}
+
+.active_device {
+    background-color: #20303D;
 }
 
 .dialog {
@@ -203,6 +217,7 @@ trough {
     border-top-left-radius: .75em;
     border-bottom-left-radius: .75em;
     margin-right: 0;
+    min-height: 3em;
 }
 
 .distbutton {
@@ -211,6 +226,7 @@ trough {
     border-right: 0;
     margin-left: 0;
     margin-right: 0;
+    min-height: 3em;
 }
 
 .distbutton_bottom {
@@ -219,6 +235,19 @@ trough {
     border-top-right-radius: .7em;
     border-bottom-right-radius: .7em;
     margin-left: 0;
+    min-height: 3em;
+}
+
+.extruder-0 {
+    color: #ff0000;
+}
+
+.extruder-1 {
+    color: #00ff00;
+}
+
+.extruder-2 {
+    color: #0000ff;
 }
 
 .fan_slider {
@@ -231,18 +260,30 @@ trough {
     padding: .2em .3em;
 }
 
-.updater-item {
-    min-height: 3em;
-    padding: .2em;
+.heatergraph {
+    min-height: 350px;
+}
+
+.heater-grid {
+    margin-right: .1em;
+}
+
+.heater-grid label {
+    margin-top: .2em;
+    margin-bottom: .2em;
+    min-height: 2em;
 }
 
 .message_popup {
-    background-color: #367554;
     border-bottom: .1em solid white;
 }
 
-.message_popup button {
+.message_popup_echo, .message_popup_echo button {
     background-color: #367554;
+}
+
+.message_popup_error, .message_popup_error button {
+    background-color: #9e2f3a;
 }
 
 .numpad_tleft {
@@ -372,6 +413,11 @@ trough {
     margin-top: 0;
 }
 
+.updater-item {
+    min-height: 3em;
+    padding: .2em;
+}
+
 .message {
     border: .1em solid #981E1F;
     font-size: 1em;
@@ -406,3 +452,37 @@ trough {
 .error {
     background-color: rgba(204, 30, 30, 0.7);
 }
+
+popover {
+    background-color: #222;
+}
+
+popover button {
+    background-color: #222;
+}
+
+.screensaver {
+    background-color: black;
+}
+
+.screensaver button:active {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Hardcoded values until creation of dynamic CSS updates */
+.graph_label_hidden {padding-left: .9em;} /* .4em on top of normal button padding */
+.graph_label_extruder {border-left-width: .4em; border-left-style: solid;}
+.graph_label_extruder1 {border-left-width: .4em; border-left-style: solid;}
+.graph_label_extruder2 {border-left-width: .4em; border-left-style: solid;}
+.graph_label_extruder3 {border-left-width: .4em; border-left-style: solid;}
+.graph_label_extruder4 {border-left-width: .4em; border-left-style: solid;}
+.graph_label_heater_bed {border-left-width: .4em; border-left-style: solid;}
+.graph_label_fan_1 {border-left-width: .4em; border-left-style: solid;}
+.graph_label_fan_2 {border-left-width: .4em; border-left-style: solid;}
+.graph_label_fan_3 {border-left-width: .4em; border-left-style: solid;}
+.graph_label_fan_4 {border-left-width: .4em; border-left-style: solid;}
+.graph_label_sensor_1 {border-left-width: .4em; border-left-style: solid;}
+.graph_label_sensor_2 {border-left-width: .4em; border-left-style: solid;}
+.graph_label_sensor_3 {border-left-width: .4em; border-left-style: solid;}
+.graph_label_sensor_4 {border-left-width: .4em; border-left-style: solid;}
+.graph_label_sensor_5 {border-left-width: .4em; border-left-style: solid;}
