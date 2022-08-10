@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 import gi
-import json
-import humanize
 import logging
+import os
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk, GLib, Pango
 from datetime import datetime
 
-from ks_includes.KlippyGcodes import KlippyGcodes
 from ks_includes.screen_panel import ScreenPanel
+
 
 def create_panel(*args):
     return PrintPanel(*args)
+
 
 class PrintPanel(ScreenPanel):
     cur_directory = "gcodes"
@@ -35,9 +35,7 @@ class PrintPanel(ScreenPanel):
             sortdir = ["name", "asc"]
         self.sort_current = [sortdir[0], 0 if sortdir[1] == "asc" else 1]  # 0 for asc, 1 for desc
 
-        scroll = Gtk.ScrolledWindow()
-        scroll.set_property("overlay-scrolling", False)
-        scroll.set_vexpand(True)
+        scroll = self._gtk.ScrolledWindow()
 
         sort = Gtk.Label()
         sort.set_text(_("Sort by: "))
@@ -55,7 +53,7 @@ class PrintPanel(ScreenPanel):
             sbox.add(s)
             i += 1
 
-        refresh = self._gtk.ButtonImage("refresh", None, None, .5, .5)
+        refresh = self._gtk.ButtonImage("refresh", None, None, .5)
         refresh.connect('clicked', self._refresh_files)
         sbox.add(refresh)
         sbox.set_hexpand(True)
@@ -85,9 +83,6 @@ class PrintPanel(ScreenPanel):
         self.content.add(box)
         self._screen.files.add_file_callback(self._callback)
 
-
-        return
-
     def activate(self):
         if self.cur_directory != "gcodes":
             self.change_dir(None, "gcodes")
@@ -100,7 +95,6 @@ class PrintPanel(ScreenPanel):
 
         if directory not in self.labels['directories']:
             frame = Gtk.Frame()
-            frame.set_property("shadow-type", Gtk.ShadowType.NONE)
             frame.get_style_context().add_class("frame-item")
 
             name = Gtk.Label()
@@ -129,7 +123,7 @@ class PrintPanel(ScreenPanel):
             file.set_hexpand(True)
             file.set_vexpand(False)
 
-            icon = self._gtk.Image("folder.svg", False, 1, 1)
+            icon = self._gtk.Image("folder", 1)
 
             file.add(icon)
             file.add(labels)
@@ -171,13 +165,13 @@ class PrintPanel(ScreenPanel):
         filename = filepath.split('/')[-1]
         for i in range(1, len(dir)):
             curdir = "/".join(dir[0:i])
-            newdir = "/".join(dir[0:i+1])
+            newdir = "/".join(dir[0:i + 1])
             if newdir not in self.filelist[curdir]['directories']:
                 self.add_directory(newdir)
 
         if filename not in self.filelist[directory]['files']:
             for i in range(1, len(dir)):
-                curdir = "/".join(dir[0:i+1])
+                curdir = "/".join(dir[0:i + 1])
                 if curdir != "gcodes" and fileinfo['modified'] > self.filelist[curdir]['modified']:
                     self.filelist[curdir]['modified'] = fileinfo['modified']
                     self.labels['directories'][curdir]['info'].set_markup(
@@ -187,15 +181,14 @@ class PrintPanel(ScreenPanel):
 
         if filepath not in self.files:
             frame = Gtk.Frame()
-            frame.set_property("shadow-type", Gtk.ShadowType.NONE)
             frame.get_style_context().add_class("frame-item")
 
             name = Gtk.Label()
-            name.set_markup("<big><b>%s</b></big>" % (filename))
+            name.set_markup("<big><b>%s</b></big>" % (os.path.splitext(filename)[0].replace("_", " ")))
             name.set_hexpand(True)
             name.set_halign(Gtk.Align.START)
             name.set_line_wrap(True)
-            name.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
+            name.set_line_wrap_mode(Pango.WrapMode.CHAR)
 
             info = Gtk.Label()
             info.set_halign(Gtk.Align.START)
@@ -216,14 +209,17 @@ class PrintPanel(ScreenPanel):
             file.set_hexpand(True)
             file.set_vexpand(False)
 
-            icon = self._gtk.Image("file.svg", False, 1.6, 1.6)
-            pixbuf = self.get_file_image(filepath)
+            icon = Gtk.Image()
+            pixbuf = self.get_file_image(filepath, small=True)
             if pixbuf is not None:
                 icon.set_from_pixbuf(pixbuf)
+            else:
+                icon = self._gtk.Image("file", 1.6)
 
             file.add(icon)
             file.add(labels)
-            file.add(actions)
+            if os.path.splitext(filename)[1] in [".gcode", ".g", ".gco"]:
+                file.add(actions)
             frame.add(file)
 
             self.files[filepath] = frame
@@ -292,7 +288,7 @@ class PrintPanel(ScreenPanel):
         ]
 
         label = Gtk.Label()
-        label.set_markup("<b>%s</b>\n" % (filename))
+        label.set_markup("<b>%s</b>\n" % filename)
         label.set_hexpand(True)
         label.set_halign(Gtk.Align.CENTER)
         label.set_vexpand(True)
@@ -313,7 +309,7 @@ class PrintPanel(ScreenPanel):
         grid.set_halign(Gtk.Align.CENTER)
         grid.set_valign(Gtk.Align.CENTER)
 
-        dialog = self._gtk.Dialog(self._screen, buttons, grid, self.confirm_print_response, filename)
+        self._gtk.Dialog(self._screen, buttons, grid, self.confirm_print_response, filename)
 
     def confirm_print_response(self, widget, response_id, filename):
         widget.destroy()
@@ -321,7 +317,7 @@ class PrintPanel(ScreenPanel):
         if response_id == Gtk.ResponseType.CANCEL:
             return
 
-        logging.info("Starting print: %s" % (filename))
+        logging.info("Starting print: %s" % filename)
         self._screen._ws.klippy.print_start(filename)
 
     def delete_file(self, filename):
@@ -357,14 +353,22 @@ class PrintPanel(ScreenPanel):
         if fileinfo is None:
             return
 
-        return "<small>%s: <b>%s</b> - %s: <b>%s</b>\n%s: <b>%s</b></small>" % (
+        return "<small>%s: <b>%s</b>\n%s: <b>%s</b>\n%s: <b>%s</b></small>" % (
             _("Uploaded"),
             datetime.fromtimestamp(fileinfo['modified']).strftime("%Y-%m-%d %H:%M"),
             _("Size"),
-            humanize.naturalsize(fileinfo['size']),
+            self.formatsize(fileinfo['size']),
             _("Print Time"),
             self.get_print_time(filename)
         )
+
+    def formatsize(self, size):
+        size = float(size)
+        suffixes = ["kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+        for i, suffix in enumerate(suffixes, start=2):
+            unit = 1024 ** i
+            if size < unit:
+                return "%.1f %s" % ((1024 * size / unit), suffix)
 
     def get_print_time(self, filename):
         fileinfo = self._screen.files.get_file_info(filename)
@@ -376,16 +380,16 @@ class PrintPanel(ScreenPanel):
             print_str = ""
 
             # Figure out how many days
-            print_val = int(print_time/86400)
+            print_val = int(print_time / 86400)
             if print_val > 0:
                 print_str = "%sd " % print_val
 
             # Take remainder from days and divide by hours
-            print_val = int((print_time % 86400)/3600)
+            print_val = int((print_time % 86400) / 3600)
             if print_val > 0:
                 print_str = "%s%sh " % (print_str, print_val)
 
-            print_val = int(((print_time % 86400) % 3600)/60)
+            print_val = int(((print_time % 86400) % 3600) / 60)
             print_str = "%s%sm" % (print_str, print_val)
             return print_str
         return "Unavailable"
@@ -426,3 +430,9 @@ class PrintPanel(ScreenPanel):
 
     def _refresh_files(self, widget):
         self._files.refresh_files()
+
+    def process_update(self, action, data):
+        if action == "notify_gcode_response":
+            if "unknown" in data.lower():
+                self._screen.show_popup_message("%s" % data)
+        return

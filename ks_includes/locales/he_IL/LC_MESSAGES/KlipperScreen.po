@@ -7,22 +7,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Klipperscreen\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-29 11:44-0300\n"
-"PO-Revision-Date: 2021-09-29 10:57-0300\n"
+"POT-Creation-Date: 2022-03-31 11:25-0300\n"
+"PO-Revision-Date: 2022-03-31 10:54-0300\n"
 "Last-Translator: Emanuel Sharvit <manu7irl@gmail.com>\n"
 "Language-Team: \n"
 "Language: he_IL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.0\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n==2 ? 1 : n>10 && n%10==0 ? "
 "2 : 3);\n"
+"X-Generator: Poedit 3.0.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-
-#, python-format
-msgid "%d Packages will be updated"
-msgstr "%d חבילות יעודכנו"
 
 #, python-format
 msgid "%s will be updated to version"
@@ -33,6 +29,9 @@ msgstr "(בְּרִירַת מֶחדָל)"
 
 msgid "24 Hour Time"
 msgstr "זמן 24 שעות"
+
+msgid "A FIRMWARE_RESTART may fix the issue."
+msgstr "FIRMWARE_RESTART עשוי לפתור את הבעיה."
 
 msgid "Abort"
 msgstr "בטל"
@@ -49,8 +48,15 @@ msgstr "הוסף מדפסת"
 msgid "Add bed mesh profile"
 msgstr "הוסף פרופיל רשת למיטה"
 
+msgid "Are you sure you want to run Emergency Stop?"
+msgstr ""
+"האם אתה בטוח שברצונך להדפיסהאם אתה בטוח שברצונך להפעיל את עצירת החירום?"
+
 msgid "Are you sure you wish to cancel this print?"
 msgstr "האם אתה בטוח שברצונך לבטל את ההדפסה?"
+
+msgid "Are you sure you wish to disable motors?"
+msgstr "האם אתה בטוח שברצונך להשבית מנועים?"
 
 msgid "Are you sure you wish to reboot the system?"
 msgstr "האם אתה בטוח שברצונך לאתחל את המערכת?"
@@ -58,14 +64,29 @@ msgstr "האם אתה בטוח שברצונך לאתחל את המערכת?"
 msgid "Are you sure you wish to shutdown the system?"
 msgstr "האם אתה בטוח שברצונך לסגור את המערכת?"
 
+msgid "Auto"
+msgstr "אוטומטי"
+
+msgid "Auto-scroll"
+msgstr "גלילה אוטומטית"
+
 msgid "Bed Level"
 msgstr "פילוס מיטה"
 
 msgid "Bed Mesh"
 msgstr "מיפוי מיטה"
 
+msgid "Bltouch found applied offset"
+msgstr "Bltouch נמצא היסט מוחל"
+
 msgid "Calibrate"
 msgstr "לְדַרֵג"
+
+msgid "Calibrated, save configuration to make it permanent"
+msgstr "מכויל, שמור את התצורה כדי שהיא תהיה קבועה"
+
+msgid "Can't set above the maximum:"
+msgstr "לא ניתן להגדיר מעל המקסימום:"
 
 msgid "Cancel"
 msgstr "ביטול"
@@ -78,6 +99,9 @@ msgstr "מבוטל"
 
 msgid "Cancelling"
 msgstr "מבטל"
+
+msgid "Cannot connect to Moonraker"
+msgstr "לא ניתן להתחבר ל-Moonraker"
 
 msgid "Channel"
 msgstr "עָרוּץ"
@@ -92,14 +116,14 @@ msgstr ""
 msgid "Close"
 msgstr "סגור"
 
-msgid "Colorized"
-msgstr "Colorized"
-
 msgid "Complete"
 msgstr "לְהַשְׁלִים"
 
 msgid "Configuration"
 msgstr "קונפיגורציה"
+
+msgid "Confirm Emergency Stop"
+msgstr "אשר עצירת חירום"
 
 msgid "Connected"
 msgstr "מְחוּבָּר"
@@ -126,14 +150,14 @@ msgstr "לְהַקְטִין"
 msgid "Delete"
 msgstr "לִמְחוֹק"
 
+msgid "Deselect"
+msgstr "בטל את הבחירה"
+
 msgid "Disable Motors"
 msgstr "השבת מנועים"
 
 msgid "Disable XY"
 msgstr "השבת את XY"
-
-msgid "Disconnect"
-msgstr "לְנַתֵק"
 
 msgid "Displayed Macros"
 msgstr "מוצגים מאקרו"
@@ -144,9 +168,6 @@ msgstr "מרחק (מ\"מ)"
 #, python-format
 msgid "Do you want to recover %s?"
 msgstr "האם ברצונך לשחזר %s?"
-
-msgid "Duration Only"
-msgstr "משך הזמן בלבד"
 
 msgid "Elapsed:"
 msgstr "זמן שעבר:"
@@ -166,6 +187,9 @@ msgstr "שיחול +"
 msgid "Extrusion -"
 msgstr "שיחול -"
 
+msgid "Failed, adjust position first"
+msgstr "נכשל, תחילה התאם את המיקום"
+
 msgid "Fan"
 msgstr "מאוורר"
 
@@ -181,14 +205,34 @@ msgstr "כוונון עדין"
 msgid "Finish"
 msgstr "סיים"
 
-msgid "Firmware Restart"
-msgstr "הפעלה מחדש של הקושחה"
+msgid ""
+"Firmware\n"
+"Restart"
+msgstr ""
+"קושחה\n"
+"איתחול"
 
 msgid "Font Size"
 msgstr "גודל טקסט"
 
+msgid ""
+"Full\n"
+"Update"
+msgstr ""
+"מלא\n"
+"עדכון"
+
 msgid "Go Back"
 msgstr "חזרה"
+
+msgid "Hidden"
+msgstr "מוּסתָר"
+
+msgid "Hide"
+msgstr "להתחבא"
+
+msgid "Hide sensors in Temp."
+msgstr "הסתר חיישנים בטמפ'."
 
 msgid "Home"
 msgstr "איפוס"
@@ -213,12 +257,6 @@ msgstr "איפוס צירים"
 
 msgid "Hostname"
 msgstr "Hostname"
-
-msgid "IPv4"
-msgstr "IPv4"
-
-msgid "IPv6"
-msgstr "IPv6"
 
 msgid "Icon Theme"
 msgstr "נושא אייקון"
@@ -247,31 +285,18 @@ msgstr "הפוך את Y"
 msgid "Invert Z"
 msgstr "הפוך את Z"
 
-msgid "Klipper Restart"
-msgstr "אתחול קליפר"
-
-msgid "Klipper Version"
-msgstr "גרסא של קליפר"
+msgid ""
+"Klipper\n"
+"Restart"
+msgstr ""
+"קליפר\n"
+"איתחול"
 
 msgid "Klipper has disconnected"
 msgstr "קליפר התנתק"
 
-msgid ""
-"Klipper has encountered an error with the micro-controller.\n"
-"Please recompile and flash."
-msgstr ""
-"קליפר נתקל בשגיאה בבקר המיקרו.\n"
-"אנא הידור מחדש והבהב."
-
 msgid "Klipper has encountered an error."
 msgstr "קילפר נתקל בבעיה."
-
-msgid ""
-"Klipper has encountered an error.\n"
-"Issue a FIRMWARE_RESTART to attempt fixing the issue."
-msgstr ""
-"קליפר נתקל בבעיה. \n"
-"נסה להריץ firmware_restart, כדי לפתור את הבעיה."
 
 msgid "Klipper has shutdown"
 msgstr "קליפר נכבה"
@@ -281,9 +306,6 @@ msgstr "קליפר מנסה לרוץ"
 
 msgid "Klipper will reboot"
 msgstr "קליפר יבצע אתחול"
-
-msgid "KlipperScreen Version"
-msgstr "גרסא של KlipperScreen"
 
 msgid "Language"
 msgstr "שפה"
@@ -330,14 +352,14 @@ msgstr "תַפרִיט"
 msgid "Modified"
 msgstr "שונה"
 
+msgid "Moonraker: connected"
+msgstr "Moonraker: מחובר"
+
 msgid "Move"
 msgstr "הזזת צירים"
 
 msgid "Move Distance (mm)"
 msgstr "מרחק הזזה (מ''מ)"
-
-msgid "Move Speed (mm/s)"
-msgstr "מהירות הזזה (מ\"מ/שניות)"
 
 msgid "Name"
 msgstr "שֵׁם"
@@ -345,18 +367,28 @@ msgstr "שֵׁם"
 msgid "Network"
 msgstr "רשת"
 
-msgid "Number Pad"
-msgstr "פד נומרי"
+msgid "Nothing selected"
+msgstr "שום דבר לא נבחר"
 
 msgid "Off"
 msgstr "כבוי"
 
 #, python-format
-msgid "Outdated by %d commits:"
-msgstr "מיושן ב- %d מתחייב:"
+msgid "Outdated by %d"
+msgstr "מיושן על ידי %d"
 
 msgid "PSK for"
 msgstr "PSK עבור"
+
+msgid "Package will be updated"
+msgid_plural "Packages will be updated"
+msgstr[0] "חבילה אחת תעודכן"
+msgstr[1] "חבילות יעודכנו"
+msgstr[2] "חבילות יעודכנו"
+msgstr[3] "חבילות יעודכנו"
+
+msgid "Password saved"
+msgstr "הסיסמה נשמרה"
 
 msgid "Pause"
 msgstr "השהיה"
@@ -364,14 +396,17 @@ msgstr "השהיה"
 msgid "Paused"
 msgstr "מושהה"
 
+msgid "Perform a full upgrade?"
+msgstr "לבצע שדרוג מלא?"
+
+msgid "Please recompile and flash the micro-controller."
+msgstr "אנא הידור מחדש והבזק את המיקרו-בקר."
+
 msgid "Power"
 msgstr "הפעלה"
 
 msgid "Power On Printer"
 msgstr "הפעל מדפסת"
-
-msgid "Preheat"
-msgstr "חימום מראש"
 
 msgid "Print"
 msgstr "הדפס"
@@ -388,6 +423,9 @@ msgstr "חיבורי מדפסת"
 msgid "Printing"
 msgstr "מדפיס"
 
+msgid "Probe found applied offset"
+msgstr "Probe נמצא היסט מוחל"
+
 msgid "Profile Name:"
 msgstr "שם פרופיל:"
 
@@ -403,6 +441,9 @@ msgstr "לְהַחלִים Hard"
 msgid "Recover Soft"
 msgstr "לְהַחלִים Soft"
 
+msgid "Reference"
+msgstr "התייחסות"
+
 msgid "Restart"
 msgstr "אתחל"
 
@@ -412,32 +453,55 @@ msgstr "המשך"
 msgid "Retract"
 msgstr "שיחול לאחור"
 
+#, python-format
+msgid "Retry #%s"
+msgstr "נסה שוב #%s"
+
 msgid "Save"
 msgstr "להציל"
 
 msgid "Save Config"
 msgstr "שמור קונפיג"
 
-msgid "Save configuration."
-msgstr "שמור תצורה."
+msgid "Save configuration"
+msgstr "שמור תצורה"
+
+msgid "Screen DPMS"
+msgstr "DPMS מסך"
 
 msgid "Screen Power Off Time"
 msgstr "זמן כיבוי מסך"
 
-msgid "Screen will show in less than one second"
-msgstr "המסך יופיע תוך פחות משנייה אחת"
-
 msgid "Screws Adjust"
 msgstr "סידור ברגים"
 
+msgid "Select"
+msgstr "בחר"
+
+msgid "Send"
+msgstr "לִשְׁלוֹחַ"
+
+#, python-format
+msgid "Sending Power ON signal to: %s"
+msgstr "שולח אות הפעלה אל: %s"
+
+msgid "Set Temp"
+msgstr "הגדר טמפ'"
+
 msgid "Settings"
 msgstr "הגדרות"
+
+msgid "Show"
+msgstr "הופעה"
 
 msgid "Size"
 msgstr "גודל"
 
 msgid "Slicer"
 msgstr "Slicer"
+
+msgid "Slicer Time correction (%)"
+msgstr "תיקון זמן פריסה (%)"
 
 msgid "Small"
 msgstr "קָטָן"
@@ -457,8 +521,11 @@ msgstr "מהירות -"
 msgid "Square Corner Velocity"
 msgstr "מהירות פינה מרובעת"
 
-msgid "Starting WiFi Re-association"
-msgstr "התחלת שיוך מחדש ל- WiFi"
+msgid "Start"
+msgstr "הַתחָלָה"
+
+msgid "Starting WiFi Association"
+msgstr "מתחיל איגוד WiFi"
 
 msgid "Starting recovery for"
 msgstr "החל התאוששות עבור"
@@ -483,6 +550,9 @@ msgstr ""
 "מערכת\n"
 "לכבות"
 
+msgid "Temp (°C)"
+msgstr "טמפ' (°C)"
+
 msgid "Temperature"
 msgstr "טמפרטורה"
 
@@ -493,6 +563,12 @@ msgstr "כדי ליישם %s צריך להפעיל מחדש את KlipperScreen"
 msgid "Tool"
 msgstr "כלי"
 
+msgid "Total:"
+msgstr "סך הכל:"
+
+msgid "Unknown Heater"
+msgstr "מחמם לא ידוע"
+
 msgid "Unload"
 msgstr "לִפְרוֹק"
 
@@ -501,6 +577,9 @@ msgstr "עדכני"
 
 msgid "Update"
 msgstr "עדכון"
+
+msgid "Updating"
+msgstr "עִדכּוּן"
 
 msgid "Uploaded"
 msgstr "הועלה"
@@ -514,6 +593,9 @@ msgstr "X+"
 msgid "X-"
 msgstr "X-"
 
+msgid "XY Move Speed (mm/s)"
+msgstr "מהירות תנועה XY (מ\"מ/שנייה)"
+
 msgid "Y+"
 msgstr "Y+"
 
@@ -523,8 +605,11 @@ msgstr "Y-"
 msgid "Z Calibrate"
 msgstr "כיול Z"
 
-msgid "Z Offset"
-msgstr "הפרז גובה Z"
+msgid "Z Move Speed (mm/s)"
+msgstr "מהירות תנועה Z (מ\"מ/שניות)"
+
+msgid "Z Position"
+msgstr "מיקום Z"
 
 msgid "Z Tilt"
 msgstr "הטיה Z"
@@ -535,8 +620,22 @@ msgstr "Z+"
 msgid "Z-"
 msgstr "Z-"
 
+msgid "commit"
+msgid_plural "commits"
+msgstr[0] "שינוי"
+msgstr[1] "שינויים"
+msgstr[2] "שינויים"
+msgstr[3] "שינויים"
+
 msgid "dBm"
 msgstr "dBm"
+
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] "שעה"
+msgstr[1] "שעות"
+msgstr[2] "שעות"
+msgstr[3] "שעות"
 
 msgid "minutes"
 msgstr "דקות"
@@ -550,18 +649,67 @@ msgstr "מ\"מ/ש"
 msgid "mm/s^2"
 msgstr "mm/s^2"
 
-#~ msgid "Z-bolt (default)"
-#~ msgstr "Z-bolt (default)"
+#~ msgid "IPv4"
+#~ msgstr "IPv4"
+
+#~ msgid "IPv6"
+#~ msgstr "IPv6"
+
+#~ msgid "Z Offset"
+#~ msgstr "הפרז גובה Z"
+
+#~ msgid "Unknown Heater "
+#~ msgstr "מחמם לא ידוע "
+
+#~ msgid "Disconnect"
+#~ msgstr "לְנַתֵק"
+
+#~ msgid "Duration Only"
+#~ msgstr "משך הזמן בלבד"
+
+#~ msgid "Klipper Version"
+#~ msgstr "גרסא של קליפר"
+
+#~ msgid ""
+#~ "Klipper has encountered an error with the micro-controller.\n"
+#~ "Please recompile and flash."
+#~ msgstr ""
+#~ "קליפר נתקל בשגיאה בבקר המיקרו.\n"
+#~ "אנא הידור מחדש והבהב."
+
+#~ msgid ""
+#~ "Klipper has encountered an error.\n"
+#~ "Issue a FIRMWARE_RESTART to attempt fixing the issue."
+#~ msgstr ""
+#~ "קליפר נתקל בבעיה. \n"
+#~ "נסה להריץ firmware_restart, כדי לפתור את הבעיה."
+
+#~ msgid "KlipperScreen Version"
+#~ msgstr "גרסא של KlipperScreen"
+
+#~ msgid "Show Only Heaters in Temp."
+#~ msgstr "הצג רק מחממים בטמפ'."
+
+#~ msgid "Target"
+#~ msgstr "יַעַד"
+
+#~ msgid "Temp"
+#~ msgstr "טמפ'"
+
+#~ msgid "Number Pad"
+#~ msgstr "פד נומרי"
+
+#~ msgid "Preheat"
+#~ msgstr "חימום מראש"
+
+#~ msgid "Screen will show in less than one second"
+#~ msgstr "המסך יופיע תוך פחות משנייה אחת"
 
 #~ msgid "Medium (default)"
 #~ msgstr "בינוני (ברירת מחדל)"
 
 #~ msgid "File Estimation (default)"
 #~ msgstr "קובץ (ברירת מחדל)"
-
-#, fuzzy
-#~ msgid "Change Printer"
-#~ msgstr "בטל הדפסה"
 
 #~ msgid "Fan Off"
 #~ msgstr "כבה מאוורר"
@@ -581,27 +729,17 @@ msgstr "mm/s^2"
 #~ msgid "?"
 #~ msgstr "?"
 
-#~ msgid "Are you sure you want to print"
-#~ msgstr "האם אתה בטוח שברצונך להדפיס"
-
 #~ msgid "Cancel Change"
 #~ msgstr "בטל שינוי"
 
 #~ msgid "Control"
 #~ msgstr "שליטה"
 
-#~ msgid "Emergency Stop"
-#~ msgstr "עצירת חירום"
-
 #~ msgid "Load Average"
 #~ msgstr "עומס ממוצע"
 
 #~ msgid "Network Info"
 #~ msgstr "מידע על הרשת"
-
-#, fuzzy
-#~ msgid "Klipper"
-#~ msgstr "אתחול קליפר"
 
 #~ msgid "Back"
 #~ msgstr "חזור"

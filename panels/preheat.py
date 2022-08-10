@@ -65,6 +65,7 @@ class PreheatPanel(ScreenPanel):
 
         cooldown = self._gtk.ButtonImage('cool-down', _('Cooldown'), "color%d" % ((i % 4)+1))
         cooldown.connect("clicked", self.set_temperature, "cooldown")
+        
 
         row = int(i/2) if i % 2 == 0 else int(i/2)+1
         self.labels["control_grid"].attach(cooldown, i % 2, int(i/2), 1, 1)
@@ -72,7 +73,7 @@ class PreheatPanel(ScreenPanel):
         i += 1
         temperature = self._gtk.ButtonImage('heat-up', _('Temperature'), "color%d" % ((i % 4)+1))
         temperature.connect("clicked", self.menu_item_clicked, "temperature", {
-            "name": "Temperature",
+            "name": _('Temperature'),
             "panel": "temperature"
         })
         self.labels["control_grid"].attach(temperature, i % 2, int(i/2), 1, 1)
@@ -103,7 +104,9 @@ class PreheatPanel(ScreenPanel):
         self.labels[heater].get_style_context().add_class('button_active')
 
     def set_temperature(self, widget, setting):
+        _ = self.lang.gettext
         if setting == "cooldown":
+            self._screen.show_popup_message(_("Принтер охлаждается"), time=10,level=1)
             for heater in self.active_heaters:
                 logging.info("Setting %s to %d" % (heater, 0))
                 if heater.startswith('heater_generic '):
