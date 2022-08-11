@@ -32,7 +32,7 @@ class KlipperScreenConfig:
     do_not_edit_prefix = "#~#"
 
     def __init__(self, configfile, screen=None):
-        self.default_config_path = os.path.join(klipperscreendir, "ks_includes", "defaults.conf")
+        self.default_config_path = os.path.join(klipperscreendir, "ks_includes", "defaults_simple.conf")
         self.config = configparser.ConfigParser()
         self.config_path = self.get_config_file_location(configfile)
         logging.debug("Config path location: %s" % self.config_path)
