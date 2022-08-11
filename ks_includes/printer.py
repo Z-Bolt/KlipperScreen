@@ -3,7 +3,6 @@ import logging
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gdk, GLib
-from ks_includes.KlippyGcodes import KlippyGcodes
 
 
 class Printer:
@@ -20,21 +19,49 @@ class Printer:
         "shutdown": None
     }
     tools = []
+    toolcount = 0
+    extrudercount = 0
+    tempdevcount = 0
+    fancount = 0
 
     def __init__(self, printer_info, data, state_execute_cb):
         self.state = "disconnected"
         self.state_cb = state_execute_cb
         self.power_devices = {}
+        self.store_timeout = False
+
+    def reset(self):
+        self.state = None
+        self.state_cb = None
+        self.data = None
+        self.devices = None
+        self.power_devices = None
+        self.state_callbacks = None
+        self.tools = None
+        self.toolcount = None
+        self.extrudercount = None
+        self.tempdevcount = None
+        self.fancount = None
+        GLib.source_remove(self.store_timeout)
+        self.store_timeout = None
+        self.config = None
+        self.klipper = None
+        self.tempstore = None
 
     def reinit(self, printer_info, data):
         logging.debug("Moonraker object status: %s" % data)
         self.config = data['configfile']['config']
         self.toolcount = 0
         self.extrudercount = 0
+        self.tempdevcount = 0
+        self.fancount = 0
         self.tools = []
         self.devices = {}
         self.data = data
         self.klipper = {}
+        self.tempstore = {}
+        if self.store_timeout is False:
+            self.store_timeout = GLib.timeout_add_seconds(1, self._update_temp_store)
 
         self.klipper = {
             "version": printer_info['software_version']
@@ -55,11 +82,16 @@ class Printer:
                 if "shared_heater" in self.config[x]:
                     continue
                 self.extrudercount += 1
-            if x == 'heater_bed' or x.startswith('heater_generic ') or x.startswith('temperature_sensor '):
+            if x == 'heater_bed' or x.startswith('heater_generic ') or x.startswith('temperature_sensor ') \
+                    or x.startswith('temperature_fan '):
                 self.devices[x] = {
                     "temperature": 0,
                     "target": 0
                 }
+                self.tempdevcount += 1
+            if x == 'fan' or x.startswith('controller_fan ') or x.startswith('heater_fan ') \
+                    or x.startswith('fan_generic '):
+                self.fancount += 1
             if x.startswith('bed_mesh '):
                 r = self.config[x]
                 r['x_count'] = int(r['x_count'])
@@ -72,7 +104,10 @@ class Printer:
         self.process_update(data)
 
         logging.info("Klipper version: %s", self.klipper['version'])
-        logging.info("### Toolcount: " + str(self.toolcount) + " Heaters: " + str(self.extrudercount))
+        logging.info("# Toolcount: %s", str(self.toolcount))
+        logging.info("# Extruders: %s", str(self.extrudercount))
+        logging.info("# Temperature devices: %s", str(self.tempdevcount))
+        logging.info("# Fans: %s", str(self.fancount))
 
     def process_update(self, data):
         keys = [
@@ -85,10 +120,12 @@ class Printer:
             'print_stats',
             'toolhead',
             'virtual_sdcard',
-            'webhooks'
+            'webhooks',
+            'fimware_retraction',
+            'motion_report'
         ]
 
-        for x in (self.get_tools() + self.get_heaters()):
+        for x in (self.get_tools() + self.get_heaters() + self.get_filament_sensors()):
             if x in data:
                 for i in data[x]:
                     self.set_dev_stat(x, i, data[x][i])
@@ -100,7 +137,7 @@ class Printer:
                 self.data[x] = {}
             self.data[x].update(data[x])
 
-        if "webhooks" in data or "idle_timeout" in data or "print_stats" in data:
+        if "webhooks" in data or "idle_timeout" in data or "print_stats" in data or "pause_resume" in data:
             self.evaluate_state()
 
     def get_updates(self):
@@ -110,20 +147,24 @@ class Printer:
 
     def evaluate_state(self):
         wh_state = self.data['webhooks']['state'].lower()  # possible values: startup, ready, shutdown, error
-        idle_state = self.data['idle_timeout']['state'].lower()  # possible values: Idle, printing, ready
-        print_state = self.data['print_stats']['state'].lower()  # possible values: complete, paused, printing, standby
 
         if wh_state == "ready":
             new_state = "ready"
-            if print_state == "paused":
+            if self.data['pause_resume']['is_paused']:
                 new_state = "paused"
-            elif idle_state == "printing":
-                if print_state == "complete":
-                    new_state = "ready"
-                elif print_state != "printing":  # Not printing a file, toolhead moving
-                    new_state = "busy"
-                else:
-                    new_state = "printing"
+            elif self.data['print_stats']:
+                print_state = self.data['print_stats']['state'].lower()  # complete, error, paused, printing, standby
+                if print_state == "paused":
+                    new_state = "paused"
+                if self.data['idle_timeout']:
+                    idle_state = self.data['idle_timeout']['state'].lower()  # idle, printing, ready
+                    if idle_state == "printing":
+                        if print_state == "complete":
+                            new_state = "ready"
+                        elif print_state != "printing":  # Not printing a file, toolhead moving
+                            new_state = "busy"
+                        else:
+                            new_state = "printing"
 
             if new_state != "busy":
                 self.change_state(new_state)
@@ -160,9 +201,6 @@ class Printer:
             }
         logging.debug("Power devices: %s" % self.power_devices)
 
-    def config_section_exists(self, section):
-        return section in list(self.config)
-
     def get_config_section_list(self, search=""):
         if not hasattr(self, "config"):
             return []
@@ -173,17 +211,14 @@ class Printer:
             return self.config[section]
         return False
 
-    def get_config_section(self, section):
-        if section not in self.config:
-            return False
-        return self.config[section]
-
     def get_data(self):
         return self.data
 
     def get_fans(self):
-        fans = ["fan"] if len(self.get_config_section_list("fan")) > 0 else []
-        fan_types = ["controller_fan", "fan_generic", "heater_fan", "temperature_fan"]
+        fans = []
+        if self.config_section_exists("fan"):
+            fans.append("fan")
+        fan_types = ["controller_fan", "fan_generic", "heater_fan"]
         for type in fan_types:
             for f in self.get_config_section_list("%s " % type):
                 fans.append(f)
@@ -200,21 +235,44 @@ class Printer:
             heaters.append(h)
         for h in self.get_config_section_list("temperature_sensor "):
             heaters.append(h)
+        for h in self.get_config_section_list("temperature_fan "):
+            heaters.append(h)
         return heaters
+
+    def get_filament_sensors(self):
+        sensors = []
+        for s in self.get_config_section_list("filament_switch_sensor "):
+            sensors.append(s)
+        for s in self.get_config_section_list("filament_motion_sensor "):
+            sensors.append(s)
+        return sensors
 
     def get_printer_status_data(self):
         data = {
             "printer": {
-                "bltouch": self.section_exists("bltouch"),
+                "extruders": {
+                    "count": self.extrudercount
+                },
+                "temperature_devices": {
+                    "count": self.tempdevcount
+                },
+                "fans": {
+                    "count": self.fancount
+                },
+                "bltouch": self.config_section_exists("bltouch"),
                 "gcode_macros": {
                     "count": len(self.get_gcode_macros())
                 },
                 "idle_timeout": self.get_stat("idle_timeout").copy(),
-                "pause_resume": self.get_stat("pause_resume").copy(),
+                "pause_resume": {
+                    "is_paused": True if self.state == "paused" else False
+                },
                 "power_devices": {
                     "count": len(self.get_power_devices())
                 },
-                "probe": self.section_exists("probe")
+                "probe": self.config_section_exists("probe"),
+                "firmware_retraction": self.config_section_exists("firmware_retraction"),
+                "input_shaper": self.config_section_exists("input_shaper")
             }
         }
 
@@ -264,8 +322,52 @@ class Printer:
             return self.devices[dev][stat]
         return None
 
+    def get_fan_speed(self, fan="fan", speed=None):
+        if fan not in self.config or fan not in self.data:
+            logging.debug("Error getting %s config", fan)
+            return speed if speed is not None else 0
+        if speed is None and "speed" in self.data[fan]:
+            speed = self.data[fan]["speed"]
+        if 'max_power' in self.config[fan]:
+            max_power = float(self.config[fan]['max_power'])
+            if max_power > 0:
+                speed = speed / max_power
+        if 'off_below' in self.config[fan]:
+            off_below = float(self.config[fan]['off_below'])
+            if speed < off_below:
+                speed = 0
+        return speed
+
     def get_extruder_count(self):
         return self.extrudercount
+
+    def get_temp_store_devices(self):
+        if self.tempstore is not None:
+            return list(self.tempstore)
+
+    def get_temp_store_device_has_target(self, device):
+        if device in self.tempstore:
+            if "targets" in self.tempstore[device]:
+                return True
+        return False
+
+    def get_temp_store(self, device, section=False, results=0):
+        if device not in self.tempstore:
+            return False
+
+        if section is not False:
+            if section not in self.tempstore[device]:
+                return False
+            if results == 0 or results >= len(self.tempstore[device][section]):
+                return self.tempstore[device][section]
+            return self.tempstore[device][section][-results:]
+
+        temp = {}
+        for section in self.tempstore[device]:
+            if results == 0 or results >= len(self.tempstore[device][section]):
+                temp[section] = self.tempstore[device][section]
+            temp[section] = self.tempstore[device][section][-results:]
+        return temp
 
     def get_tools(self):
         return self.tools
@@ -277,7 +379,16 @@ class Printer:
         if "heater_bed" in self.devices:
             return True
 
-    def section_exists(self, section):
+    def init_temp_store(self, result):
+        for dev in result:
+            self.tempstore[dev] = {}
+            if "targets" in result[dev]:
+                self.tempstore[dev]["targets"] = result[dev]["targets"]
+            if "temperatures" in result[dev]:
+                self.tempstore[dev]["temperatures"] = result[dev]["temperatures"]
+        logging.info("Temp store: %s" % list(self.tempstore))
+
+    def config_section_exists(self, section):
         if section in self.get_config_section_list():
             return True
         return False
@@ -292,3 +403,14 @@ class Printer:
             return
 
         self.devices[dev][stat] = value
+
+    def _update_temp_store(self):
+        for device in self.tempstore:
+            for x in self.tempstore[device]:
+                if len(self.tempstore[device][x]) >= 1200:
+                    self.tempstore[device][x].pop(0)
+                temp = self.get_dev_stat(device, x[:-1])
+                if temp is None:
+                    temp = 0
+                self.tempstore[device][x].append(round(temp, 2))
+        return True

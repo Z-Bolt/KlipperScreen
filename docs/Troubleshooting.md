@@ -1,48 +1,110 @@
-# Troubleshooting
 
 This page will have common problems and common solutions to those problems.
 
-## First Steps
+# First Steps
 
-The first step to troubleshooting any problem is getting the cause of the error. KlipperScreen log output will occur
-in two places. Check for the file `/tmp/KlipperScreen.log` and look at the contents by running
-`cat /tmp/KlipperScreen.log` or grabbing the file over WinSCP or another scp program.
+The first step to troubleshooting any problem is getting the cause of the error.
 
-If that file is non-existent, there is a problem in KlipperScreen starting up. To get the error output in this case,
-run `journalctl -xe -u KlipperScreen`.
+* Check for the file `/tmp/KlipperScreen.log`
 
+look at the contents by running `cat /tmp/KlipperScreen.log` or grab the file over WinSCP or another sftp program.
+This is the most important file, and should be provided if you ask for support.
 
-## Common Errors
+If that file is non-existent, run `journalctl -xe -u KlipperScreen`
 
-### Problems occurring before the log file appears
+Check the file `/var/log/Xorg.0.log` where you can find issues with the X server.
 
-This section will detail problems that may happen before the log file has been created. Each section will start with a
-relevant line from the journalctl output.
-
-#### Cannot open virtual Console
-```
+## Cannot open virtual Console
+If you see this line in the logs:
+```sh
 xf86OpenConsole: Cannot open virtual console 2 (Permission denied)
 ```
 
-* Check /etc/X11/Xwrapper.conf
+* Run `cat /etc/X11/Xwrapper.config`
+
 This should have the line `allowed_users=anybody` in it
-* Check /etc/group
-Run the command `cat /etc/group | grep tty`. If you username is not listed under that line, you need to add it with the
-following command (if you username is not 'pi' change 'pi' to your username):
-`usermode -a -G tty pi`
 
+* Run `cat /etc/group | grep tty`
 
-### Problems occurring with the log file
+If your username is not listed under that line, you need to add it with the following command:
 
-#### Screen shows console instead of KlipperScreen
-Run the command `ls /dev/fb*`. If you have multiple devices, you may need to fix the X11 configuration.
+```sh
+usermod -a -G tty pi
+```
+(if your username is not 'pi' change 'pi' to your username)
 
-Run the command `cat /usr/share/X11/xorg.conf.d/99-fbturbo.conf | grep /dev/fb`. Try modifying the file (
-`sudo nano /usr/share/X11/xorg.conf.d/99-fbturbo.conf`) and change `/dev/fb0` to a different file listed in the
-previous command (i.e. `/dev/fb1`).
+You may also need:
+```sh
+sudo apt install xserver-xorg-legacy
+```
 
-Once you have saved that file, restart KlipperScreen and it should show up on your display.
+Restart KlipperScreen:
+```sh
+sudo service KlipperScreen restart
+```
 
-#### Screen is all white or blank
+If it's still failing as a last resort add `needs_root_rights=yes` to `/etc/X11/Xwrapper.config`:
+```sh
+sudo echo needs_root_rights=yes>>/etc/X11/Xwrapper.config
+```
 
-Improperly installed screen, follow the manufacturer instructions on how to physically connect the screen and install the proper drivers.
+restart KS.
+
+## Screen shows console instead of KlipperScreen
+
+If you have multiple framebuffers, you may need to fix the X11 configuration,
+list the available framebuffers and check the current one:
+```sh
+ls /dev/fb*
+cat /usr/share/X11/xorg.conf.d/99-fbturbo.conf | grep /dev/fb
+```
+
+If you more than one, try changing it:
+```sh
+sudo nano /usr/share/X11/xorg.conf.d/99-fbturbo.conf
+```
+
+for example: change `/dev/fb0` to `/dev/fb1`
+
+Once you have saved that file, restart KlipperScreen.
+```sh
+sudo service KlipperScreen restart
+```
+
+## Screen is all white or blank or no signal
+
+If the screen never shows the console even during startup, Then it's tipically an improperly installed screen,
+follow the manufacturer instructions on how to physically connect the screen and install the proper drivers.
+
+## Touch not working on debian Bullseye
+
+Some dsi screens have issues where touch doesn't work with debian bullseye, the current fix
+(at least until upstream is fixed) consist in changing the driver:
+
+Run `raspi-config` > go to Advanced > GL Driver > select G2 and reboot.
+
+![config](img/troubleshooting/gldriver.png)
+
+*Or*:
+
+manually edit `/boot/config.txt` and change:
+
+```sh
+dtoverlay=vc4-kms-v3d
+```
+
+to:
+```sh
+dtoverlay=vc4-fkms-v3d
+```
+and reboot, that should make the touch work, if your screen is rotated 180 degrees, then you may need to adjust
+[the touch rotation](Hardware.md) as described in the Hardware page.
+
+## OctoPrint
+
+KlipperScreen was never intended to be used with OctoPrint, and there is no support for it.
+
+## Other issues
+
+If you found an issue not listed here, or can't make it work, please provide all the log files
+a description of your hw, and a description of the issue when asking for support.
