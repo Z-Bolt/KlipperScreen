@@ -53,8 +53,9 @@ class BasePanel(ScreenPanel):
         self.control['estop'] = self._gtk.ButtonImage('emergency', None, None, 1)
         self.control['estop'].connect("clicked", self.emergency_stop)
         _ = self.lang.gettext
+        script = {"script":"M81"}
         self.control['shutdown'] = self._gtk.ButtonImage('shutdown', None, None, 1)
-        self.control['shutdown'].connect ( "clicked", self._screen._confirm_test, _("Are you sure you wish to shutdown the system?"))
+        self.control['shutdown'].connect ( "clicked", self._screen._confirm_send_action, _("Are you sure you wish to shutdown the system?"), "printer.gcode.script", script)
         self.control['wifi'] = self._gtk.ButtonImage('network', None, None, 1)
         self.control['wifi'].connect("clicked", self.menu_item_clicked, "network",{
                 "name": _('Network'),
