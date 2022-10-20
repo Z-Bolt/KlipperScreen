@@ -3,6 +3,7 @@ import contextlib
 import datetime
 import gi
 import logging
+import os
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import GLib, Gtk, Pango
@@ -21,7 +22,7 @@ class BasePanel(ScreenPanel):
         self.titlebar_name_type = None
         self.buttons_showing = {
             'back': not back,
-            'macros_shortcut': False,
+            'macros_shortcut': True,
             'printer_select': False
         }
         self.current_extruder = None
@@ -43,13 +44,20 @@ class BasePanel(ScreenPanel):
 
         self.control['estop'] = self._gtk.ButtonImage('emergency', scale=1)
         self.control['estop'].connect("clicked", self.emergency_stop)
+        self.control['shutdown'] = self._gtk.ButtonImage('shutdown', scale = 1)
+        self.control['shutdown'].connect ( "clicked", self.shutdown)
+        self.control['wifi'] = self._gtk.ButtonImage('network', scale = 1)
+        self.control['wifi'].connect("clicked", self.menu_item_clicked, "network",{
+                "name": _('Network'),
+                "panel": "network"
+                })
 
         # Any action bar button should close the keyboard
         for item in self.control:
             self.control[item].connect("clicked", self._screen.remove_keyboard)
 
         # Action bar
-        self.action_bar = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+        self.action_bar = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         if self._screen.vertical_mode:
             self.action_bar.set_hexpand(True)
             self.action_bar.set_vexpand(False)
@@ -65,6 +73,8 @@ class BasePanel(ScreenPanel):
         if len(self._config.get_printers()) > 1:
             self.action_bar.add(self.control['printer_select'])
         self.action_bar.add(self.control['macros_shortcut'])
+        self.action_bar.add(self.control['wifi'])
+        self.action_bar.add(self.control['shutdown'])
         self.action_bar.add(self.control['estop'])
 
         # Titlebar
@@ -130,7 +140,7 @@ class BasePanel(ScreenPanel):
 
         for device in self._screen.printer.get_temp_store_devices():
             if device.startswith("extruder"):
-                if self._screen.printer.extrudercount > 1:
+                if self._screen.printer.extrudercount > 0:
                     if device == "extruder":
                         icon = self._gtk.Image("extruder-0", .5)
                     else:
@@ -198,7 +208,7 @@ class BasePanel(ScreenPanel):
         for device in self._screen.printer.get_temp_store_devices():
             if n >= nlimit:
                 break
-            if device.startswith("heater_generic"):
+            if device.startswith("temperature_sensor"):
                 self.control['temp_box'].add(self.labels[f"{device}_box"])
                 n += 1
         self.control['temp_box'].show_all()
@@ -263,7 +273,7 @@ class BasePanel(ScreenPanel):
             self.control['home'].set_sensitive(False)
             self.buttons_showing['back'] = False
 
-    def show_macro_shortcut(self, show=True):
+    def show_macro_shortcut(self, show=False):
         if show is True and self.buttons_showing['macros_shortcut'] is False:
             self.action_bar.add(self.control['macros_shortcut'])
             if self.buttons_showing['printer_select'] is False:
@@ -308,3 +318,12 @@ class BasePanel(ScreenPanel):
             else:
                 self.control['time'].set_text(f'{now:%I:%M %p}')
         return True
+    def shutdown(self, widget):
+
+        if self._screen._ws.is_connected():
+            self._screen._confirm_send_action(widget,
+                                              _("Are you sure you wish to shutdown the system?"),
+                                              "machine.shutdown")
+        else:
+            logging.info("OS Shutdown")
+            os.system("systemctl poweroff")

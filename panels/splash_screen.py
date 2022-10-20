@@ -20,7 +20,7 @@ class SplashScreenPanel(ScreenPanel):
 
     def initialize(self, panel_name):
 
-        image = self._gtk.Image("klipper", 3.2)
+        image = self._gtk.Image("klipper", 8)
 
         self.labels['text'] = Gtk.Label(_("Initializing printer..."))
         self.labels['text'].set_line_wrap(True)
@@ -55,7 +55,7 @@ class SplashScreenPanel(ScreenPanel):
         scroll.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
         scroll.add(self.labels['text'])
 
-        info = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        info = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
         info.pack_start(image, False, True, 8)
         info.pack_end(scroll, True, True, 8)
 

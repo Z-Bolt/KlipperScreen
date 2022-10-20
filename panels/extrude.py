@@ -61,7 +61,7 @@ class ExtrudePanel(ScreenPanel):
         limit = 5
         i = 0
         for extruder in self._printer.get_tools():
-            if self._printer.extrudercount > 1:
+            if self._printer.extrudercount > 0:
                 self.labels[extruder] = self._gtk.ButtonImage(f"extruder-{i}",
                                                               f"T{self._printer.get_tool_number(extruder)}")
             else:

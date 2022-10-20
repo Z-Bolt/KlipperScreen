@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-12 13:34-0300\n"
+"POT-Creation-Date: 2022-08-18 23:05-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,9 +63,6 @@ msgstr ""
 msgid "Apply %s%.2f offset to Probe?"
 msgstr ""
 
-msgid "Are you sure do you want to exclude the object?"
-msgstr ""
-
 msgid "Are you sure you want to run Emergency Stop?"
 msgstr ""
 
@@ -93,6 +90,9 @@ msgstr ""
 msgid "Auto-scroll"
 msgstr ""
 
+msgid "Bed Down"
+msgstr ""
+
 msgid "Bed Level"
 msgstr ""
 
@@ -100,6 +100,9 @@ msgid "Bed Mesh"
 msgstr ""
 
 msgid "Bed screw configuration:"
+msgstr ""
+
+msgid "Bed Up"
 msgstr ""
 
 msgid "Calibrate"
@@ -269,6 +272,12 @@ msgstr ""
 msgid "Font Size"
 msgstr ""
 
+msgid "Firmware Restart"
+msgstr ""
+
+msgid "Firmware\nRestart"
+msgstr ""
+
 msgid "Full Update"
 msgstr ""
 
@@ -350,6 +359,10 @@ msgstr ""
 msgid "Klipper Restart"
 msgstr ""
 
+msgid "Klipper\nRestart"
+msgstr ""
+
+
 msgid "Klipper has disconnected"
 msgstr ""
 
@@ -380,10 +393,13 @@ msgstr ""
 msgid "Limits"
 msgstr ""
 
-msgid "Load"
+msgid "Load filament"
 msgstr ""
 
 msgid "Lower Nozzle"
+msgstr ""
+
+msgid "Machine"
 msgstr ""
 
 msgid "Macro shortcut on sidebar"
@@ -451,6 +467,9 @@ msgstr ""
 msgid "Nothing selected"
 msgstr ""
 
+msgid "Number Pad"
+msgstr ""
+
 msgid "Off"
 msgstr ""
 
@@ -496,6 +515,9 @@ msgstr ""
 msgid "Pressure Advance:"
 msgstr ""
 
+msgid "Preheat"
+msgstr ""
+
 msgid "Print"
 msgstr ""
 
@@ -505,10 +527,10 @@ msgstr ""
 msgid "Print Time"
 msgstr ""
 
-msgid "Printer"
+msgid "Printer Connections"
 msgstr ""
 
-msgid "Printer Connections"
+msgid "Printer is cooled"
 msgstr ""
 
 msgid "Printing"
@@ -594,6 +616,7 @@ msgstr ""
 msgid "Select"
 msgstr ""
 
+
 msgid "Send"
 msgstr ""
 
@@ -610,12 +633,6 @@ msgstr ""
 msgid "Show"
 msgstr ""
 
-msgid "Show Heater Power"
-msgstr ""
-
-msgid "Shutdown"
-msgstr ""
-
 msgid "Size"
 msgstr ""
 
@@ -629,6 +646,9 @@ msgid "Slicer:"
 msgstr ""
 
 msgid "Small"
+msgstr ""
+
+msgid "Sort by: "
 msgstr ""
 
 msgid "Sort:"
@@ -667,7 +687,13 @@ msgstr ""
 msgid "System Restart"
 msgstr ""
 
+msgid "System\nRestart"
+msgstr ""
+
 msgid "System Shutdown"
+msgstr ""
+
+msgid "System\nShutdown"
 msgstr ""
 
 msgid "Temp (°C)"
@@ -689,7 +715,10 @@ msgstr ""
 msgid "Unknown screw position"
 msgstr ""
 
-msgid "Unload"
+msgid "Unload filament"
+msgstr ""
+
+msgid "Unretract"
 msgstr ""
 
 msgid "Unretract Extra Length"

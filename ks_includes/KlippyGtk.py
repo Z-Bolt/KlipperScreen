@@ -225,9 +225,9 @@ class KlippyGtk:
         dialog.show_all()
         # Change cursor to blank
         if self.cursor:
-            dialog.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.ARROW))
+            dialog.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.ARROW))
         else:
-            dialog.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.BLANK_CURSOR))
+            dialog.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.BLANK_CURSOR))
 
         self.screen.dialogs.append(dialog)
         return dialog
@@ -276,3 +276,8 @@ class KlippyGtk:
                           Gdk.EventMask.BUTTON_RELEASE_MASK)
         scroll.set_kinetic_scrolling(True)
         return scroll
+
+    def formatTemperatureString(self, temp, target):
+        if (target > temp-2 and target < temp+2) or round(target, 0) == 0:
+            return str(round(temp, 1)) + "°C"  # °C →"
+        return str(round(temp)) + " → " + str(round(target)) + "°C"    
