@@ -26,7 +26,7 @@ class ScreenPanel:
         self.layout = Gtk.Layout()
         self.layout.set_size(self._screen.width, self._screen.height)
 
-        self.content = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self.content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.content.get_style_context().add_class("content")
         self.content.set_hexpand(True)
         self.content.set_vexpand(True)
@@ -51,10 +51,11 @@ class ScreenPanel:
     def get_content(self):
         return self.content
 
-    def get_file_image(self, filename, width=1, height=1, small=False):
+    def get_file_image(self, filename, width=None, height=None, small=False):
         if not self._files.has_thumbnail(filename):
             return None
-
+        width = width if width is not None else self._gtk.img_width
+        height = height if height is not None else self._gtk.img_height
         loc = self._files.get_thumbnail_location(filename, small)
         if loc is None:
             return None
