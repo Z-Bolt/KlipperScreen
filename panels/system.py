@@ -12,19 +12,17 @@ def create_panel(*args):
     return SystemPanel(*args)
 
 
-ALLOWED_SERVICES = ["KlipperScreen", "MoonCord", "klipper", "moonraker"]
-
 class SystemPanel(ScreenPanel):
     def initialize(self, panel_name):
         _ = self.lang.gettext
 
         grid = self._gtk.HomogeneousGrid()
-        grid.set_row_homogeneous(True)
+        grid.set_row_homogeneous(False)
 
-        restart = self._gtk.ButtonImage('refresh', "\n".join(_('Klipper Restart').split(' ')), 'color1')
+        restart = self._gtk.ButtonImage('refresh', _('Klipper Restart'), 'color1')
         restart.connect("clicked", self.restart_klippy)
-        restart.set_vexpand(False)
-        firmrestart = self._gtk.ButtonImage('refresh', "\n".join(_('Firmware\nRestart').split(' ')), 'color2')
+        restart.set_vexpand(True)
+        firmrestart = self._gtk.ButtonImage('refresh', _('Firmware\nRestart'), 'color2')
         firmrestart.connect("clicked", self.restart_klippy, "firmware")
         firmrestart.set_vexpand(False)
 
