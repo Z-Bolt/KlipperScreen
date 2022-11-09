@@ -119,12 +119,7 @@ class JobStatusPanel(ScreenPanel):
         overlay.add(self.labels['darea'])
         overlay.add_overlay(box)
 
-        self.labels['thumbnail'] = self._gtk.Image("file", 2)
-        if self._screen.vertical_mode:
-            self.labels['thumbnail'].set_size_request(0, self._screen.height / 4)
-        else:
-            self.labels['thumbnail'].set_size_request(self._screen.width / 3, 0)
-
+        self.labels['thumbnail'] = self._gtk.Image("file", self._screen.width / 4, self._screen.height / 4)
         self.labels['info_grid'] = Gtk.Grid()
         self.labels['info_grid'].attach(self.labels['thumbnail'], 0, 0, 1, 1)
         if self._screen.printer.get_tools():
@@ -139,7 +134,6 @@ class JobStatusPanel(ScreenPanel):
         self.grid.attach(self.buttons['button_grid'], 0, 3, 4, 1)
 
         self.content.add(self.grid)
-        self._screen.wake_screen()
 
     def create_status_grid(self, widget=None):
         self.main_status_displayed = True
@@ -370,6 +364,7 @@ class JobStatusPanel(ScreenPanel):
         self.create_status_grid()
         if self.vel_timeout is None:
             self.vel_timeout = GLib.timeout_add_seconds(1, self.update_velocity)
+        self._screen.base_panel_show_all()
 
     def deactivate(self):
         if self.vel_timeout is not None:
@@ -441,9 +436,11 @@ class JobStatusPanel(ScreenPanel):
         widget.destroy()
 
     def restart(self, widget):
+        self.disable_button("restart")
         if self.filename != "none":
             self._screen._ws.klippy.print_start(self.filename)
             self.new_print()
+        GLib.timeout_add_seconds(5, self.enable_button, "restart")
 
     def resume(self, widget):
         self._screen._ws.klippy.print_resume(self._response_callback, "enable_button", "pause", "cancel")
@@ -471,7 +468,6 @@ class JobStatusPanel(ScreenPanel):
         label.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
 
         self._gtk.Dialog(self._screen, buttons, label, self.cancel_confirm)
-        self.disable_button("pause", "cancel")
 
     def cancel_confirm(self, widget, response_id):
         widget.destroy()
@@ -497,8 +493,10 @@ class JobStatusPanel(ScreenPanel):
         logging.debug("Closing job_status panel")
         self.remove_close_timeout()
         self.state_check()
-        if self.state not in ["printing", "paused"]:
+        if self.state not in ["printing", "paused", "cancelling"]:
             self._screen.printer_ready()
+            self._printer.change_state("ready")
+
         return False
 
     def remove_close_timeout(self):
@@ -523,7 +521,7 @@ class JobStatusPanel(ScreenPanel):
         self.remove_close_timeout()
         if self.state_timeout is None:
             self.state_timeout = GLib.timeout_add_seconds(1, self.state_check)
-        self._screen.wake_screen()
+        self._screen.close_screensaver()
         self.state_check()
 
     def process_update(self, action, data):
@@ -634,12 +632,6 @@ class JobStatusPanel(ScreenPanel):
         if fan_label:
             self.labels['fan'].set_text(fan_label[:12])
 
-        if "layer_height" in self.file_metadata and "object_height" in self.file_metadata:
-            layer_label = (
-                f"{1 + round((self.pos_z - self.f_layer_h) / self.layer_h)} / {self.labels['total_layers'].get_text()}"
-            )
-            self.labels['layer'].set_label(layer_label)
-
         self.state_check()
         if self.state not in ["printing", "paused"]:
             return
@@ -650,6 +642,15 @@ class JobStatusPanel(ScreenPanel):
             self.update_filename()
         else:
             self.update_percent_complete()
+        if ps.get('info').get('total_layer'):
+            self.labels['total_layers'].set_label(f"{ps['info']['total_layer']}")
+        if ps.get('info').get('current_layer'):
+            self.labels['layer'].set_label(f"{ps['info']['current_layer']} / {self.labels['total_layers'].get_text()}")
+        elif "layer_height" in self.file_metadata and "object_height" in self.file_metadata:
+            layer_label = (
+                f"{1 + round((self.pos_z - self.f_layer_h) / self.layer_h)} / {self.labels['total_layers'].get_text()}")
+            self.labels['layer'].set_label(layer_label)
+
         if 'print_duration' in ps:
             if int(ps['print_duration']) == 0 and self.progress > 0.001:
                 # Print duration remains at 0 when using No-extusion tests
@@ -748,13 +749,11 @@ class JobStatusPanel(ScreenPanel):
             self.set_state("complete")
             return self._add_timeout("job_complete_timeout")
         elif ps['state'] == "error":
-            logging.debug("Error!")
             self.set_state("error")
             self.labels['status'].set_text(_("Error"))
             self._screen.show_popup_message(ps['message'])
             return self._add_timeout("job_error_timeout")
         elif ps['state'] == "cancelled":
-            # Print was cancelled
             self.set_state("cancelled")
             return self._add_timeout("job_cancelled_timeout")
         elif ps['state'] == "paused":
@@ -764,7 +763,7 @@ class JobStatusPanel(ScreenPanel):
         return True
 
     def _add_timeout(self, job_timeout):
-        self._screen.wake_screen()
+        self._screen.close_screensaver()
         self.remove_close_timeout()
         timeout = self._config.get_main_config().getint(job_timeout, 0)
         if timeout != 0:
@@ -821,12 +820,19 @@ class JobStatusPanel(ScreenPanel):
 
             if self.filename is not None:
                 self.buttons['button_grid'].attach(self.buttons['restart'], 2, 0, 1, 1)
-            self.buttons['button_grid'].attach(self.buttons['menu'], 3, 0, 1, 1)
+            if self.state != "cancelling":
+                self.buttons['button_grid'].attach(self.buttons['menu'], 3, 0, 1, 1)
         self.show_all()
 
     def show_file_thumbnail(self):
         if self._files.has_thumbnail(self.filename):
-            pixbuf = self.get_file_image(self.filename, 5, 4)
+            if self._screen.vertical_mode:
+                width = self._screen.width * 0.9
+                height = self._screen.height / 4
+            else:
+                width = self._screen.width / 3
+                height = self._gtk.get_content_height() * 0.47
+            pixbuf = self.get_file_image(self.filename, width, height)
             if pixbuf is not None:
                 self.labels['thumbnail'].set_from_pixbuf(pixbuf)
 
@@ -837,11 +843,9 @@ class JobStatusPanel(ScreenPanel):
             "complete": self.labels['file'].get_label(),
             "current": self.labels['file'].get_label(),
             "position": 0,
-            "limit": 0.8 * (self._gtk.get_content_width() - self.labels[
-                'darea'].get_allocated_width()) // self._gtk.get_font_size(),
+            "limit": (self._screen.width * 24 / 480) // (self._gtk.get_font_size() / 11),
             "length": len(self.labels['file'].get_label())
         }
-
         if self.animation_timeout is None and (self.filename_label['length'] - self.filename_label['limit']) > 0:
             self.animation_timeout = GLib.timeout_add_seconds(1, self.animate_label)
         self.update_percent_complete()

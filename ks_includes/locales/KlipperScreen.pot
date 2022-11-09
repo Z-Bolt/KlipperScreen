@@ -393,7 +393,7 @@ msgstr ""
 msgid "Limits"
 msgstr ""
 
-msgid "Load filament"
+msgid "Load"
 msgstr ""
 
 msgid "Lower Nozzle"
@@ -715,7 +715,7 @@ msgstr ""
 msgid "Unknown screw position"
 msgstr ""
 
-msgid "Unload filament"
+msgid "Unload"
 msgstr ""
 
 msgid "Unretract"
