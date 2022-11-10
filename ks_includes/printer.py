@@ -75,6 +75,7 @@ class Printer:
                 self.tools = sorted(self.tools)
                 self.extrudercount += 1
                 if x.startswith('extruder_stepper'):
+                    self.tools.remove(x)
                     continue
                 self.devices[x] = {
                     "temperature": 0,
