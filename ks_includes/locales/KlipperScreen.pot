@@ -78,6 +78,12 @@ msgstr ""
 msgid "Are you sure you wish to shutdown the system?"
 msgstr ""
 
+msgid "Are you sure want to load a NEW reel of filament (the rod pulling distance is 2000mm!)?"
+msgstr ""
+
+msgid "Are you sure want to unload the current filament spool (the rod pulling distance is 2000mm!)?"
+msgstr ""
+
 msgid "Auto"
 msgstr ""
 

@@ -1,10 +1,11 @@
-import gi
 import logging
 import re
 
+import gi
+
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Pango
-
+from jinja2 import Environment
 from ks_includes.KlippyGcodes import KlippyGcodes
 from ks_includes.screen_panel import ScreenPanel
 
@@ -43,12 +44,13 @@ class ExtrudePanel(ScreenPanel):
     def initialize(self, panel_name):
         self.labels['extrude'] = self._gtk.ButtonImage("extrude", _("Unretract"), "color4")
         self.labels['extrude'].connect("clicked", self.extrude, "+")
+
         self.labels['load'] = self._gtk.ButtonImage("arrow-down", _("Load"), "color3")
-
-        self.labels['load'].connect("clicked", self.load_unload, "+")
+        self.labels['load'].connect("clicked", self.confirm_load_unload,_("Are you sure want to load a NEW reel of filament (the rod pulling distance is 2000mm!)?"), "+")
+        
         self.labels['unload'] = self._gtk.ButtonImage("arrow-up", _("Unload"), "color2")
-
-        self.labels['unload'].connect("clicked", self.load_unload, "-")
+        self.labels['unload'].connect("clicked", self.confirm_load_unload,_("Are you sure want to unload the current filament spool (the rod pulling distance is 2000mm!)?"),"-")
+        
         self.labels['retract'] = self._gtk.ButtonImage("retract", _("Retract"), "color1")
         self.labels['retract'].connect("clicked", self.extrude, "-")
         self.labels['temperature'] = self._gtk.ButtonImage("heat-up", _("Temperature"), "color4")
@@ -233,18 +235,6 @@ class ExtrudePanel(ScreenPanel):
         self._screen._ws.klippy.gcode_script(KlippyGcodes.EXTRUDE_REL)
         self._screen._ws.klippy.gcode_script(KlippyGcodes.extrude(f"{direction}{self.distance}", f"{self.speed * 60}"))
 
-    def load_unload(self, widget, direction):
-        if direction == "-":
-            if not self.unload_filament:
-                self._screen.show_popup_message("Macro UNLOAD_FILAMENT not found")
-            else:
-                self._screen._ws.klippy.gcode_script(f"UNLOAD_FILAMENT SPEED={self.speed * 60}")
-        if direction == "+":
-            if not self.load_filament:
-                self._screen.show_popup_message("Macro LOAD_FILAMENT not found")
-            else:
-                self._screen._ws.klippy.gcode_script(f"LOAD_FILAMENT SPEED={self.speed * 60}")
-
     def enable_disable_fs(self, switch, gparams, name, x):
         if switch.get_active():
             self._printer.set_dev_stat(x, "enabled", True)
@@ -254,3 +244,51 @@ class ExtrudePanel(ScreenPanel):
             self._screen._ws.klippy.gcode_script(f"SET_FILAMENT_SENSOR SENSOR={name} ENABLE=0")
             self.labels[x]['box'].get_style_context().remove_class("filament_sensor_empty")
             self.labels[x]['box'].get_style_context().remove_class("filament_sensor_detected")
+
+    def confirm_load_unload(self, widget, text, direction):
+
+        buttons = [
+            {"name": _("Continue"), "response": Gtk.ResponseType.OK},
+            {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL}
+        ]
+
+        try:
+            env = Environment(extensions=["jinja2.ext.i18n"], autoescape=True)
+            env.install_gettext_translations(self.lang)
+            j2_temp = env.from_string(text)
+            text = j2_temp.render()
+        except Exception as e:
+            logging.debug(f"Error parsing jinja for confirm_send_action\n{e}")
+
+        label = Gtk.Label()
+        label.set_markup(text)
+        label.set_hexpand(True)
+        label.set_halign(Gtk.Align.CENTER)
+        label.set_vexpand(True)
+        label.set_valign(Gtk.Align.CENTER)
+        label.set_line_wrap(True)
+        label.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
+
+        grid = Gtk.Grid()
+        grid.set_vexpand(True)
+        grid.set_halign(Gtk.Align.CENTER)
+        grid.set_valign(Gtk.Align.CENTER)
+        grid.add(label)
+
+        self._gtk.Dialog(self._screen, buttons, grid, self.confirm_load_unload_response, direction)
+
+    def confirm_load_unload_response(self, widget, response_id, direction):
+        if response_id == Gtk.ResponseType.OK:   
+            widget.destroy()
+            if direction == "+":
+                if not self.load_filament:
+                    self._screen.show_popup_message("Macro LOAD_FILAMENT not found")
+                else:
+                    self._screen._ws.klippy.gcode_script(f"LOAD_FILAMENT SPEED={self.speed * 60}")
+            if direction == "-":
+                if not self.unload_filament:
+                    self._screen.show_popup_message("Macro UNLOAD_FILAMENT not found")
+                else:
+                    self._screen._ws.klippy.gcode_script(f"UNLOAD_FILAMENT SPEED={self.speed * 60}")
+        if response_id == Gtk.ResponseType.CANCEL:
+            widget.destroy()
