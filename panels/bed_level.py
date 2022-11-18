@@ -16,7 +16,6 @@ class BedLevelPanel(ScreenPanel):
     y_offset = 0
 
     def initialize(self, panel_name):
-        _ = self.lang.gettext
         self.panel_name = panel_name
         self.screws = None
         grid = self._gtk.HomogeneousGrid()
@@ -137,6 +136,11 @@ class BedLevelPanel(ScreenPanel):
 
         self._screen._ws.klippy.gcode_script(
             "\n".join(script)
+        )
+
+    def home(self, widget):
+        self._screen._ws.klippy.gcode_script(
+            "G28"  # Home
         )
 
     def disable_motors(self, widget):
