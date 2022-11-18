@@ -7,8 +7,9 @@ import contextlib
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import GLib, Gtk, Pango
-from numpy import sqrt, pi, dot, array, median
 from ks_includes.screen_panel import ScreenPanel
+from math import pi, sqrt
+from statistics import median
 
 
 def create_panel(*args):
@@ -30,9 +31,8 @@ class JobStatusPanel(ScreenPanel):
         self.current_extruder = None
         self.fila_section = 0
         self.buttons = None
-        self.is_paused = False
         self.filename_label = self.filename = self.prev_pos = self.prev_gpos = None
-        self.state_timeout = self.close_timeout = self.vel_timeout = self.animation_timeout = None
+        self.close_timeout = self.vel_timeout = self.animation_timeout = None
         self.file_metadata = self.fans = {}
         self.state = "standby"
         self.timeleft_type = "auto"
@@ -359,8 +359,6 @@ class JobStatusPanel(ScreenPanel):
     def activate(self):
         ps = self._printer.get_stat("print_stats")
         self.set_state(ps['state'])
-        if self.state_timeout is None:
-            self.state_timeout = GLib.timeout_add_seconds(1, self.state_check)
         self.create_status_grid()
         if self.vel_timeout is None:
             self.vel_timeout = GLib.timeout_add_seconds(1, self.update_velocity)
@@ -396,7 +394,6 @@ class JobStatusPanel(ScreenPanel):
         self.buttons['save_offset_endstop'].connect("clicked", self.save_offset, "endstop")
 
     def save_offset(self, widget, device):
-
         saved_z_offset = 0
         if self._printer.config_section_exists("probe"):
             saved_z_offset = float(self._screen.printer.get_config_section("probe")['z_offset'])
@@ -436,11 +433,9 @@ class JobStatusPanel(ScreenPanel):
         widget.destroy()
 
     def restart(self, widget):
-        self.disable_button("restart")
         if self.filename != "none":
             self._screen._ws.klippy.print_start(self.filename)
             self.new_print()
-        GLib.timeout_add_seconds(5, self.enable_button, "restart")
 
     def resume(self, widget):
         self._screen._ws.klippy.print_resume(self._response_callback, "enable_button", "pause", "cancel")
@@ -451,7 +446,6 @@ class JobStatusPanel(ScreenPanel):
         self._screen.show_all()
 
     def cancel(self, widget):
-
         buttons = [
             {"name": _("Cancel Print"), "response": Gtk.ResponseType.OK},
             {"name": _("Go Back"), "response": Gtk.ResponseType.CANCEL}
@@ -496,7 +490,6 @@ class JobStatusPanel(ScreenPanel):
         if self.state not in ["printing", "paused", "cancelling"]:
             self._screen.printer_ready()
             self._printer.change_state("ready")
-
         return False
 
     def remove_close_timeout(self):
@@ -519,8 +512,6 @@ class JobStatusPanel(ScreenPanel):
 
     def new_print(self):
         self.remove_close_timeout()
-        if self.state_timeout is None:
-            self.state_timeout = GLib.timeout_add_seconds(1, self.state_check)
         self._screen.close_screensaver()
         self.state_check()
 
@@ -582,11 +573,12 @@ class JobStatusPanel(ScreenPanel):
                 if self.prev_gpos is not None:
                     interval = now - self.prev_gpos[1]
                     # Calculate Velocity
-                    vel = [(pos[0] - self.prev_gpos[0][0]),
-                           (pos[1] - self.prev_gpos[0][1]),
-                           (pos[2] - self.prev_gpos[0][2])]
-                    vel = array(vel)
-                    self.velstore.append(sqrt(vel.dot(vel)) / interval)
+                    vel = sqrt(sum([
+                        (pos[0] - self.prev_gpos[0][0]) ** 2,
+                        (pos[1] - self.prev_gpos[0][1]) ** 2,
+                        (pos[2] - self.prev_gpos[0][2]) ** 2]
+                    )) / interval
+                    self.velstore.append(vel)
                 self.prev_gpos = [pos, now]
             with contextlib.suppress(KeyError):
                 self.extrusion = int(round(data["gcode_move"]["extrude_factor"] * 100))
@@ -612,11 +604,12 @@ class JobStatusPanel(ScreenPanel):
                     evelocity = (pos[3] - self.prev_pos[0][3]) / interval
                     self.flowstore.append(self.fila_section * evelocity)
                     # Calculate Velocity
-                    vel = [(pos[0] - self.prev_pos[0][0]),
-                           (pos[1] - self.prev_pos[0][1]),
-                           (pos[2] - self.prev_pos[0][2])]
-                    vel = array(vel)
-                    self.velstore.append(sqrt(vel.dot(vel)) / interval)
+                    vel = sqrt(sum([
+                        (pos[0] - self.prev_pos[0][0]) ** 2,
+                        (pos[1] - self.prev_pos[0][1]) ** 2,
+                        (pos[2] - self.prev_pos[0][2]) ** 2]
+                    )) / interval
+                    self.velstore.append(vel)
                 self.prev_pos = [pos, now]
             with contextlib.suppress(KeyError):
                 self.velstore.append(float(data["motion_report"]["live_velocity"]))
@@ -642,14 +635,13 @@ class JobStatusPanel(ScreenPanel):
             self.update_filename()
         else:
             self.update_percent_complete()
-        if ps.get('info').get('total_layer'):
+        if 'info' in ps and 'total_layer' in ps['info'] and ps['info']['total_layer'] is not None:
             self.labels['total_layers'].set_label(f"{ps['info']['total_layer']}")
-        if ps.get('info').get('current_layer'):
+        if 'info' in ps and 'current_layer' in ps['info'] and ps['info']['current_layer'] is not None:
             self.labels['layer'].set_label(f"{ps['info']['current_layer']} / {self.labels['total_layers'].get_text()}")
         elif "layer_height" in self.file_metadata and "object_height" in self.file_metadata:
-            layer_label = (
+            self.labels['layer'].set_label(
                 f"{1 + round((self.pos_z - self.f_layer_h) / self.layer_h)} / {self.labels['total_layers'].get_text()}")
-            self.labels['layer'].set_label(layer_label)
 
         if 'print_duration' in ps:
             if int(ps['print_duration']) == 0 and self.progress > 0.001:
@@ -675,8 +667,8 @@ class JobStatusPanel(ScreenPanel):
             self.velstore.append(0)
         if not self.flowstore:
             self.flowstore.append(0)
-        self.flowrate = median(array(self.flowstore))
-        self.vel = median(array(self.velstore))
+        self.flowrate = median(self.flowstore)
+        self.vel = median(self.velstore)
         self.velstore = []
         self.flowstore = []
         self.labels['flowrate'].set_label(f"{self.flowrate:.1f} mm³/s")
@@ -771,7 +763,6 @@ class JobStatusPanel(ScreenPanel):
         return False
 
     def set_state(self, state):
-
         if self.state != state:
             logging.debug(f"Changing job_status state from '{self.state}' to '{state}'")
         if state == "paused":

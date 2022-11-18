@@ -3,22 +3,21 @@ import logging
 import os
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gdk, Gtk, Pango
-from datetime import datetime
+from gi.repository import Gtk, Pango, GLib
 
 from ks_includes.screen_panel import ScreenPanel
+
 
 def create_panel(*args):
     return SystemPanel(*args)
 
-
 class SystemPanel(ScreenPanel):
-    def initialize(self, panel_name):
-        _ = self.lang.gettext
 
+    def initialize(self, panel_name):
+        
         grid = self._gtk.HomogeneousGrid()
         grid.set_row_homogeneous(False)
-
+        
         restart = self._gtk.ButtonImage('refresh', _('Klipper Restart'), 'color1')
         restart.connect("clicked", self.restart_klippy)
         restart.set_vexpand(True)

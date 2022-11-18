@@ -53,7 +53,6 @@ class BasePanel(ScreenPanel):
                 "name": _('Network'),
                 "panel": "network"
                 })
-
         # Any action bar button should close the keyboard
         for item in self.control:
             self.control[item].connect("clicked", self._screen.remove_keyboard)
@@ -195,7 +194,7 @@ class BasePanel(ScreenPanel):
 
     def get_icon(self, device, img_size):
         if device.startswith("extruder"):
-            if self._screen.printer.extrudercount > 1:
+            if self._screen.printer.extrudercount > 0:
                 if device == "extruder":
                     device = "extruder0"
                 return self._gtk.Image(f"extruder-{device[8:]}", img_size, img_size)
@@ -331,6 +330,7 @@ class BasePanel(ScreenPanel):
         elif show is False and self.buttons_showing['estop']:
             self.control['estop'].set_sensitive(False)
             self.buttons_showing['estop'] = False
+
     def shutdown(self, widget):
 
         if self._screen._ws.is_connected():

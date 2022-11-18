@@ -13,15 +13,13 @@ def create_panel(*args):
 
 
 class SplashScreenPanel(ScreenPanel):
-    box = None
 
     def __init__(self, screen, title, back=True):
         super().__init__(screen, title, back)
 
     def initialize(self, panel_name):
-
-        image = self._gtk.Image("klipper",  self._screen.width / 1.5, self._screen.height * .5)
-
+        self.retry_button = False
+        image = self._gtk.Image("klipper", self._screen.width / 1.5, self._screen.height * .5)
         self.labels['text'] = Gtk.Label(_("Initializing printer..."))
         self.labels['text'].set_line_wrap(True)
         self.labels['text'].set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
@@ -46,16 +44,12 @@ class SplashScreenPanel(ScreenPanel):
         self.labels['actions'].set_homogeneous(True)
         self.labels['actions'].set_size_request(self._screen.base_panel.content.get_allocation().width, 0)
 
-        scroll = Gtk.ScrolledWindow()
-        scroll.set_property("overlay-scrolling", False)
+        scroll = self._gtk.ScrolledWindow()
         scroll.set_hexpand(True)
-        scroll.set_vexpand(True)
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scroll.add_events(Gdk.EventMask.TOUCH_MASK)
-        scroll.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
         scroll.add(self.labels['text'])
 
-        info = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+        info = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         info.pack_start(image, False, True, 8)
         info.pack_end(scroll, True, True, 8)
 
@@ -84,8 +78,9 @@ class SplashScreenPanel(ScreenPanel):
             if printer_cfg is not None:
                 power_devices = printer_cfg.get("power_devices", "")
                 power_devices = [str(i.strip()) for i in power_devices.split(',')]
-                logging.info(f"Associated power devices: {power_devices}")
-                self.add_power_button(self._screen.search_power_devices(power_devices))
+                if power_devices[0]:
+                    logging.info(f"Associated power devices: {power_devices}")
+                    self.add_power_button(self._screen.search_power_devices(power_devices))
 
         if self._screen.printer is not None and self._screen.printer.state != "disconnected":
             self.labels['actions'].add(self.labels['restart'])
@@ -94,6 +89,8 @@ class SplashScreenPanel(ScreenPanel):
             self.labels['actions'].add(self.labels['restart_system'])
             self.labels['actions'].add(self.labels['shutdown'])
         self.labels['actions'].add(self.labels['menu'])
+        if self.retry_button:
+            self.labels['actions'].add(self.labels['retry'])
         self.labels['actions'].show_all()
 
     def add_power_button(self, powerdevs):
@@ -103,8 +100,19 @@ class SplashScreenPanel(ScreenPanel):
             self.check_power_status()
             self.labels['actions'].add(self.labels['power'])
 
+    def add_retry_button(self):
+        self.retry_button = True
+
+    def remove_retry_button(self, *args):
+        self.retry_button = False
+        self.update_text((_("Connecting to %s") % self._screen.connecting_to_printer))
+        self.show_restart_buttons()
+
     def activate(self):
         self.check_power_status()
+        self._screen.base_panel.show_macro_shortcut(False)
+        self._screen.base_panel.show_heaters(False)
+        self._screen.base_panel.show_estop(False)
 
     def check_power_status(self):
         if 'power' in self.labels:
@@ -142,3 +150,6 @@ class SplashScreenPanel(ScreenPanel):
         else:
             logging.info("OS Reboot")
             os.system("systemctl reboot")
+
+    def retry(self, widget):
+        self._screen._ws.initial_connect()

@@ -7,48 +7,55 @@ from gi.repository import Gtk, Pango
 from ks_includes.KlippyGcodes import KlippyGcodes
 from ks_includes.screen_panel import ScreenPanel
 
-AXIS_X = "X"
-AXIS_Y = "Y"
-AXIS_Z = "Z"
-
 
 def create_panel(*args):
     return MovePanel(*args)
 
 
 class MovePanel(ScreenPanel):
-    distance = 1
     distances = ['.1', '.5', '1', '5', '10', '25', '50']
+    distance = distances[-2]
 
     def __init__(self, screen, title, back=True):
         super().__init__(screen, title, back)
         self.settings = {}
         self.menu = ['move_menu']
 
+    def home(self, widget):
+        self._screen._ws.klippy.gcode_script(KlippyGcodes.HOME)
+
+    def homexy(self, widget):
+        self._screen._ws.klippy.gcode_script(KlippyGcodes.HOME_XY)
+
+    def z_tilt(self, widget):
+        self._screen._ws.klippy.gcode_script(KlippyGcodes.Z_TILT)
+
+    def quad_gantry_level(self, widget):
+        self._screen._ws.klippy.gcode_script(KlippyGcodes.QUAD_GANTRY_LEVEL)
+
     def initialize(self, panel_name):
         grid = self._gtk.HomogeneousGrid()
 
         self.labels['x+'] = self._gtk.ButtonImage("arrow-right", _("X+"), "color1")
-        self.labels['x+'].connect("clicked", self.move, AXIS_X, "+")
+        self.labels['x+'].connect("clicked", self.move, "X", "+")
         self.labels['x-'] = self._gtk.ButtonImage("arrow-left", _("X-"), "color1")
-        self.labels['x-'].connect("clicked", self.move, AXIS_X, "-")
+        self.labels['x-'].connect("clicked", self.move, "X", "-")
 
         self.labels['y+'] = self._gtk.ButtonImage("arrow-up", _("Y+"), "color2")
-        self.labels['y+'].connect("clicked", self.move, AXIS_Y, "+")
+        self.labels['y+'].connect("clicked", self.move, "Y", "+")
         self.labels['y-'] = self._gtk.ButtonImage("arrow-down", _("Y-"), "color2")
-        self.labels['y-'].connect("clicked", self.move, AXIS_Y, "-")
+        self.labels['y-'].connect("clicked", self.move, "Y", "-")
 
         self.labels['z+'] = self._gtk.ButtonImage("z-farther", _("Z+"), "color3")
-        self.labels['z+'].connect("clicked", self.move, AXIS_Z, "+")
+        self.labels['z+'].connect("clicked", self.move, "Z", "+")
         self.labels['z-'] = self._gtk.ButtonImage("z-closer", _("Z-"), "color3")
-        self.labels['z-'].connect("clicked", self.move, AXIS_Z, "-")
+        self.labels['z-'].connect("clicked", self.move, "Z", "-")
 
         self.labels['home'] = self._gtk.ButtonImage("home", _("Home All"), "color4")
         self.labels['home'].connect("clicked", self.home)
 
         self.labels['home-xy'] = self._gtk.ButtonImage("home", _("Home XY"), "color4")
         self.labels['home-xy'].connect("clicked", self.homexy)
-
 
         self.labels['motors-off'] = self._gtk.ButtonImage("motor-off", _("Disable Motors"), "color4")
         script = {"script": "M18"}
@@ -87,7 +94,7 @@ class MovePanel(ScreenPanel):
 
         distgrid = Gtk.Grid()
         for j, i in enumerate(self.distances):
-            self.labels[i] = self._gtk.ToggleButton(i)
+            self.labels[i] = self._gtk.Button(i)
             self.labels[i].set_direction(Gtk.TextDirection.LTR)
             self.labels[i].connect("clicked", self.change_distance, i)
             ctx = self.labels[i].get_style_context()
@@ -97,10 +104,9 @@ class MovePanel(ScreenPanel):
                 ctx.add_class("distbutton_bottom")
             else:
                 ctx.add_class("distbutton")
-            if i == "1":
+            if i == self.distance:
                 ctx.add_class("distbutton_active")
             distgrid.attach(self.labels[i], j, 0, 1, 1)
-        self.labels["1"].set_active(True)
 
         self.labels['pos_x'] = Gtk.Label("X: 0")
         self.labels['pos_y'] = Gtk.Label("Y: 0")
@@ -181,34 +187,21 @@ class MovePanel(ScreenPanel):
                 self.labels['pos_z'].set_text("Z: ?")
 
     def change_distance(self, widget, distance):
-        if self.distance == distance:
-            return
         logging.info(f"### Distance {distance}")
-
-        ctx = self.labels[f"{self.distance}"].get_style_context()
-        ctx.remove_class("distbutton_active")
-
+        self.labels[f"{self.distance}"].get_style_context().remove_class("distbutton_active")
+        self.labels[f"{distance}"].get_style_context().add_class("distbutton_active")
         self.distance = distance
-        ctx = self.labels[self.distance].get_style_context()
-        ctx.add_class("distbutton_active")
-        for i in self.distances:
-            if i == self.distance:
-                continue
-            self.labels[f"{i}"].set_active(False)
 
     def move(self, widget, axis, direction):
-        speed = None
         if self._config.get_config()['main'].getboolean(f"invert_{axis.lower()}", False):
             direction = "-" if direction == "+" else "+"
 
         dist = f"{direction}{self.distance}"
-        config_key = "move_speed_z" if axis == AXIS_Z else "move_speed_xy"
+        config_key = "move_speed_z" if axis == "Z" else "move_speed_xy"
         printer_cfg = self._config.get_printer_config(self._screen.connected_printer)
-        if printer_cfg is not None:
-            speed = printer_cfg.getint(config_key, None)
+        speed = None if printer_cfg is None else printer_cfg.getint(config_key, None)
         if speed is None:
             speed = self._config.get_config()['main'].getint(config_key, 20)
-
         speed = 60 * max(1, speed)
 
         self._screen._ws.klippy.gcode_script(f"{KlippyGcodes.MOVE_RELATIVE}\n{KlippyGcodes.MOVE} {axis}{dist} F{speed}")
