@@ -55,6 +55,7 @@ msgstr ""
 msgid "Apply"
 msgstr ""
 
+
 #, python-format
 msgid "Apply %.2f offset to Endstop?"
 msgstr ""
@@ -97,6 +98,9 @@ msgid "Auto-scroll"
 msgstr ""
 
 msgid "Bed Down"
+msgstr ""
+
+msgid "Bed Down 10mm"
 msgstr ""
 
 msgid "Bed Level"
