@@ -51,7 +51,7 @@ class MainPanel(MenuPanel):
         
         self.heaters = []
 
-        i = 0
+        i = 1
         for x in self._printer.get_tools():
             self.labels[x] = self._gtk.ButtonImage("extruder-"+str(i), self._gtk.formatTemperatureString(0, 0)) 
 
@@ -80,8 +80,7 @@ class MainPanel(MenuPanel):
 
         self.grid = Gtk.Grid()
         self.grid.set_row_homogeneous(True)
-        self.grid.set_column_homogeneous(True)
-
+        self.grid.set_column_homogeneous(True) 
         grid.attach(eq_grid, 0, 0, 1, 1)
         grid.attach(self.arrangeMenuItems(items, 2, True), 1, 0, 1, 1)
 

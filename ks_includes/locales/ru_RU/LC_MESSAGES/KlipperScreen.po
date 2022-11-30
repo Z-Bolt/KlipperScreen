@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-08-18 23:05-0300\n"
-"PO-Revision-Date: 2022-11-09 17:22+0300\n"
+"PO-Revision-Date: 2022-11-30 15:55+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -78,6 +78,20 @@ msgstr "Вы уверены что хотите перезагрузить си�
 
 msgid "Are you sure you wish to shutdown the system?"
 msgstr "Вы хотите выключить принтер?"
+
+msgid ""
+"Are you sure want to load a NEW reel of filament (the rod pulling distance "
+"is 150mm!)?"
+msgstr ""
+"Вы уверены, что хотите загрузить НОВУЮ катушку филамента (расстояние "
+"протяжки прутка - 150мм!)?"
+
+msgid ""
+"Are you sure want to unload the current filament spool (the rod pulling "
+"distance is 150mm!)?"
+msgstr ""
+"Вы уверены что хотите выгрузить текущую катушку филамента (расстояние "
+"протяжки прутка - 150мм!)?"
 
 msgid "Auto"
 msgstr "Авто"
@@ -815,6 +829,7 @@ msgstr[2] ""
 msgid "dBm"
 msgstr "dBm"
 
+#, fuzzy
 msgid "hour"
 msgid_plural "hours"
 msgstr[0] "час"
