@@ -13,7 +13,7 @@ def create_panel(*args):
 
 class SystemPanel(ScreenPanel):
 
-    def initialize(self, panel_name):
+    def initialize(self):
         
         grid = self._gtk.HomogeneousGrid()
         grid.set_row_homogeneous(False)

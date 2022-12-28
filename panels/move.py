@@ -21,21 +21,6 @@ class MovePanel(ScreenPanel):
         self.settings = {}
         self.menu = ['move_menu']
 
-    def home(self, widget):
-        self._screen._ws.klippy.gcode_script(KlippyGcodes.HOME)
-
-    def homexy(self, widget):
-        self._screen._ws.klippy.gcode_script(KlippyGcodes.HOME_XY)
-
-    def z_tilt(self, widget):
-        self._screen._ws.klippy.gcode_script(KlippyGcodes.Z_TILT)
-
-    def quad_gantry_level(self, widget):
-        self._screen._ws.klippy.gcode_script(KlippyGcodes.QUAD_GANTRY_LEVEL)
-
-    def initialize(self, panel_name):
-        grid = self._gtk.HomogeneousGrid()
-
         self.labels['x+'] = self._gtk.ButtonImage("arrow-right", _("X+"), "color1")
         self.labels['x+'].connect("clicked", self.move, "X", "+")
         self.labels['x-'] = self._gtk.ButtonImage("arrow-left", _("X-"), "color1")
@@ -57,12 +42,19 @@ class MovePanel(ScreenPanel):
         self.labels['home-xy'] = self._gtk.ButtonImage("home", _("Home XY"), "color4")
         self.labels['home-xy'].connect("clicked", self.homexy)
 
+        self.labels['z_tilt'] = self._gtk.ButtonImage("z-tilt", _("Z Tilt"), "color4")
+        self.labels['z_tilt'].connect("clicked", self.z_tilt)
+
+        self.labels['quad_gantry_level'] = self._gtk.ButtonImage("z-tilt", _("Quad Gantry Level"), "color4")
+        self.labels['quad_gantry_level'].connect("clicked", self.quad_gantry_level)
+
         self.labels['motors-off'] = self._gtk.ButtonImage("motor-off", _("Disable Motors"), "color4")
         script = {"script": "M18"}
         self.labels['motors-off'].connect("clicked", self._screen._confirm_send_action,
                                           _("Are you sure you wish to disable motors?"),
                                           "printer.gcode.script", script)
 
+        grid = self._gtk.HomogeneousGrid()
         if self._screen.vertical_mode:
             if self._screen.lang_ltr:
                 grid.attach(self.labels['x+'], 2, 1, 1, 1)
@@ -268,3 +260,15 @@ class MovePanel(ScreenPanel):
             self.unload_menu()
             return True
         return False
+
+    def home(self, widget):
+        self._screen._ws.klippy.gcode_script(KlippyGcodes.HOME)
+
+    def homexy(self, widget):
+        self._screen._ws.klippy.gcode_script(KlippyGcodes.HOME_XY)
+
+    def z_tilt(self, widget):
+        self._screen._ws.klippy.gcode_script(KlippyGcodes.Z_TILT)
+
+    def quad_gantry_level(self, widget):
+        self._screen._ws.klippy.gcode_script(KlippyGcodes.QUAD_GANTRY_LEVEL)

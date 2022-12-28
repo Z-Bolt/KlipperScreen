@@ -15,8 +15,7 @@ class BedLevelPanel(ScreenPanel):
     x_offset = 0
     y_offset = 0
 
-    def initialize(self, panel_name):
-        self.panel_name = panel_name
+    def initialize(self):
         self.screws = None
         grid = self._gtk.HomogeneousGrid()
         self.disabled_motors = False

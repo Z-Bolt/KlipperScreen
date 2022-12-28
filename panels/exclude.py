@@ -22,15 +22,13 @@ class ExcludeObjectPanel(ScreenPanel):
         self.object_list.set_valign(Gtk.Align.CENTER)
         self.object_list.set_halign(Gtk.Align.START)
         self.buttons = {}
-        self.current_object = self._gtk.ButtonImage("extrude", "", scale=.66, position=Gtk.PositionType.LEFT, lines=1)
+        self.current_object = self._gtk.ButtonImage("extrude1", "", scale=.66, position=Gtk.PositionType.LEFT, lines=1)
         self.current_object.connect("clicked", self.exclude_current)
         self.current_object.set_vexpand(False)
         self.excluded_objects = self._printer.get_stat("exclude_object", "excluded_objects")
         logging.info(f'Excluded: {self.excluded_objects}')
         self.objects = self._printer.get_stat("exclude_object", "objects")
         self.labels['map'] = None
-
-    def initialize(self, panel_name):
         for obj in self.objects:
             logging.info(f"Adding {obj['name']}")
             self.add_object(obj["name"])
@@ -56,6 +54,7 @@ class ExcludeObjectPanel(ScreenPanel):
                 scroll.set_size_request((self._screen.width * .9) // 2, -1)
         else:
             grid.attach(scroll, 0, 2, 2, 1)
+            scroll.set_size_request(self._gtk.get_content_width(), -1)
 
         self.content.add(grid)
         self.content.show_all()

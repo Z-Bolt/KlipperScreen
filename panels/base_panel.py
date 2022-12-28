@@ -20,6 +20,7 @@ class BasePanel(ScreenPanel):
         self.time_min = -1
         self.time_format = self._config.get_main_config().getboolean("24htime", True)
         self.time_update = None
+        self.titlebar_items = []
         self.titlebar_name_type = None
         self.buttons_showing = {
             'back': not back,
@@ -47,7 +48,7 @@ class BasePanel(ScreenPanel):
         self.control['estop'] = self._gtk.ButtonImage('emergency', scale=1)
         self.control['estop'].connect("clicked", self.emergency_stop)
         self.control['shutdown'] = self._gtk.ButtonImage('shutdown', scale = 1)
-        self.control['shutdown'].connect ( "clicked", self.shutdown)
+        self.control['shutdown'].connect("clicked", self.shutdown)
         self.control['wifi'] = self._gtk.ButtonImage('network', scale = 1)
         self.control['wifi'].connect("clicked", self.menu_item_clicked, "network",{
                 "name": _('Network'),
@@ -94,7 +95,7 @@ class BasePanel(ScreenPanel):
         self.control['time_box'].set_halign(Gtk.Align.END)
         self.control['time_box'].pack_end(self.control['time'], True, True, 10)
 
-        self.titlebar = Gtk.Box(spacing=5)
+        self.titlebar = Gtk.Box(spacing=10)
         self.titlebar.set_size_request(0, self._gtk.get_titlebar_height())
         self.titlebar.set_valign(Gtk.Align.CENTER)
         self.titlebar.add(self.control['temp_box'])
@@ -120,10 +121,7 @@ class BasePanel(ScreenPanel):
 
         # Layout is and content are on screen_panel
         self.layout.add(self.main_grid)
-
-    def initialize(self, panel_name):
         self.update_time()
-        return
 
     def show_heaters(self, show=True):
         try:
@@ -131,13 +129,6 @@ class BasePanel(ScreenPanel):
                 self.control['temp_box'].remove(child)
             if not show or self._screen.printer.get_temp_store_devices() is None:
                 return
-
-            printer_cfg = self._config.get_printer_config(self._screen.connected_printer)
-            if printer_cfg is not None:
-                self.titlebar_name_type = printer_cfg.get("titlebar_name_type", None)
-            else:
-                self.titlebar_name_type = None
-            logging.info(f"Titlebar name type: {self.titlebar_name_type}")
 
             img_size = self._gtk.img_scale * .5
             for device in self._screen.printer.get_temp_store_devices():
@@ -151,53 +142,49 @@ class BasePanel(ScreenPanel):
                 self.labels[f'{device}_box'].pack_start(self.labels[device], False, False, 0)
 
             # Limit the number of items according to resolution
-            nlimit = int(round(log(self._screen.width, 10) * 5 - 10.5))
+            nlimit = int(round(log(self._screen.width, 10) * 5 - 10.5) + 2)
 
             n = 0
-            if self._screen.printer.get_tools():
-                self.current_extruder = self._screen.printer.get_stat("toolhead", "extruder")
-                if self.current_extruder and f"{self.current_extruder}_box" in self.labels:
-                    self.control['temp_box'].add(self.labels[f"{self.current_extruder}_box"])
-                    n += 1
+            for x in self._screen.printer.get_tools():
+                self.control['temp_box'].add(self.labels[f"{x}_box"])
+                n +=1
 
             if self._screen.printer.has_heated_bed():
                 self.control['temp_box'].add(self.labels['heater_bed_box'])
                 n += 1
 
             # Options in the config have priority
-            if printer_cfg is not None:
-                titlebar_items = printer_cfg.get("titlebar_items", None)
-                if titlebar_items is not None:
-                    titlebar_items = [str(i.strip()) for i in titlebar_items.split(',')]
-                    logging.info(f"Titlebar items: {titlebar_items}")
-                    for device in self._screen.printer.get_temp_store_devices():
-                        # Users can fill the bar if they want
-                        if n >= nlimit + 1:
-                            break
-                        name = device.split()[1] if len(device.split()) > 1 else device
-                        for item in titlebar_items:
-                            if name == item:
-                                self.control['temp_box'].add(self.labels[f"{device}_box"])
-                                n += 1
-                                break
+            for device in self._screen.printer.get_temp_store_devices():
+                # Users can fill the bar if they want
+                if n >= nlimit + 1:
+                    break
+                name = device.split()[1] if len(device.split()) > 1 else device
+                for item in self.titlebar_items:
+                    if name == item:
+                        self.control['temp_box'].add(self.labels[f"{device}_box"])
+                        n += 1
+                        break
 
             # If there is enough space fill with heater_generic
             for device in self._screen.printer.get_temp_store_devices():
                 if n >= nlimit:
                     break
-                if device.startswith("temperature_sensor"):
+                if device.startswith("heater_generic"):
                     self.control['temp_box'].add(self.labels[f"{device}_box"])
-                    n += 1
+                    n += 1    
             self.control['temp_box'].show_all()
         except Exception as e:
             logging.debug(f"Couldn't create heaters box: {e}")
 
     def get_icon(self, device, img_size):
         if device.startswith("extruder"):
-            if self._screen.printer.extrudercount > 0:
+            if self._screen.printer.extrudercount > 1:
                 if device == "extruder":
-                    device = "extruder0"
-                return self._gtk.Image(f"extruder-{device[8:]}", img_size, img_size)
+                    device = "extruder1"
+                    return self._gtk.Image(f"extruder-{device[8:]}", img_size, img_size)
+                elif device == "extruder1":
+                    device = "extruder2"
+                    return self._gtk.Image(f"extruder-{device[8:]}", img_size, img_size)
             return self._gtk.Image("extruder", img_size, img_size)
         elif device.startswith("heater_bed"):
             return self._gtk.Image("bed", img_size, img_size)
@@ -331,12 +318,24 @@ class BasePanel(ScreenPanel):
             self.control['estop'].set_sensitive(False)
             self.buttons_showing['estop'] = False
 
+    def set_ks_printer_cfg(self, printer):
+        self.ks_printer_cfg = self._config.get_printer_config(printer)
+        if self.ks_printer_cfg is not None:
+            self.titlebar_name_type = self.ks_printer_cfg.get("titlebar_name_type", None)
+            titlebar_items = self.ks_printer_cfg.get("titlebar_items", None)
+            if titlebar_items is not None:
+                self.titlebar_items = [str(i.strip()) for i in titlebar_items.split(',')]
+                logging.info(f"Titlebar name type: {self.titlebar_name_type} items: {self.titlebar_items}")
+            else:
+                self.titlebar_items = []
+                
     def shutdown(self, widget):
-
-        if self._screen._ws.is_connected():
+        if self._screen._ws.connected:
             self._screen._confirm_send_action(widget,
                                               _("Are you sure you wish to shutdown the system?"),
                                               "machine.shutdown")
+            os.system("sudo /home/pi/uhubctl/uhubctl -a off -l 2 -p 1 ")
         else:
             logging.info("OS Shutdown")
+            os.system("sudo /home/pi/uhubctl/uhubctl -a off -l 2 -p 1 ")
             os.system("systemctl poweroff")

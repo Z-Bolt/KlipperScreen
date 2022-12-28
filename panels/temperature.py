@@ -1,11 +1,13 @@
-import gi
 import logging
 import contextlib
+
+import gi
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GLib
 
 from ks_includes.screen_panel import ScreenPanel
+from ks_includes.widgets.graph import HeaterGraph
 from ks_includes.widgets.keypad import Keypad
 
 
@@ -29,13 +31,11 @@ class TemperaturePanel(ScreenPanel):
         self.preheat_options = self._screen._config.get_preheat_options()
         logging.debug(f"Preheat options: {self.preheat_options}")
         self.grid = self._gtk.HomogeneousGrid()
-
-    def initialize(self, panel_name):
         self._gtk.reset_temp_color()
         self.grid.attach(self.create_left_panel(), 0, 0, 1, 1)
 
         # When printing start in temp_delta mode and only select tools
-        state = self._printer.get_state()
+        state = self._printer.state
         logging.info(state)
         selection = []
         if state not in ["printing", "paused"]:
@@ -102,7 +102,7 @@ class TemperaturePanel(ScreenPanel):
             if option != "cooldown":
                 self.labels[option] = self._gtk.Button(option, f"color{(i % 4) + 1}")
                 self.labels[option].connect("clicked", self.set_temperature, option)
-                self.labels['preheat_grid'].attach(self.labels[option], (i % 2), int(i / 2), 1, 1)
+                self.labels['preheat_grid'].attach(self.labels[option], (i % 3), int(i / 3), 1, 1)
                 i += 1
         scroll = Gtk.ScrolledWindow()
         scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -276,7 +276,8 @@ class TemperaturePanel(ScreenPanel):
 
         if device.startswith("extruder"):
             i = sum(d.startswith('extruder') for d in self.devices)
-            image = f"extruder-{i}" if self._printer.extrudercount > 0 else "extruder"
+            i+=1
+            image = f"extruder-{i}" if self._printer.extrudercount > 1 else "extruder"
         elif device == "heater_bed":
             image = "bed"
             devname = "Heater Bed"
@@ -444,4 +445,3 @@ class TemperaturePanel(ScreenPanel):
         self.grid.show_all()
 
         self.labels['popover'].popdown()
-
