@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-08-18 23:05-0300\n"
-"PO-Revision-Date: 2022-11-30 15:55+0300\n"
+"PO-Revision-Date: 2022-12-28 12:29+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -56,6 +56,11 @@ msgstr "Добавить профиль"
 msgid "Apply"
 msgstr "Применить"
 
+msgid "Automatic table alignment"
+msgstr ""
+"Автоматическая\n"
+"калибровка стола"
+
 #, python-format
 msgid "Apply %.2f offset to Endstop?"
 msgstr "Применить смещение на %.2f к Endstop?"
@@ -81,17 +86,17 @@ msgstr "Вы хотите выключить принтер?"
 
 msgid ""
 "Are you sure want to load a NEW reel of filament (the rod pulling distance "
-"is 150mm!)?"
+"is 2000mm!)?"
 msgstr ""
 "Вы уверены, что хотите загрузить НОВУЮ катушку филамента (расстояние "
-"протяжки прутка - 150мм!)?"
+"протяжки прутка - 2000мм!)?"
 
 msgid ""
 "Are you sure want to unload the current filament spool (the rod pulling "
-"distance is 150mm!)?"
+"distance is 2000mm!)?"
 msgstr ""
 "Вы уверены что хотите выгрузить текущую катушку филамента (расстояние "
-"протяжки прутка - 150мм!)?"
+"протяжки прутка - 2000мм!)?"
 
 msgid "Auto"
 msgstr "Авто"
@@ -109,6 +114,11 @@ msgid "Bed Down"
 msgstr ""
 "Стол \n"
 "Вниз"
+
+msgid "Bed Down 10mm"
+msgstr ""
+"Стол \n"
+"Вниз 10мм"
 
 msgid "Bed Level"
 msgstr "Уровень стола"
@@ -168,6 +178,9 @@ msgstr "Проверка обновлений, пожалуйста, подож�
 
 msgid "Clear"
 msgstr "Очистить"
+
+msgid "Cleanup"
+msgstr "Очистка"
 
 msgid "Close"
 msgstr "Закрыть"
@@ -346,6 +359,12 @@ msgstr "Хост"
 msgid "Hostname"
 msgstr "Имя хоста"
 
+msgid "Hotend №1 replacement"
+msgstr "Замена хотенда №1"
+
+msgid "Hotend №2 replacement"
+msgstr "Замена хотенда №2"
+
 msgid "Icon Theme"
 msgstr "Темы"
 
@@ -418,6 +437,12 @@ msgstr "Осталось:"
 msgid "Limits"
 msgstr "Лимиты"
 
+msgid "Light ON"
+msgstr "Включить подсветку"
+
+msgid "Light OFF"
+msgstr "Выключить подсветку"
+
 msgid "Load"
 msgstr ""
 "Загрузить\n"
@@ -437,6 +462,11 @@ msgstr "Макросы"
 
 msgid "Main Menu"
 msgstr "Главное меню"
+
+msgid ""
+"Make sure the filament is unloaded and the nozzle temperature is less than "
+"60 °C"
+msgstr "Убедитесь что филамент выгружен и температура сопла меньше 60 °C"
 
 msgid "Max"
 msgstr "Максимум"
@@ -479,6 +509,12 @@ msgstr "Дистанция перемещения (мм)"
 
 msgid "Name"
 msgstr "Имя"
+
+msgid "Nozzle cleaning №1 extruder"
+msgstr "Очистка сопла экструдера №1"
+
+msgid "Nozzle cleaning №2 extruder"
+msgstr "Очистка сопла экструдера №2"
 
 msgid "Network"
 msgstr "Сеть"
@@ -629,6 +665,9 @@ msgstr "Сохранить конфигурацию?"
 
 msgid "Saved"
 msgstr "Сохранено"
+
+msgid "Service"
+msgstr "Сервис"
 
 #, python-format
 msgid "Saved offset: %s"
@@ -781,6 +820,12 @@ msgstr "Загружено"
 msgid "View Mesh"
 msgstr "Смотреть сетку"
 
+msgid "Vacuum ON"
+msgstr "Включить вакуум"
+
+msgid "Vacuum OFF"
+msgstr "Выключить вакуум"
+
 msgid "X+"
 msgstr "X+"
 
@@ -829,7 +874,6 @@ msgstr[2] ""
 msgid "dBm"
 msgstr "dBm"
 
-#, fuzzy
 msgid "hour"
 msgid_plural "hours"
 msgstr[0] "час"

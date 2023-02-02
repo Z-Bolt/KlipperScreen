@@ -55,6 +55,9 @@ msgstr ""
 msgid "Apply"
 msgstr ""
 
+msgid "Automatic table alignment"
+msgstr ""
+
 #, python-format
 msgid "Apply %.2f offset to Endstop?"
 msgstr ""
@@ -78,11 +81,11 @@ msgstr ""
 msgid "Are you sure you wish to shutdown the system?"
 msgstr ""
 
-msgid "Are you sure want to load a NEW reel of filament (the rod pulling distance is 150mm!)?"
-msgstr "
+msgid "Are you sure want to load a NEW reel of filament (the rod pulling distance is 2000mm!)?"
+msgstr ""
 
-msgid "Are you sure want to unload the current filament spool (the rod pulling distance is 150mm!)?"
-msgstr "
+msgid "Are you sure want to unload the current filament spool (the rod pulling distance is 2000mm!)?"
+msgstr ""
 
 msgid "Auto"
 msgstr ""
@@ -97,6 +100,9 @@ msgid "Auto-scroll"
 msgstr ""
 
 msgid "Bed Down"
+msgstr ""
+
+msgid "Bed Down 10mm"
 msgstr ""
 
 msgid "Bed Level"
@@ -154,6 +160,9 @@ msgid "Checking for updates, please wait..."
 msgstr ""
 
 msgid "Clear"
+msgstr ""
+
+msgid "Cleanup"
 msgstr ""
 
 msgid "Close"
@@ -332,6 +341,13 @@ msgstr ""
 msgid "Hostname"
 msgstr ""
 
+msgid "Hotend №1 replacement"
+msgstr ""
+
+msgid "Hotend №2 replacement"
+msgstr ""
+
+
 msgid "Icon Theme"
 msgstr ""
 
@@ -399,6 +415,12 @@ msgstr ""
 msgid "Limits"
 msgstr ""
 
+msgid "Light ON"
+msgstr ""
+
+msgid "Light OFF"
+msgstr ""
+
 msgid "Load"
 msgstr ""
 
@@ -415,6 +437,9 @@ msgid "Macros"
 msgstr ""
 
 msgid "Main Menu"
+msgstr ""
+
+msgid "Make sure the filament is unloaded and the nozzle temperature is less than 60 °C"
 msgstr ""
 
 msgid "Max"
@@ -457,6 +482,12 @@ msgid "Move Distance (mm)"
 msgstr ""
 
 msgid "Name"
+msgstr ""
+
+msgid "Nozzle cleaning №1 extruder"
+msgstr ""
+
+msgid "Nozzle cleaning №2 extruder"
 msgstr ""
 
 msgid "Network"
@@ -606,6 +637,10 @@ msgstr ""
 msgid "Saved"
 msgstr ""
 
+msgid "Service"
+msgstr ""
+
+
 #, python-format
 msgid "Saved offset: %s"
 msgstr ""
@@ -746,6 +781,12 @@ msgid "Uploaded"
 msgstr ""
 
 msgid "View Mesh"
+msgstr ""
+
+msgid "Vacuum ON"
+msgstr ""
+
+msgid "Vacuum OFF"
 msgstr ""
 
 msgid "X+"
