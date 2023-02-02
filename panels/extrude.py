@@ -55,6 +55,8 @@ class ExtrudePanel(ScreenPanel):
 
         self.labels['retract'] = self._gtk.ButtonImage("retract", _("Retract"), "color1")
         self.labels['retract'].connect("clicked", self.extrude, "-")
+        self.labels['nozzle'] = self._gtk.ButtonImage("clean-nozzle", _("Nozzle"), "color3")
+        self.labels['nozzle'].connect("clicked", self.clean_nozzle)
         self.labels['temperature'] = self._gtk.ButtonImage("heat-up", _("Temperature"), "color4")
         self.labels['temperature'].connect("clicked", self.menu_item_clicked, "temperature", {
             "name": "Temperature",
@@ -225,6 +227,9 @@ class ExtrudePanel(ScreenPanel):
         self.labels[f"speed{self.speed}"].get_style_context().remove_class("distbutton_active")
         self.labels[f"speed{speed}"].get_style_context().add_class("distbutton_active")
         self.speed = speed
+
+    def clean_nozzle(self, widget):
+        self._screen._ws.klippy.gcode_script("CLEAN_NOZZLE")   
 
     def extrude(self, widget, direction):
         self._screen._ws.klippy.gcode_script(KlippyGcodes.EXTRUDE_REL)
