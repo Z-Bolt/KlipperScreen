@@ -80,6 +80,7 @@ class ExtrudePanel(ScreenPanel):
                 i += 1
         if i < (limit - 1):
             extgrid.attach(self.labels['temperature'], i + 1, 0, 1, 1)
+            extgrid.attach(self.labels['nozzle'], i + 2, 0, 1, 1)
 
         distgrid = Gtk.Grid()
         for j, i in enumerate(self.distances):
