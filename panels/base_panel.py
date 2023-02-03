@@ -43,11 +43,11 @@ class BasePanel(ScreenPanel):
             "name": "Macros",
             "panel": "gcode_macros"
         })
-
+        script = {"script":"M81"}
         self.control['estop'] = self._gtk.ButtonImage('emergency', scale=1)
         self.control['estop'].connect("clicked", self.emergency_stop)
         self.control['shutdown'] = self._gtk.ButtonImage('shutdown', scale = 1)
-        self.control['shutdown'].connect ( "clicked", self.shutdown)
+        self.control['shutdown'].connect ( "clicked", self._screen._confirm_send_action, _("Are you sure you wish to shutdown the system?"), "printer.gcode.script", script)
         self.control['wifi'] = self._gtk.ButtonImage('network', scale = 1)
         self.control['wifi'].connect("clicked", self.menu_item_clicked, "network",{
                 "name": _('Network'),
@@ -331,12 +331,12 @@ class BasePanel(ScreenPanel):
             self.control['estop'].set_sensitive(False)
             self.buttons_showing['estop'] = False
 
-    def shutdown(self, widget):
+    # def shutdown(self, widget):
 
-        if self._screen._ws.is_connected():
-            self._screen._confirm_send_action(widget,
-                                              _("Are you sure you wish to shutdown the system?"),
-                                              "machine.shutdown")
-        else:
-            logging.info("OS Shutdown")
-            os.system("systemctl poweroff")
+    #     if self._screen._ws.is_connected():
+    #         self._screen._confirm_send_action(widget,
+    #                                           _("Are you sure you wish to shutdown the system?"),
+    #                                           "machine.shutdown")
+    #     else:
+    #         logging.info("OS Shutdown")
+    #         os.system("systemctl poweroff")
