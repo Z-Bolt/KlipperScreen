@@ -403,7 +403,7 @@ class NetworkPanel(ScreenPanel):
                 ipv4 = f"<b>IPv4:</b> {ifadd[netifaces.AF_INET][0]['addr']} "
             if netifaces.AF_INET6 in ifadd and len(ifadd[netifaces.AF_INET6]) > 0:
                 ipv6 = f"<b>IPv6:</b> {ifadd[netifaces.AF_INET6][0]['addr'].split('%')[0]} "
-            info = f'<b>' + _("Hostname") + f':</b> {hostname}\n{ipv4}\n{ipv6}\n'
+            info = f'<b>' + _("Hostname") + f':</b> {hostname}\n{ipv4}\n' #{ipv6}\n'
         elif "psk" in netinfo:
             info = _("Password saved")
         if "encryption" in netinfo:
