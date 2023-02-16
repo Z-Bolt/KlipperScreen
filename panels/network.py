@@ -400,7 +400,7 @@ class NetworkPanel(ScreenPanel):
             hostname = stream.read().strip()
             ifadd = netifaces.ifaddresses(self.interface)
             if netifaces.AF_INET in ifadd and len(ifadd[netifaces.AF_INET]) > 0:
-                ipv4 = f"<b>IPv4:</b> {ifadd[netifaces.AF_INET][0]['addr']} "
+                ipv4 = f"<b>IP:</b> {ifadd[netifaces.AF_INET][0]['addr']} "
             if netifaces.AF_INET6 in ifadd and len(ifadd[netifaces.AF_INET6]) > 0:
                 ipv6 = f"<b>IPv6:</b> {ifadd[netifaces.AF_INET6][0]['addr'].split('%')[0]} "
             info = f'<b>' + _("Hostname") + f':</b> {hostname}\n{ipv4}\n' #{ipv6}\n'
