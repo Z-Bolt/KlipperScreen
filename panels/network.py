@@ -403,21 +403,21 @@ class NetworkPanel(ScreenPanel):
                 ipv4 = f"<b>IP:</b> {ifadd[netifaces.AF_INET][0]['addr']} "
             if netifaces.AF_INET6 in ifadd and len(ifadd[netifaces.AF_INET6]) > 0:
                 ipv6 = f"<b>IPv6:</b> {ifadd[netifaces.AF_INET6][0]['addr'].split('%')[0]} "
-            info = f'<b>' + _("Hostname") + f':</b> {hostname}\n{ipv4}\n' #{ipv6}\n'
+            info = f"{ipv4}"
         elif "psk" in netinfo:
             info = _("Password saved")
         if "encryption" in netinfo:
             if netinfo['encryption'] != "off":
                 encr = netinfo['encryption'].upper()
         if "frequency" in netinfo:
-            freq = "2.4 GHz" if netinfo['frequency'][0:1] == "2" else "5 Ghz"
+            freq = "2.4 " + _("Ghz") if netinfo['frequency'][0:1] == "2" else "5 " + _("Ghz")
         if "channel" in netinfo:
             chan = _("Channel") + f' {netinfo["channel"]}'
         if "signal_level_dBm" in netinfo:
             lvl = f'{netinfo["signal_level_dBm"]} ' + _("dBm")
 
-        self.labels['networks'][ssid]['info'].set_markup(f"{info} <small>{encr}  {freq}  {chan}  {lvl}</small>")
-        self.labels['networks'][ssid]['info'].show_all()
+        self.labels['networks'][ssid]['info'].set_markup(f"{info}\n{freq}")
+        self.labels['networks'][ssid]['info'].show_all() #
 
     def update_single_network_info(self):
 
