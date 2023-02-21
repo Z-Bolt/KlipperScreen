@@ -151,7 +151,7 @@ class BasePanel(ScreenPanel):
                 self.labels[f'{device}_box'].pack_start(self.labels[device], False, False, 0)
 
             # Limit the number of items according to resolution
-            nlimit = int(round(log(self._screen.width, 10) * 5 - 10.5))
+            nlimit = int(round(log(self._screen.width, 10) * 5 - 10.5) + 2)
 
             n = 0
             if self._screen.printer.get_tools():
@@ -186,6 +186,9 @@ class BasePanel(ScreenPanel):
                 if n >= nlimit:
                     break
                 if device.startswith("temperature_sensor"):
+                    self.control['temp_box'].add(self.labels[f"{device}_box"])
+                    n += 1
+                if device.startswith("heater_generic"):
                     self.control['temp_box'].add(self.labels[f"{device}_box"])
                     n += 1
             self.control['temp_box'].show_all()
