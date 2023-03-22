@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-08-18 23:05-0300\n"
-"PO-Revision-Date: 2023-03-22 11:28+0300\n"
+"PO-Revision-Date: 2023-03-22 11:50+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -182,7 +182,7 @@ msgid "Confirm Emergency Stop"
 msgstr "Подтвердить аварийную остановку"
 
 msgid "Connected"
-msgstr "Соединенный"
+msgstr "Подключен"
 
 #, python-format
 msgid "Connecting to %s"
@@ -513,7 +513,7 @@ msgid "Outdated by %d"
 msgstr "Устарело на %d"
 
 msgid "PSK for"
-msgstr "PSK для"
+msgstr "Введите пароль для сети:"
 
 msgid "Package will be updated"
 msgid_plural "Packages will be updated"
