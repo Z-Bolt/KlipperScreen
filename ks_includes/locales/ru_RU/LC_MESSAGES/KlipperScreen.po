@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-08-18 23:05-0300\n"
-"PO-Revision-Date: 2023-02-16 16:08+0300\n"
+"PO-Revision-Date: 2023-03-22 11:28+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
-"X-Generator: Poedit 2.0.7\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #, python-format
 msgid "%s will be updated to version"
@@ -182,7 +182,7 @@ msgid "Confirm Emergency Stop"
 msgstr "Подтвердить аварийную остановку"
 
 msgid "Connected"
-msgstr "Подключен"
+msgstr "Соединенный"
 
 #, python-format
 msgid "Connecting to %s"
@@ -227,6 +227,12 @@ msgstr "Вы хотите восстановить% s?"
 
 msgid "Elapsed:"
 msgstr "Прошло:"
+
+msgid "El.magnet ON"
+msgstr "Включить эл.магнит"
+
+msgid "El.magnet OFF"
+msgstr "Выключить эл.магнит"
 
 msgid "Error"
 msgstr "Ошибка"
@@ -506,8 +512,8 @@ msgstr "Выкл"
 msgid "Outdated by %d"
 msgstr "Устарело на %d"
 
-msgid "PSK for network:"
-msgstr "Введите пароль для сети:"
+msgid "PSK for"
+msgstr "PSK для"
 
 msgid "Package will be updated"
 msgid_plural "Packages will be updated"
@@ -746,6 +752,12 @@ msgstr "Чтобы применить %s необходимо перезапус
 msgid "Total:"
 msgstr "Всего:"
 
+msgid "Tool 1"
+msgstr "Инструмент 1"
+
+msgid "Tool 2"
+msgstr "Инструмент 2"
+
 msgid "Unknown Heater"
 msgstr "Неизвестный обогреватель"
 
@@ -829,7 +841,6 @@ msgstr[2] ""
 msgid "dBm"
 msgstr "dBm"
 
-#, fuzzy
 msgid "hour"
 msgid_plural "hours"
 msgstr[0] "час"
@@ -847,6 +858,3 @@ msgstr "мм/с"
 
 msgid "mm/s²"
 msgstr "мм/с²"
-
-msgid "Ghz"
-msgstr "ГГц"

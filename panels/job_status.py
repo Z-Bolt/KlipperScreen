@@ -144,6 +144,7 @@ class JobStatusPanel(ScreenPanel):
         self.extruder_button = {}
         if self._screen.printer.get_tools():
             for i, extruder in enumerate(self._printer.get_tools()):
+                i+=1
                 self.labels[extruder] = Gtk.Label("-")
                 self.extruder_button[extruder] = self._gtk.ButtonImage(f"extruder-{i}",
                                                                        None, None, .6, Gtk.PositionType.LEFT)

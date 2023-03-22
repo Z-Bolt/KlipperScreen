@@ -154,11 +154,9 @@ class BasePanel(ScreenPanel):
             nlimit = int(round(log(self._screen.width, 10) * 5 - 10.5) + 2)
 
             n = 0
-            if self._screen.printer.get_tools():
-                self.current_extruder = self._screen.printer.get_stat("toolhead", "extruder")
-                if self.current_extruder and f"{self.current_extruder}_box" in self.labels:
-                    self.control['temp_box'].add(self.labels[f"{self.current_extruder}_box"])
-                    n += 1
+            for x in self._screen.printer.get_tools():
+                self.control['temp_box'].add(self.labels[f"{x}_box"])
+                n +=1
 
             if self._screen.printer.has_heated_bed():
                 self.control['temp_box'].add(self.labels['heater_bed_box'])
@@ -197,10 +195,13 @@ class BasePanel(ScreenPanel):
 
     def get_icon(self, device, img_size):
         if device.startswith("extruder"):
-            if self._screen.printer.extrudercount > 0:
+            if self._screen.printer.extrudercount > 1:
                 if device == "extruder":
                     device = "extruder1"
-                return self._gtk.Image(f"extruder-{device[8:]}", img_size, img_size)
+                    return self._gtk.Image(f"extruder-{device[8:]}", img_size, img_size)
+                elif device == "extruder1":
+                    device = "extruder2"
+                    return self._gtk.Image(f"extruder-{device[8:]}", img_size, img_size)
             return self._gtk.Image("extruder", img_size, img_size)
         elif device.startswith("heater_bed"):
             return self._gtk.Image("bed", img_size, img_size)

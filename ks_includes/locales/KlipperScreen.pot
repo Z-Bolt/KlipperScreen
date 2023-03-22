@@ -215,6 +215,12 @@ msgstr ""
 msgid "Elapsed:"
 msgstr ""
 
+msgid "El.magnet ON"
+msgstr ""
+
+msgid "El.magnet OFF"
+msgstr ""
+
 msgid "Error"
 msgstr ""
 
@@ -713,6 +719,12 @@ msgid "To apply %s KlipperScreen needs to be restarted"
 msgstr ""
 
 msgid "Total:"
+msgstr ""
+
+msgid "Tool 1"
+msgstr ""
+
+msgid "Tool 2"
 msgstr ""
 
 msgid "Unknown Heater"
