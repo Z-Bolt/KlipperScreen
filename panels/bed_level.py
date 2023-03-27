@@ -70,9 +70,9 @@ class BedLevelPanel(ScreenPanel):
             y = int(int(yconf['position_max'])/20)
             self.screws = [
                 [x, y],
-                [x*19, y],
+                [x*17, y],
                 [x, y*19],
-                [x*19, y*19],
+                [x*17, y*19],
             ]
             logging.debug("Calculated screw locations [x,y]: %s", screws)
         else:
