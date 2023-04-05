@@ -210,3 +210,11 @@ textview .time {
 .keyboard_pad {
     background-color: #13181C;
 }
+
+.keyboard_pad > label {
+    font-size: 1.5em;
+}
+
+.wifi_password {
+    font-size: 2em;
+}

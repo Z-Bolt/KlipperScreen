@@ -2,7 +2,7 @@ import gi
 import logging
 import netifaces
 import os
-from ks_includes.wifi import WifiManager
+from ks_includes.wifi import WifiManagerFactory
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk, GLib, Pango
@@ -28,7 +28,7 @@ class NetworkPanel(ScreenPanel):
         self.wifi = None
         if len(self.wireless_interfaces) > 0:
             logging.info(f"Found wireless interfaces: {self.wireless_interfaces}")
-            self.wifi = WifiManager(self.wireless_interfaces[0])
+            self.wifi = WifiManagerFactory.get_manager(self.wireless_interfaces[0])
 
     def initialize(self, menu):
         grid = self._gtk.HomogeneousGrid()
@@ -179,7 +179,7 @@ class NetworkPanel(ScreenPanel):
         buttons = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         if network_id != -1 or netinfo['connected']:
             buttons.pack_end(delete, False, False, 0)
-        else:
+        if not netinfo['connected']:
             buttons.pack_end(connect, False, False, 0)
         network.add(buttons)
 
@@ -351,6 +351,7 @@ class NetworkPanel(ScreenPanel):
         self.labels['network_psk'].connect("activate", self.add_new_network, ssid, True)
         self.labels['network_psk'].connect("focus-in-event", self._show_keyboard)
         self.labels['network_psk'].grab_focus_without_selecting()
+        self.labels['network_psk'].get_style_context().add_class("wifi_password")
 
         save = self._gtk.ButtonImage("sd", _("Save"), "color3")
         save.set_hexpand(False)
