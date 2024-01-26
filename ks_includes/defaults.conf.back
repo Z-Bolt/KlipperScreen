@@ -6,36 +6,18 @@
 [preheat PLA]
 bed = 60
 extruder = 215
-extruder1 = 215
+
+[preheat TPU]
+bed = 65
+extruder = 225
 
 [preheat PETG]
 bed = 75
 extruder = 235
-extruder1 = 235
-chamber = 50
 
 [preheat ABS]
 bed = 110
 extruder = 245
-extruder1 = 245
-chamber = 70
-
-[preheat NYLON]
-bed = 65
-extruder = 225
-extruder1 = 225
-
-[preheat POM]
-bed = 65
-extruder = 225
-extruder1 = 225
-
-[preheat PEEK]
-bed = 65
-extruder = 225
-extruder1 = 225
-
-
 ######################################################
 # KlipperScreen.conf 
 ######################################################
@@ -53,51 +35,9 @@ name: {{ gettext('Main Menu') }}
 ######################################################
 # Setting ACTIONS
 ######################################################
-[menu __main service]
-name: {{ gettext('Service') }}
-icon: service
-
-[menu __main service s1]
-name: {{ gettext('Hotend №1 replacement') }}
-icon: service
-method: printer.gcode.script
-params: {"script":"CHANGE_H1"}
-confirm:
-    {{ gettext('Make sure the filament is unloaded and the nozzle temperature is less than 60 °C') }}
-
-[menu __main service s2]
-name: {{ gettext('Hotend №2 replacement') }}
-icon: service
-method: printer.gcode.script
-params: {"script":"CHANGE_H2"}
-confirm:
-    {{ gettext('Make sure the filament is unloaded and the nozzle temperature is less than 60 °C') }}
-
-[menu __main service s3]
-name: {{ gettext('Nozzle cleaning №1 extruder') }}
-icon: service
-method: printer.gcode.script
-params: {"script":"CLEAN_NOZZLE1"}
-
-[menu __main service s4]
-name: {{ gettext('Nozzle cleaning №2 extruder') }}
-icon: service
-method: printer.gcode.script
-params: {"script":"CLEAN_NOZZLE2"}
-
-[menu __main service s5]
-name: {{ gettext('Automatic table alignment') }}
-icon: service
-method: printer.gcode.script
-params: {"script":"TABLE_ALIGMENT"}
-
 [menu __main actions]
 name: {{ gettext('Actions') }}
 icon: move
-
-[menu __main config]
-name: {{ gettext('Configuration') }}
-icon: settings
 
 [menu __main actions move]
 name: {{ gettext('Move') }}
@@ -144,11 +84,11 @@ name: {{ gettext('Move') }}
 icon: move
 panel: move
 
-[menu __main actions move unsafe]
-name: {{ gettext('Bed Down 10mm') }}
-icon: arrow-down
+[menu __main actions move disablemotors]
+name: {{ gettext('Disable Motors') }}
+icon: motor-off
 method: printer.gcode.script
-params: {"script":"UNSAFE_LOWER_BED"}
+params: {"script":"M18"}
 
 [menu __main actions temperature]
 name: {{ gettext('Temperature') }}
@@ -169,7 +109,9 @@ panel: extrude
 ######################################################
 # Setting CONFIG
 ######################################################
-
+[menu __main config]
+name: {{ gettext('Configuration') }}
+icon: settings
 
 [menu __main config network]
 name: {{ gettext('Network') }}
@@ -213,18 +155,6 @@ name: {{ gettext('Fan') }}
 icon: fan
 panel: fan
 
-[menu __print nozzle1]
-name: {{ gettext('Nozzle cleaning №1 extruder') }}
-icon: clean-nozzle
-method: printer.gcode.script
-params: {"script":"CLEAN_NOZZLE1"}
-
-[menu __print nozzle2]
-name: {{ gettext('Nozzle cleaning №2 extruder') }}
-icon: clean-nozzle
-method: printer.gcode.script
-params: {"script":"CLEAN_NOZZLE2"}
-
 [menu __print extrude]
 name: {{ gettext('Extrude') }}
 icon: filament
@@ -262,3 +192,4 @@ panel: updates
 name: {{ gettext('System') }}
 icon: info
 panel: system
+
