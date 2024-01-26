@@ -36,7 +36,7 @@ class MainPanel(MenuPanel):
             # grid.attach(self.create_left_panel(), 0, 0, 1, 1)
         if self._screen.vertical_mode:
             self.labels['menu'] = self.arrangeMenuItems(items, 2, True)
-            grid.attach(self.labels['menu'], 1, 1, 2, 1)
+            grid.attach(self.labels['menu'], 0, 1, 2, 1)
         else:
             self.labels['menu'] = self.arrangeMenuItems(items, 2, True)
             grid.attach(self.labels['menu'], 1, 0, 1, 1)
@@ -97,7 +97,7 @@ class MainPanel(MenuPanel):
         self.grid = Gtk.Grid()
         self.grid.set_row_homogeneous(True)
         self.grid.set_column_homogeneous(True) 
-        grid.attach(eq_grid, 0, 0, 1, 1)
+        grid.attach(eq_grid, 0, 1, 1, 1)
         grid.attach(self.arrangeMenuItems(items, 2, True), 1, 0, 1, 1)
 
         self.grid = grid
