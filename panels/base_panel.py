@@ -108,9 +108,9 @@ class BasePanel(ScreenPanel):
         self.main_grid.set_size_request(self._screen.width, self._screen.height)
 
         if self._screen.vertical_mode:
-            self.main_grid.attach(self.titlebar, 0, 0, 1, 1)
+            self.main_grid.attach(self.titlebar, 0, 0, 0, 0)
             self.main_grid.attach(self.content, 0, 1, 0, 0)
-            self.main_grid.attach(self.action_bar, 0, 2, 1, 1)
+            self.main_grid.attach(self.action_bar, 0, 2, 0, 0)
             self.action_bar.set_orientation(orientation=Gtk.Orientation.HORIZONTAL)
         else:
             self.main_grid.attach(self.action_bar, 0, 0, 1, 2)
