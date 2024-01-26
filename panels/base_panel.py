@@ -109,7 +109,7 @@ class BasePanel(ScreenPanel):
 
         if self._screen.vertical_mode:
             self.main_grid.attach(self.titlebar, 0, 0, 1, 1)
-            self.main_grid.attach(self.content, 1, 0, 1, 1)
+            self.main_grid.attach(self.content, 0, 1, 1, 1)
             self.main_grid.attach(self.action_bar, 0, 2, 1, 1)
             self.content.set_orientation(orientation=Gtk.Orientation.HORIZONTAL)
             self.action_bar.set_orientation(orientation=Gtk.Orientation.HORIZONTAL)
