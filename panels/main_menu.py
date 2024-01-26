@@ -97,8 +97,8 @@ class MainPanel(MenuPanel):
         self.grid = Gtk.Grid()
         self.grid.set_row_homogeneous(True)
         self.grid.set_column_homogeneous(True) 
-        grid.attach(eq_grid, 0, 1, 1, 1)
-        grid.attach(self.arrangeMenuItems(items, 2, True), 0, 0, 1, 1)
+        grid.attach(eq_grid, 0, 0, 1, 1)
+        grid.attach(self.arrangeMenuItems(items, 4, True), 0, 0, 1, 1)
 
         self.grid = grid
 
