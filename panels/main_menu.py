@@ -98,7 +98,7 @@ class MainPanel(MenuPanel):
         self.grid.set_row_homogeneous(True)
         self.grid.set_column_homogeneous(True) 
         grid.attach(eq_grid, 0, 0, 1, 1)
-        grid.attach(self.arrangeMenuItems(items, 2, True), 0, 0, 2, 1)
+        grid.attach(self.arrangeMenuItems(items, 2, True), 0, 0, 1, 2)
 
         self.grid = grid
 
