@@ -35,8 +35,8 @@ class MainPanel(MenuPanel):
             self._gtk.reset_temp_color()
             # grid.attach(self.create_left_panel(), 0, 0, 1, 1)
         if self._screen.vertical_mode:
-            self.labels['menu'] = self.arrangeMenuItems(items, 1, True)
-            grid.attach(self.labels['menu'], 0, 1, 2, 1)
+            self.labels['menu'] = self.arrangeMenuItems(items, 2, True)
+            grid.attach(self.labels['menu'], 0, 1, 2, 2)
         else:
             self.labels['menu'] = self.arrangeMenuItems(items, 2, True)
             grid.attach(self.labels['menu'], 1, 0, 1, 1)
