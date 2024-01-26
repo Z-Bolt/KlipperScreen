@@ -116,8 +116,8 @@ class BasePanel(ScreenPanel):
             self.main_grid.attach(self.action_bar, 0, 2, 1, 1)
             # self.action_bar.set_orientation(orientation=Gtk.Orientation.VERTICAL)
             self.action_bar.set_orientation(orientation=Gtk.Orientation.HORIZONTAL)
-            self.main_grid.attach(self.titlebar, 1, 0, 1, 1)
-            self.main_grid.attach(self.content, 1, 1, 1, 1)
+            self.main_grid.attach(self.titlebar, 0, 0, 1, 1)
+            self.main_grid.attach(self.content, 0, 1, 1, 1)
 
         # Layout is and content are on screen_panel
         self.layout.add(self.main_grid)
