@@ -105,26 +105,19 @@ class BasePanel(ScreenPanel):
         self.main_grid = Gtk.Grid()
         # To achieve rezisability this needs to be removed
         # The main issue is that currently the content doesn't expand correctly
-        self.main_grid.set_size_request(self._screen.width, self._screen.height)
+        # self.main_grid.set_size_request(self._screen.width, self._screen.height)
 
         if self._screen.vertical_mode:
             self.main_grid.attach(self.titlebar, 0, 0, 1, 1)
             self.main_grid.attach(self.content, 0, 1, 1, 1)
             self.main_grid.attach(self.action_bar, 0, 2, 1, 1)
-            self.content.set_orientation(orientation=Gtk.Orientation.HORIZONTAL)
+            # self.content.set_orientation(orientation=Gtk.Orientation.HORIZONTAL)
             self.action_bar.set_orientation(orientation=Gtk.Orientation.HORIZONTAL)
-
         else:
             self.main_grid.attach(self.action_bar, 0, 0, 1, 2)
             self.action_bar.set_orientation(orientation=Gtk.Orientation.VERTICAL)
             self.main_grid.attach(self.titlebar, 1, 0, 1, 1)
             self.main_grid.attach(self.content, 1, 1, 1, 1)
-
-        # if self._screen.vertical_mode:
-        #     self.main_grid.attach(self.titlebar, 0, 0, 1, 1)
-        #     self.main_grid.attach(self.content, 0, 1, 1, 1)
-        #     self.main_grid.attach(self.action_bar, 0, 2, 1, 1)
-        #     self.action_bar.set_orientation(orientation=Gtk.Orientation.HORIZONTAL)
 
         # Layout is and content are on screen_panel
         self.layout.add(self.main_grid)
