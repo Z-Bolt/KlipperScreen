@@ -8,14 +8,15 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-08-18 23:05-0300\n"
-"PO-Revision-Date: 2024-01-26 16:09+0300\n"
+"PO-Revision-Date: 2023-02-16 16:08+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 "X-Generator: Poedit 2.0.7\n"
 
 #, python-format
@@ -55,11 +56,6 @@ msgstr "Добавить профиль"
 msgid "Apply"
 msgstr "Применить"
 
-msgid "Automatic table alignment"
-msgstr ""
-"Автоматическая\n"
-"калибровка стола"
-
 #, python-format
 msgid "Apply %.2f offset to Endstop?"
 msgstr "Применить смещение на %.2f к Endstop?"
@@ -83,11 +79,19 @@ msgstr "Вы уверены что хотите перезагрузить си�
 msgid "Are you sure you wish to shutdown the system?"
 msgstr "Вы хотите выключить принтер?"
 
-msgid "Are you sure want to load a NEW reel of filament (the rod pulling distance is 2000mm!)?"
-msgstr "Вы уверены, что хотите загрузить НОВУЮ катушку филамента (расстояние протяжки прутка - 2000мм!)?"
+msgid ""
+"Are you sure want to load a NEW reel of filament (the rod pulling distance "
+"is 150mm!)?"
+msgstr ""
+"Вы уверены, что хотите загрузить НОВУЮ катушку филамента (расстояние "
+"протяжки прутка - 150мм!)?"
 
-msgid "Are you sure want to unload the current filament spool (the rod pulling distance is 2000mm!)?"
-msgstr "Вы уверены что хотите выгрузить текущую катушку филамента (расстояние протяжки прутка - 2000мм!)?"
+msgid ""
+"Are you sure want to unload the current filament spool (the rod pulling "
+"distance is 150mm!)?"
+msgstr ""
+"Вы уверены что хотите выгрузить текущую катушку филамента (расстояние "
+"протяжки прутка - 150мм!)?"
 
 msgid "Auto"
 msgstr "Авто"
@@ -105,11 +109,6 @@ msgid "Bed Down"
 msgstr ""
 "Стол \n"
 "Вниз"
-
-msgid "Bed Down 10mm"
-msgstr ""
-"Стол \n"
-"Вниз 10мм"
 
 msgid "Bed Level"
 msgstr "Уровень стола"
@@ -170,9 +169,6 @@ msgstr "Проверка обновлений, пожалуйста, подож�
 msgid "Clear"
 msgstr "Очистить"
 
-msgid "Cleanup"
-msgstr "Очистка"
-
 msgid "Close"
 msgstr "Закрыть"
 
@@ -186,7 +182,7 @@ msgid "Confirm Emergency Stop"
 msgstr "Подтвердить аварийную остановку"
 
 msgid "Connected"
-msgstr "Соединенный"
+msgstr "Подключен"
 
 #, python-format
 msgid "Connecting to %s"
@@ -350,12 +346,6 @@ msgstr "Хост"
 msgid "Hostname"
 msgstr "Имя хоста"
 
-msgid "Hotend №1 replacement"
-msgstr "Замена хотенда №1"
-
-msgid "Hotend №2 replacement"
-msgstr "Замена хотенда №2"
-
 msgid "Icon Theme"
 msgstr "Темы"
 
@@ -428,12 +418,6 @@ msgstr "Осталось:"
 msgid "Limits"
 msgstr "Лимиты"
 
-msgid "Light ON"
-msgstr "Включить подсветку"
-
-msgid "Light OFF"
-msgstr "Выключить подсветку"
-
 msgid "Load"
 msgstr ""
 "Загрузить\n"
@@ -453,9 +437,6 @@ msgstr "Макросы"
 
 msgid "Main Menu"
 msgstr "Главное меню"
-
-msgid "Make sure the filament is unloaded and the nozzle temperature is less than 60 °C"
-msgstr "Убедитесь что филамент выгружен и температура сопла меньше 60 °C"
 
 msgid "Max"
 msgstr "Максимум"
@@ -499,20 +480,18 @@ msgstr "Дистанция перемещения (мм)"
 msgid "Name"
 msgstr "Имя"
 
-msgid "Nozzle cleaning №1 extruder"
-msgstr "Очистка сопла экструдера №1"
-
-msgid "Nozzle cleaning №2 extruder"
-msgstr "Очистка сопла экструдера №2"
-
 msgid "Network"
 msgstr "Сеть"
 
 msgid "New"
 msgstr "Новый"
 
-msgid "Not supported for auto-detection, it needs to be configured in klipperscreen.conf"
-msgstr "Не поддерживается для автоматического определения, его необходимо настроить в klipperscreen.conf"
+msgid ""
+"Not supported for auto-detection, it needs to be configured in klipperscreen."
+"conf"
+msgstr ""
+"Не поддерживается для автоматического определения, его необходимо настроить "
+"в klipperscreen.conf"
 
 msgid "Nothing selected"
 msgstr "Ничего не выбрано"
@@ -527,8 +506,8 @@ msgstr "Выкл"
 msgid "Outdated by %d"
 msgstr "Устарело на %d"
 
-msgid "PSK for"
-msgstr "PSK для"
+msgid "PSK for network:"
+msgstr "Введите пароль для сети:"
 
 msgid "Package will be updated"
 msgid_plural "Packages will be updated"
@@ -650,9 +629,6 @@ msgstr "Сохранить конфигурацию?"
 
 msgid "Saved"
 msgstr "Сохранено"
-
-msgid "Service"
-msgstr "Сервис"
 
 #, python-format
 msgid "Saved offset: %s"
@@ -805,12 +781,6 @@ msgstr "Загружено"
 msgid "View Mesh"
 msgstr "Смотреть сетку"
 
-msgid "Vacuum ON"
-msgstr "Включить вакуум"
-
-msgid "Vacuum OFF"
-msgstr "Выключить вакуум"
-
 msgid "X+"
 msgstr "X+"
 
@@ -859,6 +829,7 @@ msgstr[2] ""
 msgid "dBm"
 msgstr "dBm"
 
+#, fuzzy
 msgid "hour"
 msgid_plural "hours"
 msgstr[0] "час"
@@ -876,3 +847,6 @@ msgstr "мм/с"
 
 msgid "mm/s²"
 msgstr "мм/с²"
+
+msgid "Ghz"
+msgstr "ГГц"
