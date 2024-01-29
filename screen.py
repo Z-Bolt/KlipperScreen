@@ -1131,7 +1131,9 @@ def main():
     win = KlipperScreen(args, version)
     win.connect("destroy", Gtk.main_quit)
     win.show_all()
+    os.system("/home/rock/rotate_touch.sh")
     Gtk.main()
+    
 
 
 if __name__ == "__main__":
