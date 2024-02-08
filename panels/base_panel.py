@@ -152,14 +152,7 @@ class BasePanel(ScreenPanel):
 
             # Limit the number of items according to resolution
             nlimit = int(round(log(self._screen.width, 10) * 5 - 10.5) + 2)
-
-            # n = 0
-            # if self._screen.printer.get_tools():
-            #     self.current_extruder = self._screen.printer.get_stat("toolhead", "extruder")
-            #     if self.current_extruder and f"{self.current_extruder}_box" in self.labels:
-            #         self.control['temp_box'].add(self.labels[f"{self.current_extruder}_box"])
-            #         n += 1
-            
+          
             n = 0
             for x in self._screen.printer.get_tools():
                 self.control['temp_box'].add(self.labels[f"{x}_box"])
