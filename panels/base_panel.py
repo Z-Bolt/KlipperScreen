@@ -158,7 +158,7 @@ class BasePanel(ScreenPanel):
                 self.current_extruder = self._screen.printer.get_stat("toolhead", "extruder")
                 if self.current_extruder and f"{self.current_extruder}_box" in self.labels:
                     self.control['temp_box'].add(self.labels[f"{self.current_extruder}_box"])
-                    n += 1
+                    n += 2
 
             if self._screen.printer.has_heated_bed():
                 self.control['temp_box'].add(self.labels['heater_bed_box'])
