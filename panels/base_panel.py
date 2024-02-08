@@ -202,7 +202,7 @@ class BasePanel(ScreenPanel):
 
     def get_icon(self, device, img_size):
         if device.startswith("extruder"):
-            if self._screen.printer.extrudercount > 1:
+            if self._screen.printer.extrudercount >= 2:
                 if device == "extruder":
                     device = "extruder1"
                 return self._gtk.Image(f"extruder-{device[8:]}", img_size, img_size)
