@@ -47,10 +47,10 @@ class ExtrudePanel(ScreenPanel):
         self.labels['extrude'].connect("clicked", self.extrude, "+")
 
         self.labels['load'] = self._gtk.ButtonImage("arrow-down", _("Load"), "color3")
-        self.labels['load'].connect("clicked",self.confirm_load_unload,_("Are you sure want to load a NEW reel of filament (the rod pulling distance is 150mm!)?"), "+")
+        self.labels['load'].connect("clicked",self.confirm_load_unload,_("Are you sure you want to load a NEW reel of filament (the rod pulling distance is 2000mm!)?"), "+")
 
         self.labels['unload'] = self._gtk.ButtonImage("arrow-up", _("Unload"), "color2")
-        self.labels['unload'].connect("clicked",self.confirm_load_unload,_("Are you sure want to unload the current filament spool (the rod pulling distance is 150mm!)?"),"-")
+        self.labels['unload'].connect("clicked",self.confirm_load_unload,_("Are you sure you want to unload the current filament spool (the rod pulling distance is 2000mm!)?"),"-")
 
 
         self.labels['retract'] = self._gtk.ButtonImage("retract", _("Retract"), "color1")

@@ -83,10 +83,10 @@ msgstr "Вы уверены что хотите перезагрузить си�
 msgid "Are you sure you wish to shutdown the system?"
 msgstr "Вы хотите выключить принтер?"
 
-msgid "Are you sure want to load a NEW reel of filament (the rod pulling distance is 2000mm!)?"
+msgid "Are you sure you want to load a NEW reel of filament (the rod pulling distance is 2000mm!)?"
 msgstr "Вы уверены, что хотите загрузить НОВУЮ катушку филамента (расстояние протяжки прутка - 2000мм!)?"
 
-msgid "Are you sure want to unload the current filament spool (the rod pulling distance is 2000mm!)?"
+msgid "Are you sure you want to unload the current filament spool (the rod pulling distance is 2000mm!)?"
 msgstr "Вы уверены что хотите выгрузить текущую катушку филамента (расстояние протяжки прутка - 2000мм!)?"
 
 msgid "Auto"
