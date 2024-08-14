@@ -1131,7 +1131,7 @@ def main():
 
     win = KlipperScreen(args, version)
     win.connect("destroy", Gtk.main_quit)
-    locker = not self._screen_lock
+    locker = self._screen_lock
     if locker == True:
         os.system("sudo systemctl restart screen_lock.service")
     win.show_all()
