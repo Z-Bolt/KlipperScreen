@@ -17,7 +17,6 @@ from jinja2 import Environment
 
 from ks_includes import functions
 from ks_includes.KlippyWebsocket import KlippyWebsocket
-from ks_includes.screen_panel import ScreenPanel
 from ks_includes.KlippyRest import KlippyRest
 from ks_includes.files import KlippyFiles
 from ks_includes.KlippyGtk import KlippyGtk
@@ -1131,9 +1130,6 @@ def main():
 
     win = KlipperScreen(args, version)
     win.connect("destroy", Gtk.main_quit)
-    locker = self._screen_lock
-    if locker == True:
-        os.system("sudo systemctl restart screen_lock.service")
     win.show_all()
     Gtk.main()
 
