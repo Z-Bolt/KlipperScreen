@@ -7,16 +7,14 @@ msgstr ""
 "Project-Id-Version: KlipperScreen\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-27 18:24-0300\n"
-"PO-Revision-Date: 2024-10-18 13:27+0300\n"
+"PO-Revision-Date: 2024-12-06 09:57+0300\n"
 "Last-Translator: Артем <gaz70rus@gmail.com>\n"
-"Language-Team: Russian <https://hosted.weblate.org/projects/klipperscreen/"
-"klipperscreen/ru/>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/klipperscreen/klipperscreen/ru/>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Poedit 2.0.7\n"
 "X-Poedit-Flags-xgettext: --add-comments\n"
 
@@ -63,7 +61,7 @@ msgid "Apply %s%.3f offset to Probe?"
 msgstr "Применить смещение %s%.3f к пробе?"
 
 msgid "Archived"
-msgstr "Показ. архив."
+msgstr "Показ. архив"
 
 msgid "Are you sure do you want to exclude the object?"
 msgstr "Вы уверены, что хотите исключить объект?"
@@ -464,10 +462,8 @@ msgstr "Klipper готов"
 msgid "Klipper will reboot"
 msgstr "Klipper перезагрузится"
 
-msgid ""
-"LOAD_FILAMENT/UNLOAD_FILAMENT are hidden and should be used from extrude"
-msgstr ""
-"LOAD_FILAMENT/UNLOAD_FILAMENT скрыты и должны использоваться из extrude"
+msgid "LOAD_FILAMENT/UNLOAD_FILAMENT are hidden and should be used from extrude"
+msgstr "LOAD_FILAMENT/UNLOAD_FILAMENT скрыты и должны использоваться из extrude"
 
 msgid "Language"
 msgstr "Язык"
@@ -862,9 +858,7 @@ msgid "Starting update for"
 msgstr "Запуск обновления для"
 
 msgid "Swaps buttons if they are on top of each other, affects other panels"
-msgstr ""
-"Меняет местами кнопки, если они находятся друг над другом, влияет на другие "
-"панели"
+msgstr "Меняет местами кнопки, если они находятся друг над другом, влияет на другие панели"
 
 msgid "System"
 msgstr "Система"
@@ -936,8 +930,7 @@ msgid "Useful for un-responsive touchscreens"
 msgstr "Полезно для неотзывчивых сенсорных экранов"
 
 msgid "WebRTC is not supported by the backend trying Stream"
-msgstr ""
-"Отсутствует поддержка WebRTC у бэкенда, который пытается передать поток"
+msgstr "Отсутствует поддержка WebRTC у бэкенда, который пытается передать поток"
 
 msgid "Working"
 msgstr "Работает"
@@ -958,7 +951,7 @@ msgid "Z Speed (mm/s)"
 msgstr "Скорость оси Z (мм/с)"
 
 msgid "Z Tilt"
-msgstr "Z Наклон"
+msgstr "Калибровка стола"
 
 msgid "Z offset:"
 msgstr "Смещение Z:"
@@ -1017,225 +1010,68 @@ msgstr[0] "секунда"
 msgstr[1] "секунды"
 msgstr[2] "секунд"
 
-#~ msgid "Mesh calibrate"
-#~ msgstr "Калибровка сетки"
+msgid "This function is designed to move a file to the main directory"
+msgstr "Данная функция предназначена для переноса файла в главную директорию"
 
-#~ msgid "Uploaded"
-#~ msgstr "Загружено"
+msgid "Move file to main directory?"
+msgstr "Переместить файл в главную директорию?"
 
-#~ msgid "Ended official support in June 2023"
-#~ msgstr "Официальная поддержка прекращена в июне 2023 г"
+msgid "Resave"
+msgstr "Перенести"
 
-#~ msgid "Hidden"
-#~ msgstr "Скрытый"
+msgid "A file with this name already exists"
+msgstr "Файл с таким именем уже существует"
 
-#~ msgid "KlipperScreen will drop support in June 2024"
-#~ msgstr "KlipperScreen прекратит поддержку в июне 2024 г"
+msgid "You may be trying to move a file that is already in the main directory"
+msgstr "Возможно Вы пытаетесь переместить файл, который уже находится в главной директории"
 
-#~ msgid "Print Time"
-#~ msgstr "Время печати"
+msgid "Replace it?"
+msgstr "Заменить его?"
 
-#~ msgid "Starting WiFi Association"
-#~ msgstr "Запуск WiFi"
+msgid "Calibration"
+msgstr "Калибровки"
 
-#~ msgid "Warning"
-#~ msgstr "Предупреждение"
+msgid "Bed calibrate"
+msgstr "Калиб. карты"
 
-#~ msgid "dBm"
-#~ msgstr "дБм"
+msgid "Autocalibration of PID hotend"
+msgstr "Калиб. PID хотенда"
 
-#~ msgid "Deselect"
-#~ msgstr "Отменить выбор"
+msgid "Autocalibration of PID 1st head"
+msgstr "Калиб. PID 1-й головы"
 
-#~ msgid "Select"
-#~ msgstr "Выбрать"
+msgid "Autocalibration of PID 2nd head"
+msgstr "Калиб. PID 1-й головы"
 
-#~ msgid "Bed screw configuration:"
-#~ msgstr "Конфигурация винтов кровати:"
+msgid "Autocalibration of PID bed"
+msgstr "Калиб. PID стола"
 
-#~ msgid ""
-#~ "Not supported for auto-detection, it needs to be configured in "
-#~ "klipperscreen.conf"
-#~ msgstr ""
-#~ "Не поддерживается для автоматического обнаружения, его необходимо "
-#~ "настроить в klipperscreen.conf"
+msgid "Autocalibration of Z-offset of the 2nd head"
+msgstr "Z-офсет 2-й головы"
 
-#~ msgid "Unknown screw position"
-#~ msgstr "Неизвестное положение винта"
+msgid "Make sure that moving the bed 10mm down will be safe for the printer!"
+msgstr "Убедитесь, что перемещение стола на 10 мм вниз безопасно для принтера!"
 
-#~ msgid "Max Acceleration to Deceleration"
-#~ msgstr "Ускорения торможения"
+msgid "Bed Up"
+msgstr "Стол вверх"
 
-#~ msgid "Continue"
-#~ msgstr "Продолжить"
+msgid "Bed Down"
+msgstr "Стол вниз"
 
-#~ msgid "Fullscreen"
-#~ msgstr "Полный экран"
+msgid "Bed Down 10mm"
+msgstr "Стол вниз на 10мм"
 
-#~ msgid "Actions"
-#~ msgstr "Действия"
+msgid "After confirmation, the autocalibration of the 2nd head offset will begin"
+msgstr "После подтверждения начнется автокалибровка z-офсета 2-й головы"
 
-#~ msgid "Configuration"
-#~ msgstr "Параметр"
+msgid "After confirmation, the PID bed autocalibration will begin"
+msgstr "После подтверждения начнется автокалибровка PID стола"
 
-#~ msgid "Homing"
-#~ msgstr "Парковка"
+msgid "After confirmation, the PID hotend autocalibration will begin"
+msgstr "После подтверждения начнется автокалибровка PID хотенда"
 
-#~ msgid "Disable XY"
-#~ msgstr "Отключить XY"
+msgid "After confirmation, the autocalibration of PID 1st head will begin"
+msgstr "После подтверждения начнется автокалибровка PID 1-й головы"
 
-#~ msgid "Slicer Time correction (%)"
-#~ msgstr "Коррекция времени Слайсер (%)"
-
-#~ msgid "Calibrated, save configuration to make it permanent"
-#~ msgstr "Откалибровано, сохраните конфигурацию, чтобы сделать ее постоянной"
-
-#~ msgid "Decrease"
-#~ msgstr "Уменьшить"
-
-#~ msgid "Increase"
-#~ msgstr "Поднять"
-
-#~ msgid "Sending Power ON signal to: %s"
-#~ msgstr "Отправка сигнала включения питания на: %s"
-
-#~ msgid "Sort:"
-#~ msgstr "Сортировать:"
-
-#~ msgid "Calibrating..."
-#~ msgstr "Калибровка..."
-
-#~ msgid "Z+"
-#~ msgstr "Z+"
-
-#~ msgid "Z-"
-#~ msgstr "Z-"
-
-#~ msgid "X+"
-#~ msgstr "X+"
-
-#~ msgid "X-"
-#~ msgstr "X-"
-
-#~ msgid "Y+"
-#~ msgstr "Y+"
-
-#~ msgid "Y-"
-#~ msgstr "Y-"
-
-#~ msgid "Add Printer"
-#~ msgstr "Добавить принтер"
-
-#~ msgid "Initializing"
-#~ msgstr "Инициализация"
-
-#~ msgid "Retry #%s"
-#~ msgstr "Повторная попытка #%s"
-
-#~ msgid "Off"
-#~ msgstr "Выкл."
-
-#~ msgid "View Mesh"
-#~ msgstr "Смотреть сетку"
-
-#~ msgid "Sort by: "
-#~ msgstr "Сортировать по: "
-
-#~ msgid "Bltouch found applied offset"
-#~ msgstr "Bltouch обнаружил примененное смещение"
-
-#~ msgid ""
-#~ "Check /tmp/KlipperScreen.log for more information.\n"
-#~ "Please submit an issue on GitHub for help."
-#~ msgstr ""
-#~ "Проверьте /tmp/KlipperScreen.log для дополнитольной информации.\n"
-#~ "Создайте issues на GitHub что-бы получить помощь."
-
-#~ msgid "Probe found applied offset"
-#~ msgstr "Probe обнаружил примененное смещение"
-
-#~ msgid "Tool"
-#~ msgstr "Инструмент"
-
-#~ msgid "Displayed Macros"
-#~ msgstr "Показать  макросы"
-
-#~ msgid "Z Position"
-#~ msgstr "Позиция Z"
-
-#~ msgid "IPv4"
-#~ msgstr "IPv4"
-
-#~ msgid "IPv6"
-#~ msgstr "IPv6"
-
-#~ msgid "Klipper Version"
-#~ msgstr "Версия Klipper"
-
-#~ msgid ""
-#~ "Klipper has encountered an error with the micro-controller.\n"
-#~ "Please recompile and flash."
-#~ msgstr ""
-#~ "Klipper определил ошибку в микроконтроллере.\n"
-#~ "Прошейте заново."
-
-#~ msgid ""
-#~ "Klipper has encountered an error.\n"
-#~ "Issue a FIRMWARE_RESTART to attempt fixing the issue."
-#~ msgstr ""
-#~ "Klipper обнаружил ошибку.\n"
-#~ "Выполните перезагрузку прошивки, чтобы попытаться исправить проблему."
-
-#~ msgid "KlipperScreen Version"
-#~ msgstr "Версия KlipperScreen"
-
-#~ msgid "Show Only Heaters in Temp."
-#~ msgstr "Показать только управляемые нагреватели"
-
-#~ msgid "Temp"
-#~ msgstr "Температура"
-
-#~ msgid "Number Pad"
-#~ msgstr "Клавиатура"
-
-#~ msgid "Preheat"
-#~ msgstr "Преднагрев"
-
-#~ msgid "Screen will show in less than one second"
-#~ msgstr "Экран отобразится через одну секунду"
-
-#~ msgid "Medium (default)"
-#~ msgstr "Средний (по умолчанию)"
-
-#~ msgid "File Estimation (default)"
-#~ msgstr "По файлу (по умолчанию)"
-
-#~ msgid "..."
-#~ msgstr "..."
-
-#~ msgid "Change Printer"
-#~ msgstr "Сменить принтер"
-
-#~ msgid "Fan Off"
-#~ msgstr "Bыключить"
-
-#~ msgid "Fan On"
-#~ msgstr "Bключить"
-
-#~ msgid "Fast"
-#~ msgstr "Быстро"
-
-#~ msgid "Slow"
-#~ msgstr "Mедленно"
-
-#~ msgid "?"
-#~ msgstr "?"
-
-#~ msgid "Cancel Change"
-#~ msgstr "Отменить изменения"
-
-#~ msgid "Control"
-#~ msgstr "Управление"
-
-#~ msgid "Load Average"
-#~ msgstr "Средняя нагрузка"
+msgid "After confirmation, the autocalibration of PID 2nd head will begin"
+msgstr "После подтверждения начнется автокалибровка PID 2-й головы"
