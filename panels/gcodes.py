@@ -155,6 +155,9 @@ class Panel(ScreenPanel):
             rename = Gtk.Button(hexpand=False, vexpand=False, can_focus=False, always_show_image=True)
             rename.get_style_context().add_class("color2")
             rename.set_image(self._gtk.Image("files", self.list_button_size, self.list_button_size))
+            move = Gtk.Button(hexpand=False, vexpand=False, can_focus=False, always_show_image=True)
+            move.get_style_context().add_class("color3")
+            move.set_image(self._gtk.Image("sd", self.list_button_size, self.list_button_size))
             itemname = Gtk.Label(hexpand=True, halign=Gtk.Align.START, ellipsize=Pango.EllipsizeMode.END)
             itemname.get_style_context().add_class("print-filename")
             itemname.set_markup(f"<big><b>{basename}</b></big>")
@@ -167,10 +170,12 @@ class Panel(ScreenPanel):
             row.attach(info, 1, 1, 1, 1)
             row.attach(rename, 2, 1, 1, 1)
             row.attach(delete, 3, 1, 1, 1)
+            # row.attach(move, 4, 1, 1, 1)
             if 'filename' in item:
                 icon.connect("clicked", self.confirm_print, path)
                 image_args = (path, icon, self.thumbsize / 2, True, "file")
                 delete.connect("clicked", self.confirm_delete_file, f"gcodes/{path}")
+                move.connect("clicked", self.confirm_move_file, f"gcodes/{path}")
                 rename.connect("clicked", self.show_rename, f"gcodes/{path}")
                 action_icon = "printer" if self._printer.extrudercount > 0 else "load"
                 action = self._gtk.Button(action_icon, style="color3")
@@ -236,6 +241,29 @@ class Panel(ScreenPanel):
             "server.files.delete_file",
             params
         )
+
+    def confirm_move_file(self, widget, filepath):
+        logging.debug(f"Sending move_file {filepath}")
+        filename = filepath.split("/")[-1]
+        dest = "gcodes/" + filename
+        params = {"source": f"{filepath}",
+                  "dest": f"{dest}"}
+        gcodes_path = "/home/pi/printer_data/"
+        check_file = os.path.exists(gcodes_path + dest)
+        if check_file:
+            self._screen._confirm_send_action(
+                None,
+                _("A file with this name already exists") + "\n\n" + _("You may be trying to move a file that is already in the main directory") + "\n\n" + _("Replace it?") + "\n\n" + filepath,
+                "server.files.move",
+                params
+            )
+        else:
+            self._screen._confirm_send_action(
+                None,
+                _("This function is designed to move a file to the main directory") + "\n\n"+ _("Move file to main directory?") + "\n\n" + filepath,
+                "server.files.move",
+                params
+            )
 
     def confirm_delete_directory(self, widget, dirpath):
         logging.debug(f"Sending delete_directory {dirpath}")
@@ -323,6 +351,13 @@ class Panel(ScreenPanel):
             {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL, "style": 'dialog-secondary'}
         ]
 
+        buttons_usb = [
+            {"name": _("Delete"), "response": Gtk.ResponseType.REJECT, "style": 'dialog-error'},
+            {"name": _("Resave"), "response": Gtk.ResponseType.APPLY, "style": 'dialog-secondary'},
+            {"name": action, "response": Gtk.ResponseType.OK, "style": 'dialog-primary'},
+            {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL, "style": 'dialog-secondary'}
+        ]
+
         label = Gtk.Label(
             hexpand=True, vexpand=True, lines=2,
             wrap=True, wrap_mode=Pango.WrapMode.WORD_CHAR,
@@ -358,7 +393,12 @@ class Panel(ScreenPanel):
 
         inside_box.pack_start(info_box, True, True, 0)
         main_box.pack_start(inside_box, True, True, 0)
-        self._gtk.Dialog(f'{action} {filename}', buttons, main_box, self.confirm_print_response, filename)
+
+        dir_path = "/home/pi/printer_data/gcodes/"
+        if os.path.isfile(f"{dir_path} + {filename}"):
+            self._gtk.Dialog(f'{action} {filename}', buttons, main_box, self.confirm_print_response, filename)
+        else:
+            self._gtk.Dialog(f'{action} {filename}', buttons_usb, main_box, self.confirm_print_response, filename)
 
     def confirm_print_response(self, dialog, response_id, filename):
         self._gtk.remove_dialog(dialog)
@@ -367,6 +407,9 @@ class Panel(ScreenPanel):
         elif response_id == Gtk.ResponseType.OK:
             logging.info(f"Starting print: {filename}")
             self._screen._ws.klippy.print_start(filename)
+        elif response_id == Gtk.ResponseType.APPLY:
+            logging.info(f"Move file {filename} to internal storage")
+            self.confirm_move_file(self, f"gcodes/{filename}")
         elif response_id == Gtk.ResponseType.REJECT:
             self.confirm_delete_file(None, f"gcodes/{filename}")
 
