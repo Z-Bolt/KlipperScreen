@@ -425,6 +425,9 @@ msgstr "Неверный"
 msgid "Invalid password"
 msgstr "Неверный пароль"
 
+msgid "Password"
+msgstr "Пароль"
+
 msgid "Inversely affects the icon size"
 msgstr "Обратно влияет на размер значка"
 
