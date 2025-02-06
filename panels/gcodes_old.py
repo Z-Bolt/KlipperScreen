@@ -1,6 +1,5 @@
 import logging
 import os
-
 import gi
 
 gi.require_version("Gtk", "3.0")
@@ -70,7 +69,7 @@ class Panel(ScreenPanel):
         self.labels['path'] = Gtk.Label(label=self.loading_msg, vexpand=True, no_show_all=True)
         self.labels['path'].show()
         self.thumbsize = self._gtk.img_scale * self._gtk.button_image_scale * 2.5
-        logging.info(f"Thumbsize: {self.thumbsize:.1f}")
+        logging.info(f"Thumbsize: {self.thumbsize}")
 
         self.flowbox = Gtk.FlowBox(selection_mode=Gtk.SelectionMode.NONE,
                                    column_spacing=0, row_spacing=0)
@@ -171,6 +170,7 @@ class Panel(ScreenPanel):
             row.attach(info, 1, 1, 1, 1)
             row.attach(rename, 2, 1, 1, 1)
             row.attach(delete, 3, 1, 1, 1)
+            # row.attach(move, 4, 1, 1, 1)
             if 'filename' in item:
                 icon.connect("clicked", self.confirm_print, path)
                 image_args = (path, icon, self.thumbsize / 2, True, "file")
@@ -393,7 +393,6 @@ class Panel(ScreenPanel):
 
         inside_box.pack_start(info_box, True, True, 0)
         main_box.pack_start(inside_box, True, True, 0)
-        # self._gtk.Dialog(f'{action} {filename}', buttons, main_box, self.confirm_print_response, filename)
 
         dir_path = "/home/pi/printer_data/gcodes/"
         if os.path.isfile(f"{dir_path} + {filename}"):
