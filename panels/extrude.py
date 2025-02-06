@@ -37,7 +37,7 @@ class Panel(ScreenPanel):
         self.distance = int(self.distances[1])
         self.speed = int(self.speeds[1])
         self.buttons = {
-            'extrude': self._gtk.Button("extrude", _("Extrude"), "color4"),
+            'extrude': self._gtk.Button("extrude", _("Unretract"), "color4"),
             'load': self._gtk.Button("arrow-down", _("Load"), "color3"),
             'unload': self._gtk.Button("arrow-up", _("Unload"), "color2"),
             'retract': self._gtk.Button("retract", _("Retract"), "color1"),
@@ -297,13 +297,13 @@ class Panel(ScreenPanel):
                 self._screen.show_popup_message("Macro UNLOAD_FILAMENT not found")
             else:
                 self._screen._confirm_send_action(widget, _("Are you sure want to unload the current filament spool?"), "printer.gcode.script",
-                                          {"script": f"UNLOAD_FILAMENT SPEED={self.speed * 60}"})
+                                          {"script": f"UNLOAD_FILAMENT"})
         if direction == "+":
             if not self.load_filament:
                 self._screen.show_popup_message("Macro LOAD_FILAMENT not found")
             else:
-                sself._screen._confirm_send_action(widget, _("Are you sure want to load a NEW reel of filament?"), "printer.gcode.script",
-                                          {"script": f"LOAD_FILAMENT SPEED={self.speed * 60}"})
+                self._screen._confirm_send_action(widget, _("Are you sure want to load a NEW reel of filament?"), "printer.gcode.script",
+                                          {"script": f"LOAD_FILAMENT"})
 
     def enable_disable_fs(self, switch, gparams, name, x):
         if switch.get_active():
