@@ -377,6 +377,7 @@ class Panel(ScreenPanel):
             f"{info}"
             # f"{net['security']}\n"
             f"{max_bitrate}\n"
+            f"{net['frequency']} Ghz"
             # f"{net['frequency']} Ghz  {chan}  {net['signal_level']} %\n"
             # f"{net['BSSID']}"
             "</small>"
