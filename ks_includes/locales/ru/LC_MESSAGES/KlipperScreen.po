@@ -931,6 +931,13 @@ msgstr "Обновления"
 msgid "Updating"
 msgstr "Обновление"
 
+msgid "Show cursor"
+msgstr "Отображать курсор"
+
+msgid "For mouse control or to verify touchscreen accuracy"
+msgstr "Для управления мышью или для проверки точности сенсора"
+
+
 msgid "Useful for un-responsive touchscreens"
 msgstr "Полезно для неотзывчивых сенсорных экранов"
 
