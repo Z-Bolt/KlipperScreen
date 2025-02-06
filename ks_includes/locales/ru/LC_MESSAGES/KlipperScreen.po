@@ -450,7 +450,7 @@ msgid "Job Status"
 msgstr "Статус работы"
 
 msgid "Klipper Restart"
-msgstr "Klipper Рестарт"
+msgstr "Klipper перезагружается"
 
 msgid "Klipper has disconnected"
 msgstr "Нет связи с Klipper"
@@ -459,7 +459,7 @@ msgid "Klipper has encountered an error."
 msgstr "Klipper обнаружил ошибку."
 
 msgid "Klipper has shutdown"
-msgstr "Klipper отключился"
+msgstr "Klipper выключился"
 
 msgid "Klipper is attempting to start"
 msgstr "Klipper готов"
