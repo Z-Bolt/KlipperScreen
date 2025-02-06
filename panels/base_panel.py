@@ -41,7 +41,7 @@ class BasePanel(ScreenPanel):
             self.set_control_sensitive(False, control)
         self.control['estop'] = self._gtk.Button('emergency', scale=self.abscale)
         self.control['estop'].connect("clicked", self.emergency_stop)
-        self.control['estop'].set_no_show_all(True)
+        # self.control['estop'].set_no_show_all(True)
         self.shutdown = {
             "panel": "shutdown",
         }
