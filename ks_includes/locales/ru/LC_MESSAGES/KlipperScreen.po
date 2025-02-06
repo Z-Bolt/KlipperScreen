@@ -940,6 +940,9 @@ msgstr "Для управления мышью или для проверки т
 msgid "Lock"
 msgstr "Заблокировать"
 
+msgid "Unlock"
+msgstr "Разблокировать"
+
 msgid "Useful for un-responsive touchscreens"
 msgstr "Полезно для неотзывчивых сенсорных экранов"
 
