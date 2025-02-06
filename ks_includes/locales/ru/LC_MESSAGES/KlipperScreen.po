@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KlipperScreen\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-26 12:31-0300\n"
-"PO-Revision-Date: 2025-02-06 13:58+0300\n"
+"PO-Revision-Date: 2025-02-06 14:03+0300\n"
 "Last-Translator: gfbdrgng <hnaofegnp@hldrive.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/klipperscreen/klipperscreen/ru/>\n"
 "Language: ru\n"
@@ -527,6 +527,9 @@ msgstr "Максимальное ускорение"
 
 msgid "Max Velocity"
 msgstr "Максимальная скорость"
+
+msgid "Show Lock Button"
+msgstr "Показать блокировку"
 
 msgid "Max:"
 msgstr "Макс:"

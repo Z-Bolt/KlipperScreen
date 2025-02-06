@@ -28,23 +28,25 @@ class Panel(ScreenPanel):
         lock_screen = self._gtk.Button("lock", _("Lock"), "color3")
         lock_screen.connect("clicked", self._screen.lock_screen.lock)
 
-        # self.show_lock = self._config.get_main_config().getboolean("show_cursor", fallback=False)
+        self._show_lock_button = self._config.get_main_config().getboolean('show_lock_button', True)
 
         self.main = Gtk.Grid(row_homogeneous=True, column_homogeneous=True)
-        # if self._printer and self._printer.state not in {'disconnected', 'startup', 'shutdown', 'error'}:
-        #     self.main.attach(estop, 0, 0, 1, 2)
-        # self.main.attach(restart_ks, 1, 0, 1, 1)
-        # self.main.attach(lock_screen, 2, 0, 1, 1)
-        # self.main.attach(poweroff, 1, 1, 1, 1)
-        # self.main.attach(restart, 2, 1, 1, 1)
-        # self.content.add(self.main)
-        if self._printer and self._printer.state not in {'disconnected', 'startup', 'shutdown', 'error'}:
-            self.main.attach(estop, 1, 0, 1, 1)
-        self.main.attach(restart_ks, 2, 0, 1, 1)
-        self.main.attach(lock_screen,0, 0, 1, 2)
-        self.main.attach(poweroff, 1, 1, 1, 1)
-        self.main.attach(restart, 2, 1, 1, 1)
-        self.content.add(self.main)
+        if self._show_lock_button:
+            if self._printer and self._printer.state not in {'disconnected', 'startup', 'shutdown', 'error'}:
+                self.main.attach(estop, 0, 0, 1, 2)
+            self.main.attach(restart_ks, 1, 0, 1, 1)
+            # self.main.attach(lock_screen, 2, 0, 1, 1)
+            self.main.attach(poweroff, 1, 1, 1, 1)
+            self.main.attach(restart, 2, 1, 1, 1)
+            self.content.add(self.main)
+        else:
+            if self._printer and self._printer.state not in {'disconnected', 'startup', 'shutdown', 'error'}:
+                self.main.attach(estop, 1, 0, 1, 1)
+            self.main.attach(restart_ks, 2, 0, 1, 1)
+            self.main.attach(lock_screen,0, 0, 1, 2)
+            self.main.attach(poweroff, 1, 1, 1, 1)
+            self.main.attach(restart, 2, 1, 1, 1)
+            self.content.add(self.main)
 
     def reboot_poweroff(self, widget, method):
         label = Gtk.Label(wrap=True, hexpand=True, vexpand=True)
