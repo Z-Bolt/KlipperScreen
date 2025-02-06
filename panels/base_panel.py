@@ -239,7 +239,7 @@ class BasePanel(ScreenPanel):
         connected = self._printer and self._printer.state not in {'disconnected', 'startup', 'shutdown', 'error'}
         printer_select = 'printer_select' not in self._screen._cur_panels
         self.control['estop'].set_visible(printing)
-        self.control['shutdown'].set_visible(not printing)
+        # self.control['shutdown'].set_visible(not printing)
         self.show_shortcut(connected and printer_select)
         self.show_heaters(connected and printer_select)
         self.show_printer_select(len(self._config.get_printers()) > 1)
