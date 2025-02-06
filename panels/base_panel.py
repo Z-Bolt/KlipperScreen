@@ -193,7 +193,7 @@ class BasePanel(ScreenPanel):
                 elif device.startswith("heater"):
                     self.control['temp_box'].add(self.labels[f"{device}_box"])
                     n += 1
-                elif device.startswith("temperature_sensor"):
+                elif device.startswith("temperature"):
                     self.control['temp_box'].add(self.labels[f"{device}_box"])
                     n += 1
             for device in devices:
