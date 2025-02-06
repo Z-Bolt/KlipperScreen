@@ -156,6 +156,9 @@ class Panel(ScreenPanel):
             rename = Gtk.Button(hexpand=False, vexpand=False, can_focus=False, always_show_image=True)
             rename.get_style_context().add_class("color2")
             rename.set_image(self._gtk.Image("files", self.list_button_size, self.list_button_size))
+            move = Gtk.Button(hexpand=False, vexpand=False, can_focus=False, always_show_image=True)
+            move.get_style_context().add_class("color3")
+            move.set_image(self._gtk.Image("sd", self.list_button_size, self.list_button_size))
             itemname = Gtk.Label(hexpand=True, halign=Gtk.Align.START, ellipsize=Pango.EllipsizeMode.END)
             itemname.get_style_context().add_class("print-filename")
             itemname.set_markup(f"<big><b>{basename}</b></big>")
@@ -172,6 +175,7 @@ class Panel(ScreenPanel):
                 icon.connect("clicked", self.confirm_print, path)
                 image_args = (path, icon, self.thumbsize / 2, True, "file")
                 delete.connect("clicked", self.confirm_delete_file, f"gcodes/{path}")
+                move.connect("clicked", self.confirm_move_file, f"gcodes/{path}")
                 rename.connect("clicked", self.show_rename, f"gcodes/{path}")
                 action_icon = "printer" if self._printer.extrudercount > 0 else "load"
                 action = self._gtk.Button(action_icon, style="color3")
@@ -247,6 +251,30 @@ class Panel(ScreenPanel):
             "server.files.delete_directory",
             params
         )
+
+
+    def confirm_move_file(self, widget, filepath):
+        logging.debug(f"Sending move_file {filepath}")
+        filename = filepath.split("/")[-1]
+        dest = "gcodes/" + filename
+        params = {"source": f"{filepath}",
+                  "dest": f"{dest}"}
+        gcodes_path = "/home/pi/printer_data/"
+        check_file = os.path.exists(gcodes_path + dest)
+        if check_file:
+            self._screen._confirm_send_action(
+                None,
+                _("A file with this name already exists") + "\n\n" + _("You may be trying to move a file that is already in the main directory") + "\n\n" + _("Replace it?") + "\n\n" + filepath,
+                "server.files.move",
+                params
+            )
+        else:
+            self._screen._confirm_send_action(
+                None,
+                _("This function is designed to move a file to the main directory") + "\n\n"+ _("Move file to main directory?") + "\n\n" + filepath,
+                "server.files.move",
+                params
+            )
 
     def back(self):
         if self.showing_rename:
@@ -368,6 +396,9 @@ class Panel(ScreenPanel):
         elif response_id == Gtk.ResponseType.OK:
             logging.info(f"Starting print: {filename}")
             self._screen._ws.klippy.print_start(filename)
+        elif response_id == Gtk.ResponseType.APPLY:
+            logging.info(f"Move file {filename} to internal storage")
+            self.confirm_move_file(self, f"gcodes/{filename}")
         elif response_id == Gtk.ResponseType.REJECT:
             self.confirm_delete_file(None, f"gcodes/{filename}")
 
