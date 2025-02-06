@@ -848,6 +848,8 @@ class KlipperScreen(Gtk.Window):
                 return
             elif data.startswith("echo: "):
                 self.show_popup_message(data[6:], 1, from_ws=True)
+            elif data.startswith("[+] "):
+                self.show_popup_message(data[:], 1, from_ws=True)
             elif "!! Extrude below minimum temp" in data:
                 if self._cur_panels[-1] != "temperature":
                     self.show_panel("temperature", extra=self.printer.get_stat("toolhead", "extruder"))
