@@ -296,13 +296,13 @@ class Panel(ScreenPanel):
             if not self.unload_filament:
                 self._screen.show_popup_message("Macro UNLOAD_FILAMENT not found")
             else:
-                self._screen._send_action(widget, "printer.gcode.script",
+                self._screen._confirm_send_action(widget, _("Are you sure want to unload the current filament spool?"), "printer.gcode.script",
                                           {"script": f"UNLOAD_FILAMENT SPEED={self.speed * 60}"})
         if direction == "+":
             if not self.load_filament:
                 self._screen.show_popup_message("Macro LOAD_FILAMENT not found")
             else:
-                self._screen._send_action(widget, "printer.gcode.script",
+                sself._screen._confirm_send_action(widget, _("Are you sure want to load a NEW reel of filament?"), "printer.gcode.script",
                                           {"script": f"LOAD_FILAMENT SPEED={self.speed * 60}"})
 
     def enable_disable_fs(self, switch, gparams, name, x):
