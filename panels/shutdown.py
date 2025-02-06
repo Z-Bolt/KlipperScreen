@@ -35,8 +35,8 @@ class Panel(ScreenPanel):
             if self._printer and self._printer.state not in {'disconnected', 'startup', 'shutdown', 'error'}:
                 self.main.attach(estop, 0, 0, 1, 1)
             self.main.attach(restart_ks, 1, 0, 1, 1)
-            self.main.attach(poweroff, 1, 1, 1, 1)
-            self.main.attach(restart, 2, 1, 1, 1)
+            self.main.attach(poweroff, 0, 1, 1, 1)
+            self.main.attach(restart, 1, 1, 1, 1)
             self.content.add(self.main)
         else:
             if self._printer and self._printer.state not in {'disconnected', 'startup', 'shutdown', 'error'}:
