@@ -29,10 +29,10 @@ class Panel(ScreenPanel):
                 vexpand=True
             )
             message = (
-                _("Failed to initialize") + "\n"
-                + "This panel needs NetworkManager installed into the system\n"
-                + "And the apropriate permissions, without them it will not function.\n"
-                + f"\n{e}\n"
+                    _("Failed to initialize") + "\n"
+                    + "This panel needs NetworkManager installed into the system\n"
+                    + "And the apropriate permissions, without them it will not function.\n"
+                    + f"\n{e}\n"
             )
             self.error_box.add(
                 Gtk.Label(
@@ -405,7 +405,7 @@ class Panel(ScreenPanel):
         self.labels['networkinfo'].set_markup(
             f'<b>{self.interface}</b>\n\n'
             + '<b>' + _("Hostname") + f':</b> {os.uname().nodename}\n'
-            f'<b>IPv4:</b> {self.sdbus_nm.get_ip_address()}\n'
+                                      f'<b>IPv4:</b> {self.sdbus_nm.get_ip_address()}\n'
         )
         self.labels['networkinfo'].show_all()
         return True
