@@ -134,6 +134,9 @@ class Panel(ScreenPanel):
             debug_path = os.path.join(logs_dir, "debug.log")
             with open(debug_path, "w") as f:
 
+                # date and time
+                f.write(f"Date/time: {datetime.datetime.now()}\n\n")
+                
                 # serial
                 f.write(f"Serial: {serial}\n\n")
 
