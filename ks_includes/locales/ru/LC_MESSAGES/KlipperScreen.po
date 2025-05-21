@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KlipperScreen\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-26 12:31-0300\n"
-"PO-Revision-Date: 2025-02-06 16:15+0300\n"
+"PO-Revision-Date: 2025-05-21 13:26+0300\n"
 "Last-Translator: gfbdrgng <hnaofegnp@hldrive.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/klipperscreen/klipperscreen/ru/>\n"
 "Language: ru\n"
@@ -448,7 +448,7 @@ msgid "Job Status"
 msgstr "Статус работы"
 
 msgid "Klipper Restart"
-msgstr "Klipper перезагружается"
+msgstr "Перезагрузить Klipper"
 
 msgid "Klipper has disconnected"
 msgstr "Нет связи с Klipper"
@@ -1105,3 +1105,27 @@ msgstr "Вы уверены, что хотите выгрузить текущу
 
 msgid "Are you sure want to load a NEW reel of filament?"
 msgstr "Вы уверены, что хотите загрузить НОВУЮ катушку филамента?"
+
+msgid "Export System Logs to External Storage"
+msgstr "Экспорт журналов ошибок на внешний носитель"
+
+msgid "USB device not mounted"
+msgstr "Внешний носитель не подключен"
+
+msgid "No write permissions on USB"
+msgstr "Нет прав дял записи на внешний носитель"
+
+msgid "Archive creation failed"
+msgstr "Ошибка при создании архива"
+
+msgid "Archive not found after move"
+msgstr "Архив не обнаружен после перемещения на внешний носитель"
+
+msgid "Exporting..."
+msgstr "Экспортирование..."
+
+msgid "Logs exported successfully"
+msgstr "Журналы ошибок успешно экспортированы"
+
+msgid "Log export error"
+msgstr "Ошибка экспорта журналов"
