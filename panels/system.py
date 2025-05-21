@@ -7,6 +7,7 @@ import tarfile
 import psutil
 import re
 import threading
+import glob
 
 import gi
 
@@ -106,15 +107,20 @@ class Panel(ScreenPanel):
             logs_dir = self.create_logs_folder(serial)
 
             log_files = [
-                "/home/pi/printer_data/logs/klippy.log",
                 "/home/pi/printer_data/logs/moonraker.log",
                 "/home/pi/printer_data/logs/KlipperScreen.log",
                 "/home/pi/printer_data/logs/crowsnest.log"
             ]
+                
+            klippy_rotated = glob.glob("/home/pi/printer_data/logs/klippy.log.*")
+            log_files.extend(klippy_rotated)
 
             for log_file in log_files:
                 if os.path.exists(log_file):
                     shutil.copy2(log_file, logs_dir)
+            
+            if os.path.isfile("/home/pi/printer_data/logs/klippy.log"):
+                shutil.copy2("/home/pi/printer_data/logs/klippy.log", logs_dir)
 
             dmesg_result = subprocess.run(
                 ['dmesg'],
