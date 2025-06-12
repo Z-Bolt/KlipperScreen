@@ -253,14 +253,17 @@ class Panel(ScreenPanel):
         if check_file:
             self._screen._confirm_send_action(
                 None,
-                _("A file with this name already exists") + "\n\n" + _("You may be trying to move a file that is already in the main directory") + "\n\n" + _("Replace it?") + "\n\n" + filepath,
+                _("A file with this name already exists") + "\n\n" + 
+                _("You may be trying to move a file that is already in the main directory") + 
+                "\n\n" + _("Replace it?") + "\n\n" + filepath,
                 "server.files.move",
                 params
             )
         else:
             self._screen._confirm_send_action(
                 None,
-                _("This function is designed to move a file to the main directory") + "\n\n"+ _("Move file to main directory?") + "\n\n" + filepath,
+                _("This function is designed to move a file to the main directory") + 
+                "\n\n" + _("Move file to main directory?") + "\n\n" + filepath,
                 "server.files.move",
                 params
             )
