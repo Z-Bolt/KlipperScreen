@@ -298,7 +298,7 @@ class Panel(ScreenPanel):
             else:
                 self._screen._confirm_send_action(widget,
                                                   _("Are you sure want to unload the current filament spool?"),
-                                                  "printer.gcode.script",{"script": f"UNLOAD_FILAMENT"})
+                                                  "printer.gcode.script", {"script": f"UNLOAD_FILAMENT"})
         if direction == "+":
             if not self.load_filament:
                 self._screen.show_popup_message("Macro LOAD_FILAMENT not found")
