@@ -307,7 +307,7 @@ class KlipperScreenConfig:
                                    "tooltip": _("Current percentage and graph line"),
                                    "value": "False", "callback": screen.reload_panels}},
             {"show_lock_button": {"section": "main", "name": _("Show Lock Button"), "type": "binary",
-                                   "value": "False", "callback": screen.reload_panels}},
+                                  "value": "False", "callback": screen.reload_panels}},
             {"show_scroll_steppers": {"section": "main", "name": _("Show Scrollbars Buttons"), "type": "binary",
                                       "tooltip": _("Useful for un-responsive touchscreens"),
                                       "value": "False", "callback": screen.reload_panels}},
