@@ -305,8 +305,7 @@ class Panel(ScreenPanel):
             else:
                 self._screen._confirm_send_action(widget,
                                                   _("Are you sure want to load a NEW reel of filament?"),
-                                                  "printer.gcode.script",
-                                                  {"script": f"LOAD_FILAMENT"})
+                                                  "printer.gcode.script", {"script": f"LOAD_FILAMENT"})
 
     def enable_disable_fs(self, switch, gparams, name, x):
         if switch.get_active():
