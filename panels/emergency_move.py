@@ -65,8 +65,7 @@ class Panel(ScreenPanel):
         script = {"script": "SHOW_RESUME_INTERRUPTED"}
         adjust.connect(
             "clicked",
-            self._screen._confirm_send_action,
-            _("By agreeing, you accept that all actions are performed at your own risk!"),
+            self._screen._send_action,
             "printer.gcode.script",
             script,
         )
