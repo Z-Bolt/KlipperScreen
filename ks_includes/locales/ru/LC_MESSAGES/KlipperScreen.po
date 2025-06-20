@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KlipperScreen\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-26 12:31-0300\n"
-"PO-Revision-Date: 2025-06-12 21:27+0300\n"
+"PO-Revision-Date: 2025-06-20 11:07+0300\n"
 "Last-Translator: gfbdrgng <hnaofegnp@hldrive.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/klipperscreen/klipperscreen/ru/>\n"
 "Language: ru\n"
@@ -1105,3 +1105,18 @@ msgstr "Вы уверены, что хотите выгрузить текущу
 
 msgid "Are you sure want to load a NEW reel of filament?"
 msgstr "Вы уверены, что хотите загрузить НОВУЮ катушку филамента?"
+
+msgid "Set Z axis position to maximum?"
+msgstr "Установить позицию оси Z в максимум?"
+
+msgid "Set Z axis position to 0?"
+msgstr "Установить позицию оси Z в 0?"
+
+msgid "Set Z to Max"
+msgstr "Установить Z в максимум"
+
+msgid "Set Z to 0"
+msgstr "Установить Z в 0"
+
+msgid "By agreeing, you accept that all actions are performed at your own risk!"
+msgstr "Соглашаясь Вы принимаете, что все действия выполняются на свой страх и риск!"
