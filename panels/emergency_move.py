@@ -60,7 +60,7 @@ class Panel(ScreenPanel):
             script,
         )
         adjust = self._gtk.Button(
-            "resume", None, "color5", 1, Gtk.PositionType.LEFT, 1
+            "resume", _("Возобновить"), "color5", 1, Gtk.PositionType.LEFT, 1
         )
         script = {"script": "SHOW_RESUME_INTERRUPTED"}
         adjust.connect(
