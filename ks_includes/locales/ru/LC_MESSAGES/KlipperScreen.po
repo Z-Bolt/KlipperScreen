@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KlipperScreen\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-26 12:31-0300\n"
-"PO-Revision-Date: 2025-06-20 11:22+0300\n"
+"PO-Revision-Date: 2025-06-23 15:16+0300\n"
 "Last-Translator: gfbdrgng <hnaofegnp@hldrive.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/klipperscreen/klipperscreen/ru/>\n"
 "Language: ru\n"
@@ -1123,3 +1123,9 @@ msgstr "Соглашаясь Вы принимаете, что все дейст
 
 msgid "Emergency Move"
 msgstr "Аварийные перемещения"
+
+msgid "Pause on change layer"
+msgstr "Пауза при смене слоя"
+
+msgid "Pause when changing layers?"
+msgstr "Поставить печать на паузу при смене слоя?"
