@@ -130,7 +130,7 @@ class Panel(ScreenPanel):
             fbchild.set_as_dir(True)
         elif 'filename' in item:
             if (item['filename'].startswith(".") or
-                    os.path.splitext(item['filename'])[1] not in {'.gcode', '.gco', '.g'}):
+                    os.path.splitext(item['filename'])[1] not in {'.gcode', '.gco', '.g', '.plgx', '.plg'}):
                 return
             name = item['filename']
             path = f"{self.cur_directory}/{name}"
