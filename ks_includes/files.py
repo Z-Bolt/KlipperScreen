@@ -102,7 +102,7 @@ class KlippyFiles:
 
     @staticmethod
     def is_gcode(path):
-        return os.path.splitext(path)[1] in {'.gcode', '.gco', '.g'}
+        return os.path.splitext(path)[1] in {'.gcode', '.gco', '.g', '.plgx', '.plg'}
 
     def file_metadata_exists(self, filename):
         return filename in self.files and "slicer" in self.files[filename]
