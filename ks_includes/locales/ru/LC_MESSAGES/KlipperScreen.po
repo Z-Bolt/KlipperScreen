@@ -1129,3 +1129,9 @@ msgstr "Пауза при смене слоя"
 
 msgid "Pause when changing layers?"
 msgstr "Поставить печать на паузу при смене слоя?"
+
+msgid "After confirmation, the printer will go into emergency parking mode!"
+msgstr "После подтверждения принтер перейдет в режим аварийной парковки!"
+
+msgid "Emergency Homing"
+msgstr "Аварийная парковка"
