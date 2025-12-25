@@ -422,7 +422,7 @@ class Panel(ScreenPanel):
                     # Продолжаем выполнение даже если удаление не удалось
                 # Обновляем список файлов после отмонтирования
                 self._refresh_files()
-                self._screen.show_popup_message(_("Device unmounted successfully"))
+                self._screen.show_popup_message(_("Device unmounted successfully"), level=1)
             else:
                 logging.error(f"Failed to unmount {full_path}: {result.stderr}")
                 self._screen.show_popup_message(_("Failed to unmount device") + f": {result.stderr}")
