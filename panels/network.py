@@ -89,10 +89,14 @@ class Panel(ScreenPanel):
         self.ap_password = self._config.get_main_config().get('ap_password', 'zboltprinter')
         self.is_ap_mode = False
         
+        # Check saved AP mode state
+        ap_mode_enabled = self._config.get_main_config().getboolean('ap_mode_enabled', False)
+        current_ap_mode = self.sdbus_nm.is_access_point_mode()
+        
         self.ap_toggle = Gtk.Switch(
             width_request=round(self._gtk.font_size * 2),
             height_request=round(self._gtk.font_size),
-            active=self.sdbus_nm.is_access_point_mode()
+            active=current_ap_mode or ap_mode_enabled
         )
         self.ap_toggle.connect("notify::active", self.toggle_ap_mode)
         self.ap_label = Gtk.Label(label=_("AP"), hexpand=False)
@@ -115,11 +119,15 @@ class Panel(ScreenPanel):
 
         if self.sdbus_nm.wifi:
             self.labels['main_box'].pack_start(sbox, False, False, 5)
-            # Check initial AP mode state
+            # Check initial AP mode state and restore if needed
             if self.sdbus_nm.is_access_point_mode():
                 self.is_ap_mode = True
                 self.ap_toggle.set_active(True)
                 GLib.idle_add(self.update_ap_display)
+            elif ap_mode_enabled and not current_ap_mode:
+                # AP mode was enabled in config but not active, restore it
+                logging.info("Restoring AP mode from saved configuration")
+                GLib.idle_add(self.restore_ap_mode)
             else:
                 GLib.idle_add(self.load_networks)
             scroll.add(self.network_list)
@@ -508,6 +516,32 @@ class Panel(ScreenPanel):
         else:
             self.reload_button.hide()
 
+    def restore_ap_mode(self):
+        """Restore AP mode from saved configuration"""
+        if not self.sdbus_nm.is_wifi_enabled():
+            logging.warning("Cannot restore AP mode: WiFi is disabled")
+            return False
+        
+        result = self.sdbus_nm.create_access_point(self.ap_ssid, self.ap_password)
+        if "error" in result:
+            logging.error(f"Failed to restore AP mode: {result['message']}")
+            self.ap_toggle.set_active(False)
+            # Clear saved state if restoration failed
+            if 'main' not in self._config.get_config().sections():
+                self._config.get_config().add_section('main')
+            self._config.set('main', 'ap_mode_enabled', 'False')
+            self._config.save_user_config_options()
+            # Load networks if AP restoration failed
+            GLib.idle_add(self.load_networks)
+            return False
+        
+        self.is_ap_mode = True
+        self.ap_toggle.set_active(True)
+        # Update display after restoring AP
+        self.update_ap_display()
+        self.update_ip_display()
+        return False  # Return False to prevent being called again by GLib.idle_add
+
     def toggle_ap_mode(self, switch, gparams):
         enable = switch.get_active()
         logging.info(f"AP mode {enable}")
@@ -517,11 +551,19 @@ class Panel(ScreenPanel):
             self._screen.show_popup_message(_("WiFi must be enabled first"), level=2)
             return
         
+        # Save state to configuration
+        if 'main' not in self._config.get_config().sections():
+            self._config.get_config().add_section('main')
+        self._config.set('main', 'ap_mode_enabled', 'True' if enable else 'False')
+        self._config.save_user_config_options()
+        
         if enable:
             # Enable AP mode
             result = self.sdbus_nm.create_access_point(self.ap_ssid, self.ap_password)
             if "error" in result:
                 switch.set_active(False)
+                self._config.set('main', 'ap_mode_enabled', 'False')
+                self._config.save_user_config_options()
                 self._screen.show_popup_message(result["message"], level=2)
                 return
             self.is_ap_mode = True
