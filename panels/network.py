@@ -84,10 +84,29 @@ class Panel(ScreenPanel):
         )
         self.wifi_toggle.connect("notify::active", self.toggle_wifi)
 
+        # AP toggle switch
+        self.ap_ssid = self._config.get_main_config().get('ap_ssid', 'zboltprinter')
+        self.ap_password = self._config.get_main_config().get('ap_password', 'zboltprinter')
+        self.is_ap_mode = False
+        
+        self.ap_toggle = Gtk.Switch(
+            width_request=round(self._gtk.font_size * 2),
+            height_request=round(self._gtk.font_size),
+            active=self.sdbus_nm.is_access_point_mode()
+        )
+        self.ap_toggle.connect("notify::active", self.toggle_ap_mode)
+        self.ap_label = Gtk.Label(label=_("AP"), hexpand=False)
+
         sbox = Gtk.Box(hexpand=True, vexpand=False)
         sbox.add(self.labels['interface'])
         sbox.add(self.labels['ip'])
         sbox.add(self.reload_button)
+        
+        # AP toggle container
+        ap_container = Gtk.Box(spacing=5, hexpand=False)
+        ap_container.add(self.ap_label)
+        ap_container.add(self.ap_toggle)
+        sbox.add(ap_container)
         sbox.add(self.wifi_toggle)
 
         scroll = self._gtk.ScrolledWindow()
@@ -95,7 +114,13 @@ class Panel(ScreenPanel):
 
         if self.sdbus_nm.wifi:
             self.labels['main_box'].pack_start(sbox, False, False, 5)
-            GLib.idle_add(self.load_networks)
+            # Check initial AP mode state
+            if self.sdbus_nm.is_access_point_mode():
+                self.is_ap_mode = True
+                self.ap_toggle.set_active(True)
+                GLib.idle_add(self.update_ap_display)
+            else:
+                GLib.idle_add(self.load_networks)
             scroll.add(self.network_list)
             self.sdbus_nm.enable_monitoring(True)
             self.conn_status = GLib.timeout_add_seconds(1, self.sdbus_nm.monitor_connection_status)
@@ -355,7 +380,21 @@ class Panel(ScreenPanel):
     def update_all_networks(self):
         self.interface = self.sdbus_nm.get_primary_interface()
         self.labels['interface'].set_text(_("Interface") + f': {self.interface}')
-        self.labels['ip'].set_text(f"IP: {self.sdbus_nm.get_ip_address()}")
+        self.update_ip_display()
+        
+        # Check if AP mode changed externally
+        ap_mode = self.sdbus_nm.is_access_point_mode()
+        if ap_mode != self.is_ap_mode:
+            self.is_ap_mode = ap_mode
+            self.ap_toggle.set_active(ap_mode)
+            if ap_mode:
+                self.update_ap_display()
+                return True
+        
+        # If in AP mode, don't update network list
+        if self.is_ap_mode:
+            return True
+        
         nets = self.sdbus_nm.get_networks()
         remove = [bssid for bssid in self.network_rows.keys() if bssid not in [net['BSSID'] for net in nets]]
         for bssid in remove:
@@ -411,6 +450,8 @@ class Panel(ScreenPanel):
         return True
 
     def reload_networks(self, widget=None):
+        if self.is_ap_mode:
+            return
         self.deactivate()
         del self.network_rows
         self.network_rows = {}
@@ -428,12 +469,17 @@ class Panel(ScreenPanel):
             return
         if self.update_timeout is None:
             if self.sdbus_nm.wifi:
-                if self.reload_button.get_sensitive():
-                    self._gtk.Button_busy(self.reload_button, True)
-                    self.sdbus_nm.rescan()
-                    self.load_networks()
-                self.update_all_networks()
-                self.update_timeout = GLib.timeout_add_seconds(5, self.update_all_networks)
+                if self.is_ap_mode:
+                    # In AP mode, just update IP
+                    self.update_ip_display()
+                    self.update_timeout = GLib.timeout_add_seconds(5, self.update_ip_display)
+                else:
+                    if self.reload_button.get_sensitive():
+                        self._gtk.Button_busy(self.reload_button, True)
+                        self.sdbus_nm.rescan()
+                        self.load_networks()
+                    self.update_all_networks()
+                    self.update_timeout = GLib.timeout_add_seconds(5, self.update_all_networks)
             else:
                 self.update_single_network_info()
                 self.update_timeout = GLib.timeout_add_seconds(5, self.update_single_network_info)
@@ -450,12 +496,84 @@ class Panel(ScreenPanel):
     def toggle_wifi(self, switch, gparams):
         enable = switch.get_active()
         logging.info(f"WiFi {enable}")
+        if not enable and self.sdbus_nm.is_access_point_mode():
+            # If disabling WiFi and AP is active, disable AP first
+            self.ap_toggle.set_active(False)
+            self.toggle_ap_mode(self.ap_toggle, None)
         self.sdbus_nm.toggle_wifi(enable)
         if enable:
             self.reload_button.show()
             self.reload_networks()
         else:
             self.reload_button.hide()
+
+    def toggle_ap_mode(self, switch, gparams):
+        enable = switch.get_active()
+        logging.info(f"AP mode {enable}")
+        
+        if not self.sdbus_nm.is_wifi_enabled():
+            switch.set_active(False)
+            self._screen.show_popup_message(_("WiFi must be enabled first"), level=2)
+            return
+        
+        if enable:
+            # Enable AP mode
+            result = self.sdbus_nm.create_access_point(self.ap_ssid, self.ap_password)
+            if "error" in result:
+                switch.set_active(False)
+                self._screen.show_popup_message(result["message"], level=2)
+                return
+            self.is_ap_mode = True
+            # Hide network list and show only AP info
+            self.update_ap_display()
+        else:
+            # Disable AP mode
+            result = self.sdbus_nm.remove_access_point()
+            if "error" in result:
+                self._screen.show_popup_message(result["message"], level=2)
+            self.is_ap_mode = False
+            # Restore normal network list
+            self.reload_networks()
+        
+        # Update IP display
+        self.update_ip_display()
+
+    def update_ap_display(self):
+        """Update display to show only AP information"""
+        # Clear network list
+        for child in list(self.network_list.get_children()):
+            self.network_list.remove(child)
+        self.network_rows.clear()
+        self.networks.clear()
+        
+        # Add AP info display
+        ap_info_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10, 
+                              valign=Gtk.Align.CENTER, vexpand=True)
+        ap_info_box.get_style_context().add_class("frame-item")
+        
+        ap_name_label = Gtk.Label()
+        ap_name_label.set_markup(f"<big><b>{self.ap_ssid}</b></big>")
+        ap_name_label.set_halign(Gtk.Align.CENTER)
+        
+        ap_status_label = Gtk.Label(label=_("Access Point Mode"))
+        ap_status_label.set_halign(Gtk.Align.CENTER)
+        
+        ap_password_label = Gtk.Label()
+        ap_password_label.set_markup(f"<small>{_('Password')}: {self.ap_password}</small>")
+        ap_password_label.set_halign(Gtk.Align.CENTER)
+        
+        ap_info_box.add(ap_name_label)
+        ap_info_box.add(ap_status_label)
+        ap_info_box.add(ap_password_label)
+        
+        self.network_list.add(ap_info_box)
+        self.network_list.show_all()
+
+    def update_ip_display(self):
+        """Update IP address display"""
+        ip = self.sdbus_nm.get_ip_address()
+        self.labels['ip'].set_text(f"IP: {ip}")
+        return True
 
     def show_fullscreen_qrcode(self, widget):
 

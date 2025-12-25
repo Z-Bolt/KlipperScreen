@@ -167,7 +167,7 @@ class KlipperScreenConfig:
                 strs = (
                     'default_printer', 'language', 'print_sort_dir', 'theme', 'screen_blanking_printing', 'font_size',
                     'print_estimate_method', 'screen_blanking', "screen_on_devices", "screen_off_devices", 'print_view',
-                    "lock_password"
+                    "lock_password", 'ap_ssid', 'ap_password'
                 )
                 numbers = (
                     'job_complete_timeout', 'job_error_timeout', 'move_speed_xy', 'move_speed_z',
