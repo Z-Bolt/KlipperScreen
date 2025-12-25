@@ -42,7 +42,7 @@ class Panel(ScreenPanel):
 
     def create_layout(self):
         # Add Export Logs button at the top
-        export_button = self._gtk.Button("refresh", "Export Logs", "color4")
+        export_button = self._gtk.Button("refresh", _("Export Logs"), "color4")
         export_button.connect("clicked", self.export_logs)
         self.grid.attach(export_button, 0, self.current_row, 2, 1)
         self.current_row += 1
