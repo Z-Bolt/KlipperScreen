@@ -1,5 +1,6 @@
 import logging
 import os
+import subprocess
 
 import gi
 
@@ -18,6 +19,56 @@ def format_label(widget):
         label.set_line_wrap(True)
         label.set_ellipsize(Pango.EllipsizeMode.END)
         label.set_lines(3)
+
+
+def is_mounted_device(path):
+    """Проверяет, является ли путь примонтированным устройством"""
+    gcodes_base = "/home/pi/printer_data/gcodes"
+    
+    # Убираем префикс 'gcodes/' если он есть
+    if path.startswith("gcodes/"):
+        path = path[7:]
+    
+    # Если путь пустой, это не устройство
+    if not path or path == '':
+        return False
+    
+    full_path = os.path.join(gcodes_base, path)
+    
+    # Проверяем, что путь существует и является точкой монтирования
+    if os.path.exists(full_path) and os.path.ismount(full_path):
+        return True
+    return False
+
+
+def is_file_on_usb(filepath):
+    """Проверяет, находится ли файл на USB устройстве (флешке)"""
+    gcodes_base = "/home/pi/printer_data/gcodes"
+    
+    # Убираем префикс 'gcodes/' если он есть
+    if filepath.startswith("gcodes/"):
+        filepath = filepath[7:]
+    
+    # Получаем директорию файла
+    dir_path = os.path.dirname(filepath)
+    
+    # Если файл в корне gcodes, он не на USB
+    if dir_path == '' or dir_path == '.':
+        return False
+    
+    # Проверяем, является ли родительская директория примонтированным устройством
+    full_dir_path = os.path.join(gcodes_base, dir_path)
+    
+    # Проверяем все родительские директории до gcodes
+    current_path = full_dir_path
+    while current_path != gcodes_base and current_path != os.path.dirname(gcodes_base):
+        if os.path.ismount(current_path):
+            return True
+        current_path = os.path.dirname(current_path)
+        if not current_path or current_path == '/':
+            break
+    
+    return False
 
 
 class Panel(ScreenPanel):
@@ -156,9 +207,6 @@ class Panel(ScreenPanel):
             rename = Gtk.Button(hexpand=False, vexpand=False, can_focus=False, always_show_image=True)
             rename.get_style_context().add_class("color2")
             rename.set_image(self._gtk.Image("files", self.list_button_size, self.list_button_size))
-            move = Gtk.Button(hexpand=False, vexpand=False, can_focus=False, always_show_image=True)
-            move.get_style_context().add_class("color3")
-            move.set_image(self._gtk.Image("sd", self.list_button_size, self.list_button_size))
             itemname = Gtk.Label(hexpand=True, halign=Gtk.Align.START, ellipsize=Pango.EllipsizeMode.END)
             itemname.get_style_context().add_class("print-filename")
             itemname.set_markup(f"<big><b>{basename}</b></big>")
@@ -169,14 +217,26 @@ class Panel(ScreenPanel):
                 row.attach(icon, 0, 0, 1, 2)
             row.attach(itemname, 1, 0, 3, 1)
             row.attach(info, 1, 1, 1, 1)
-            row.attach(rename, 2, 1, 1, 1)
-            row.attach(delete, 3, 1, 1, 1)
+            
+            # Определяем позиции кнопок в зависимости от типа элемента
+            button_col = 2
             if 'filename' in item:
                 icon.connect("clicked", self.confirm_print, path)
                 image_args = (path, icon, self.thumbsize / 2, True, "file")
                 delete.connect("clicked", self.confirm_delete_file, f"gcodes/{path}")
-                move.connect("clicked", self.confirm_move_file, f"gcodes/{path}")
                 rename.connect("clicked", self.show_rename, f"gcodes/{path}")
+                # Показываем кнопку переноса только если файл находится на USB
+                if is_file_on_usb(f"gcodes/{path}"):
+                    move = Gtk.Button(hexpand=False, vexpand=False, can_focus=False, always_show_image=True)
+                    move.get_style_context().add_class("color3")
+                    move.set_image(self._gtk.Image("sd", self.list_button_size, self.list_button_size))
+                    move.connect("clicked", self.confirm_move_file, f"gcodes/{path}")
+                    row.attach(move, button_col, 1, 1, 1)
+                    button_col += 1
+                row.attach(rename, button_col, 1, 1, 1)
+                button_col += 1
+                row.attach(delete, button_col, 1, 1, 1)
+                button_col += 1
                 action_icon = "printer" if self._printer.extrudercount > 0 else "load"
                 action = self._gtk.Button(action_icon, style="color3")
                 action.connect("clicked", self.confirm_print, path)
@@ -184,21 +244,33 @@ class Panel(ScreenPanel):
                 action.set_vexpand(False)
                 action.set_halign(Gtk.Align.END)
                 if self._screen.width >= 400:
-                    row.attach(action, 4, 0, 1, 2)
+                    row.attach(action, button_col, 0, 1, 2)
                 else:
                     icon.get_style_context().add_class("color3")
-                    row.attach(icon, 4, 0, 1, 2)
+                    row.attach(icon, button_col, 0, 1, 2)
             elif 'dirname' in item:
                 icon.connect("clicked", self.change_dir, path)
                 image_args = (None, icon, self.thumbsize / 2, True, "folder")
                 delete.connect("clicked", self.confirm_delete_directory, path)
                 rename.connect("clicked", self.show_rename, path)
+                # Проверяем, является ли папка примонтированным устройством
+                if is_mounted_device(path):
+                    unmount = Gtk.Button(hexpand=False, vexpand=False, can_focus=False, always_show_image=True)
+                    unmount.get_style_context().add_class("color4")
+                    unmount.set_image(self._gtk.Image("sd", self.list_button_size, self.list_button_size))
+                    unmount.connect("clicked", self.confirm_unmount, path)
+                    row.attach(unmount, button_col, 1, 1, 1)
+                    button_col += 1
+                row.attach(rename, button_col, 1, 1, 1)
+                button_col += 1
+                row.attach(delete, button_col, 1, 1, 1)
+                button_col += 1
                 action = self._gtk.Button("load", style="color3")
                 action.connect("clicked", self.change_dir, path)
                 action.set_hexpand(False)
                 action.set_vexpand(False)
                 action.set_halign(Gtk.Align.END)
-                row.attach(action, 4, 0, 1, 2)
+                row.attach(action, button_col, 0, 1, 2)
             else:
                 return
             fbchild.add(row)
@@ -248,25 +320,13 @@ class Panel(ScreenPanel):
         dest = "gcodes/" + filename
         params = {"source": f"{filepath}",
                   "dest": f"{dest}"}
-        gcodes_path = "/home/pi/printer_data/"
-        check_file = os.path.exists(gcodes_path + dest)
-        if check_file:
-            self._screen._confirm_send_action(
-                None,
-                _("A file with this name already exists") + "\n\n" +
-                _("You may be trying to move a file that is already in the main directory") +
-                "\n\n" + _("Replace it?") + "\n\n" + filepath,
-                "server.files.move",
-                params
-            )
-        else:
-            self._screen._confirm_send_action(
-                None,
-                _("This function is designed to move a file to the main directory") +
-                "\n\n" + _("Move file to main directory?") + "\n\n" + filepath,
-                "server.files.move",
-                params
-            )
+        self._screen._confirm_send_action(
+            None,
+            _("After confirmation, the file will be transferred to internal storage.") +
+            "\n\n" + _("Transfer file?") + "\n\n" + filepath,
+            "server.files.move",
+            params
+        )
 
     def confirm_delete_directory(self, widget, dirpath):
         logging.debug(f"Sending delete_directory {dirpath}")
@@ -277,6 +337,89 @@ class Panel(ScreenPanel):
             "server.files.delete_directory",
             params
         )
+
+    def confirm_unmount(self, widget, dirpath):
+        """Отмонтирует примонтированное устройство"""
+        logging.debug(f"Requesting unmount confirmation for {dirpath}")
+        
+        if not is_mounted_device(dirpath):
+            logging.warning(f"Path {dirpath} is not a mounted device")
+            self._screen.show_popup_message(_("This directory is not a mounted device"))
+            return
+        
+        # Используем диалог подтверждения
+        buttons = [
+            {"name": _("Unmount"), "response": Gtk.ResponseType.OK, "style": 'dialog-primary'},
+            {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL, "style": 'dialog-secondary'}
+        ]
+        
+        label = Gtk.Label(
+            hexpand=True, vexpand=True,
+            wrap=True, wrap_mode=Pango.WrapMode.WORD_CHAR,
+            ellipsize=Pango.EllipsizeMode.END
+        )
+        label.set_markup(_("Unmount device?") + f"\n\n<b>{dirpath}</b>")
+        
+        self._gtk.Dialog(
+            _("Unmount Device"),
+            buttons,
+            label,
+            self.confirm_unmount_response,
+            dirpath
+        )
+    
+    def confirm_unmount_response(self, dialog, response_id, dirpath):
+        """Обработчик ответа на диалог отмонтирования"""
+        self._gtk.remove_dialog(dialog)
+        if response_id != Gtk.ResponseType.OK:
+            return
+        
+        logging.debug(f"Unmounting device {dirpath}")
+        gcodes_base = "/home/pi/printer_data/gcodes"
+        
+        # Убираем префикс 'gcodes/' если он есть
+        clean_path = dirpath
+        if clean_path.startswith("gcodes/"):
+            clean_path = clean_path[7:]
+        
+        full_path = os.path.join(gcodes_base, clean_path)
+        
+        # Выполняем отмонтирование через subprocess
+        try:
+            result = subprocess.run(
+                ["sudo", "umount", full_path],
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+            if result.returncode == 0:
+                logging.info(f"Successfully unmounted {full_path}")
+                # Удаляем папку устройства после отмонтирования
+                try:
+                    if os.path.exists(full_path):
+                        # Используем API для удаления директории
+                        params = {"path": clean_path, "force": True}
+                        self._screen._send_action(
+                            None,
+                            "server.files.delete_directory",
+                            params
+                        )
+                        logging.info(f"Deleted directory {full_path} after unmounting")
+                except Exception as e:
+                    logging.error(f"Error deleting directory {full_path}: {e}")
+                    # Продолжаем выполнение даже если удаление не удалось
+                # Обновляем список файлов после отмонтирования
+                self._refresh_files()
+                self._screen.show_popup_message(_("Device unmounted successfully"), level=1)
+            else:
+                logging.error(f"Failed to unmount {full_path}: {result.stderr}")
+                self._screen.show_popup_message(_("Failed to unmount device") + f": {result.stderr}")
+        except subprocess.TimeoutExpired:
+            logging.error(f"Timeout while unmounting {full_path}")
+            self._screen.show_popup_message(_("Timeout while unmounting device"))
+        except Exception as e:
+            logging.error(f"Error unmounting {full_path}: {e}")
+            self._screen.show_popup_message(_("Error unmounting device") + f": {str(e)}")
 
     def back(self):
         if self.showing_rename:
@@ -396,13 +539,12 @@ class Panel(ScreenPanel):
 
         inside_box.pack_start(info_box, True, True, 0)
         main_box.pack_start(inside_box, True, True, 0)
-        # self._gtk.Dialog(f'{action} {filename}', buttons, main_box, self.confirm_print_response, filename)
-
-        dir_path = "/home/pi/printer_data/gcodes/"
-        if os.path.isfile(f"{dir_path} + {filename}"):
-            self._gtk.Dialog(f'{action} {filename}', buttons, main_box, self.confirm_print_response, filename)
-        else:
+        
+        # Проверяем, находится ли файл на USB устройстве
+        if is_file_on_usb(f"gcodes/{filename}"):
             self._gtk.Dialog(f'{action} {filename}', buttons_usb, main_box, self.confirm_print_response, filename)
+        else:
+            self._gtk.Dialog(f'{action} {filename}', buttons, main_box, self.confirm_print_response, filename)
 
     def confirm_print_response(self, dialog, response_id, filename):
         self._gtk.remove_dialog(dialog)
@@ -413,7 +555,7 @@ class Panel(ScreenPanel):
             self._screen._ws.klippy.print_start(filename)
         elif response_id == Gtk.ResponseType.APPLY:
             logging.info(f"Move file {filename} to internal storage")
-            self.confirm_move_file(self, f"gcodes/{filename}")
+            self.confirm_move_file(None, f"gcodes/{filename}")
         elif response_id == Gtk.ResponseType.REJECT:
             self.confirm_delete_file(None, f"gcodes/{filename}")
 
