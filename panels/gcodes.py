@@ -406,6 +406,20 @@ class Panel(ScreenPanel):
             )
             if result.returncode == 0:
                 logging.info(f"Successfully unmounted {full_path}")
+                # Удаляем папку устройства после отмонтирования
+                try:
+                    if os.path.exists(full_path):
+                        # Используем API для удаления директории
+                        params = {"path": clean_path, "force": True}
+                        self._screen._send_action(
+                            None,
+                            "server.files.delete_directory",
+                            params
+                        )
+                        logging.info(f"Deleted directory {full_path} after unmounting")
+                except Exception as e:
+                    logging.error(f"Error deleting directory {full_path}: {e}")
+                    # Продолжаем выполнение даже если удаление не удалось
                 # Обновляем список файлов после отмонтирования
                 self._refresh_files()
                 self._screen.show_popup_message(_("Device unmounted successfully"))
@@ -497,7 +511,7 @@ class Panel(ScreenPanel):
 
         buttons_usb = [
             {"name": _("Delete"), "response": Gtk.ResponseType.REJECT, "style": 'dialog-error'},
-            {"name": _("Move"), "response": Gtk.ResponseType.APPLY, "style": 'dialog-secondary'},
+            {"name": _("Resave"), "response": Gtk.ResponseType.APPLY, "style": 'dialog-secondary'},
             {"name": action, "response": Gtk.ResponseType.OK, "style": 'dialog-primary'},
             {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL, "style": 'dialog-secondary'}
         ]
