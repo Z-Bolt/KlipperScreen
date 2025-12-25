@@ -41,6 +41,15 @@ class Panel(ScreenPanel):
         return False
 
     def create_layout(self):
+        # Add Export Logs button at the top
+        export_button = self._gtk.Button("refresh", "Export Logs", "color4")
+        export_button.connect("clicked", self.export_logs)
+        self.grid.attach(export_button, 0, self.current_row, 2, 1)
+        self.current_row += 1
+        
+        self.grid.attach(Gtk.Separator(), 0, self.current_row, 2, 1)
+        self.current_row += 1
+        
         self.cpu_count = int(self.sysinfo["cpu_info"]["cpu_count"])
         self.labels["cpu_usage"] = Gtk.Label(label="", xalign=0)
         self.grid.attach(self.labels["cpu_usage"], 0, self.current_row, 1, 1)
@@ -70,14 +79,6 @@ class Panel(ScreenPanel):
         self.grid.attach(Gtk.Separator(), 0, self.current_row, 2, 1)
         self.current_row += 1
         self.populate_info()
-        
-        # Add Export Logs button
-        self.grid.attach(Gtk.Separator(), 0, self.current_row, 2, 1)
-        self.current_row += 1
-        export_button = self._gtk.Button("refresh", "Export Logs", "color4")
-        export_button.connect("clicked", self.export_logs)
-        self.grid.attach(export_button, 0, self.current_row, 2, 1)
-        self.current_row += 1
 
         scroll = self._gtk.ScrolledWindow()
         scroll.add(self.grid)
