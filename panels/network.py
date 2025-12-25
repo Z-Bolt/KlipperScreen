@@ -98,15 +98,16 @@ class Panel(ScreenPanel):
         self.ap_label = Gtk.Label(label=_("AP"), hexpand=False)
 
         sbox = Gtk.Box(hexpand=True, vexpand=False)
-        sbox.add(self.labels['interface'])
-        sbox.add(self.labels['ip'])
-        sbox.add(self.reload_button)
         
-        # AP toggle container
+        # AP toggle container - placed first (leftmost)
         ap_container = Gtk.Box(spacing=5, hexpand=False)
         ap_container.add(self.ap_label)
         ap_container.add(self.ap_toggle)
         sbox.add(ap_container)
+        
+        sbox.add(self.labels['interface'])
+        sbox.add(self.labels['ip'])
+        sbox.add(self.reload_button)
         sbox.add(self.wifi_toggle)
 
         scroll = self._gtk.ScrolledWindow()
