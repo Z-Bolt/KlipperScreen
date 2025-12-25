@@ -1159,3 +1159,12 @@ msgstr "Истекло время ожидания при отмонтирова
 
 msgid "Error unmounting device"
 msgstr "Ошибка при отмонтировании устройства"
+
+msgid "No removable device found"
+msgstr "Съемный носитель не найден"
+
+msgid "Logs saved successfully"
+msgstr "Журналы успешно сохранены"
+
+msgid "Error exporting logs"
+msgstr "Ошибка при экспорте журналов"

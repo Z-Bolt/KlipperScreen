@@ -1,4 +1,9 @@
 import logging
+import os
+import subprocess
+import shutil
+import zipfile
+from datetime import datetime
 
 import gi
 
@@ -65,6 +70,14 @@ class Panel(ScreenPanel):
         self.grid.attach(Gtk.Separator(), 0, self.current_row, 2, 1)
         self.current_row += 1
         self.populate_info()
+        
+        # Add Export Logs button
+        self.grid.attach(Gtk.Separator(), 0, self.current_row, 2, 1)
+        self.current_row += 1
+        export_button = self._gtk.Button("refresh", "Export Logs", "color4")
+        export_button.connect("clicked", self.export_logs)
+        self.grid.attach(export_button, 0, self.current_row, 2, 1)
+        self.current_row += 1
 
         scroll = self._gtk.ScrolledWindow()
         scroll.add(self.grid)
@@ -141,6 +154,158 @@ class Panel(ScreenPanel):
                             )
                     else:
                         self.add_label_to_grid(f"{self.prettify(key)}: {value}", 1)
+
+    def find_mounted_device(self):
+        """Находит примонтированное устройство в /home/pi/printer_data/gcodes/"""
+        gcodes_base = "/home/pi/printer_data/gcodes"
+        
+        if not os.path.exists(gcodes_base):
+            return None
+        
+        # Проверяем все подкаталоги в gcodes
+        try:
+            for item in os.listdir(gcodes_base):
+                item_path = os.path.join(gcodes_base, item)
+                # Проверяем, является ли путь точкой монтирования
+                if os.path.isdir(item_path) and os.path.ismount(item_path):
+                    return item_path
+        except OSError as e:
+            logging.error(f"Error scanning gcodes directory: {e}")
+        
+        return None
+    
+    def export_logs(self, widget):
+        """Экспортирует журналы на съемный носитель"""
+        # Ищем примонтированное устройство
+        mounted_device = self.find_mounted_device()
+        
+        if not mounted_device:
+            self._screen.show_popup_message(_("No removable device found"), level=3)
+            logging.warning("No mounted device found in /home/pi/printer_data/gcodes/")
+            return
+        
+        home_dir = os.path.expanduser("~")
+        temp_dir = os.path.join(home_dir, "printer_data", "logs_export_temp")
+        
+        try:
+            # Создаем временную директорию для файлов
+            if os.path.exists(temp_dir):
+                shutil.rmtree(temp_dir)
+            os.makedirs(temp_dir)
+            
+            # Пути к файлам логов
+            logs_dir = os.path.join(home_dir, "printer_data", "logs")
+            log_files = [
+                ("klippy.log", os.path.join(logs_dir, "klippy.log")),
+                ("moonraker.log", os.path.join(logs_dir, "moonraker.log")),
+                ("crowsnest.log", os.path.join(logs_dir, "crowsnest.log")),
+            ]
+            
+            # KlipperScreen.log может быть в разных местах
+            klipperscreen_log_paths = [
+                os.path.join(logs_dir, "KlipperScreen.log"),
+                "/tmp/KlipperScreen.log",
+            ]
+            for log_path in klipperscreen_log_paths:
+                if os.path.exists(log_path):
+                    log_files.append(("KlipperScreen.log", log_path))
+                    break
+            
+            # Копируем файлы логов, если они существуют
+            for dest_name, source_path in log_files:
+                if os.path.exists(source_path):
+                    dest_path = os.path.join(temp_dir, dest_name)
+                    shutil.copy2(source_path, dest_path)
+                    logging.info(f"Copied {source_path} to {dest_path}")
+                else:
+                    logging.warning(f"Log file not found: {source_path}")
+            
+            # Выполняем команду dmesg и сохраняем вывод
+            try:
+                dmesg_result = subprocess.run(
+                    ["dmesg"],
+                    capture_output=True,
+                    text=True,
+                    timeout=10
+                )
+                if dmesg_result.returncode == 0:
+                    dmesg_file = os.path.join(temp_dir, "dmesg.txt")
+                    with open(dmesg_file, "w", encoding="utf-8") as f:
+                        f.write(dmesg_result.stdout)
+                    logging.info("Saved dmesg output")
+            except Exception as e:
+                logging.error(f"Error running dmesg: {e}")
+            
+            # Выполняем команду df -h и сохраняем вывод
+            try:
+                df_result = subprocess.run(
+                    ["df", "-h"],
+                    capture_output=True,
+                    text=True,
+                    timeout=10
+                )
+                if df_result.returncode == 0:
+                    df_file = os.path.join(temp_dir, "df_h.txt")
+                    with open(df_file, "w", encoding="utf-8") as f:
+                        f.write(df_result.stdout)
+                    logging.info("Saved df -h output")
+            except Exception as e:
+                logging.error(f"Error running df -h: {e}")
+            
+            # Создаем ZIP архив
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            zip_filename = f"logs_export_{timestamp}.zip"
+            zip_path = os.path.join(temp_dir, zip_filename)
+            
+            with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                for root, dirs, files in os.walk(temp_dir):
+                    for file in files:
+                        if file != zip_filename:  # Не добавляем сам архив
+                            file_path = os.path.join(root, file)
+                            arcname = os.path.basename(file_path)
+                            zipf.write(file_path, arcname)
+            
+            # Копируем архив на съемный носитель
+            dest_zip_path = os.path.join(mounted_device, zip_filename)
+            shutil.copy2(zip_path, dest_zip_path)
+            logging.info(f"Copied archive to {dest_zip_path}")
+            
+            # Удаляем временную директорию
+            shutil.rmtree(temp_dir)
+            
+            # Показываем уведомление об успехе
+            self._screen.show_popup_message(
+                _("Logs saved successfully") + f"\n{zip_filename}",
+                level=1
+            )
+            
+            # Отмонтируем устройство
+            try:
+                result = subprocess.run(
+                    ["sudo", "umount", mounted_device],
+                    capture_output=True,
+                    text=True,
+                    timeout=10
+                )
+                if result.returncode == 0:
+                    logging.info(f"Successfully unmounted {mounted_device}")
+                else:
+                    logging.warning(f"Failed to unmount {mounted_device}: {result.stderr}")
+            except Exception as e:
+                logging.error(f"Error unmounting device: {e}")
+                
+        except Exception as e:
+            logging.error(f"Error exporting logs: {e}")
+            self._screen.show_popup_message(
+                _("Error exporting logs") + f": {str(e)}",
+                level=3
+            )
+            # Удаляем временную директорию в случае ошибки
+            if os.path.exists(temp_dir):
+                try:
+                    shutil.rmtree(temp_dir)
+                except:
+                    pass
 
     def process_update(self, action, data):
         if not self.sysinfo:
