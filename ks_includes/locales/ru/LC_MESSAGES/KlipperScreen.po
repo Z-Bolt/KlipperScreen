@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KlipperScreen\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-26 12:31-0300\n"
-"PO-Revision-Date: 2025-06-23 15:16+0300\n"
+"PO-Revision-Date: 2025-12-25 17:55+0300\n"
 "Last-Translator: gfbdrgng <hnaofegnp@hldrive.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/klipperscreen/klipperscreen/ru/>\n"
 "Language: ru\n"
@@ -448,7 +448,7 @@ msgid "Job Status"
 msgstr "Статус работы"
 
 msgid "Klipper Restart"
-msgstr "Klipper перезагружается"
+msgstr "Перезагрузить Klipper"
 
 msgid "Klipper has disconnected"
 msgstr "Нет связи с Klipper"
@@ -1135,3 +1135,15 @@ msgstr "После подтверждения принтер перейдет в
 
 msgid "Emergency Homing"
 msgstr "Аварийная парковка"
+
+msgid "After confirmation, the file will be transferred to internal storage."
+msgstr "После подтверждения файл будет перенесен на внутреннее хранилище."
+
+msgid "Transfer file?"
+msgstr "Перенести файл?"
+
+msgid "Unmount"
+msgstr "Отмонтировать"
+
+msgid "Unmount device?"
+msgstr "Отмонтировать устройство?"
