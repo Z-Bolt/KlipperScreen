@@ -497,7 +497,7 @@ class Panel(ScreenPanel):
 
         buttons_usb = [
             {"name": _("Delete"), "response": Gtk.ResponseType.REJECT, "style": 'dialog-error'},
-            {"name": _("Resave"), "response": Gtk.ResponseType.APPLY, "style": 'dialog-secondary'},
+            {"name": _("Move"), "response": Gtk.ResponseType.APPLY, "style": 'dialog-secondary'},
             {"name": action, "response": Gtk.ResponseType.OK, "style": 'dialog-primary'},
             {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL, "style": 'dialog-secondary'}
         ]
@@ -537,13 +537,12 @@ class Panel(ScreenPanel):
 
         inside_box.pack_start(info_box, True, True, 0)
         main_box.pack_start(inside_box, True, True, 0)
-        # self._gtk.Dialog(f'{action} {filename}', buttons, main_box, self.confirm_print_response, filename)
-
-        dir_path = "/home/pi/printer_data/gcodes/"
-        if os.path.isfile(f"{dir_path} + {filename}"):
-            self._gtk.Dialog(f'{action} {filename}', buttons, main_box, self.confirm_print_response, filename)
-        else:
+        
+        # Проверяем, находится ли файл на USB устройстве
+        if is_file_on_usb(f"gcodes/{filename}"):
             self._gtk.Dialog(f'{action} {filename}', buttons_usb, main_box, self.confirm_print_response, filename)
+        else:
+            self._gtk.Dialog(f'{action} {filename}', buttons, main_box, self.confirm_print_response, filename)
 
     def confirm_print_response(self, dialog, response_id, filename):
         self._gtk.remove_dialog(dialog)
@@ -554,7 +553,7 @@ class Panel(ScreenPanel):
             self._screen._ws.klippy.print_start(filename)
         elif response_id == Gtk.ResponseType.APPLY:
             logging.info(f"Move file {filename} to internal storage")
-            self.confirm_move_file(self, f"gcodes/{filename}")
+            self.confirm_move_file(None, f"gcodes/{filename}")
         elif response_id == Gtk.ResponseType.REJECT:
             self.confirm_delete_file(None, f"gcodes/{filename}")
 
