@@ -116,19 +116,8 @@ class Panel(ScreenPanel):
                 self.ap_toggle.connect("notify::active", self.toggle_ap_mode)
                 self.ap_label = Gtk.Label(label=_("AP"), hexpand=False)
 
-                ap_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2, hexpand=False)
-                ap_label_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-                ap_label_box.add(self.ap_label)
-                ap_note = Gtk.Label(
-                    label=_("Test feature, unstable behavior possible"),
-                    hexpand=False
-                )
-                ap_note.set_justify(Gtk.Justification.LEFT)
-                ap_note.set_xalign(0)
-                ap_note.get_style_context().add_class("dim-label")
-                ap_label_box.add(ap_note)
-
-                ap_container.add(ap_label_box)
+                ap_container = Gtk.Box(spacing=5, hexpand=False)
+                ap_container.add(self.ap_label)
                 ap_container.add(self.ap_toggle)
 
                 # Insert AP container at the beginning of sbox
