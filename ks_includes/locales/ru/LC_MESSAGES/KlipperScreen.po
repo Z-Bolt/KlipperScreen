@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KlipperScreen\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-26 12:31-0300\n"
-"PO-Revision-Date: 2026-01-28 16:51+0300\n"
+"PO-Revision-Date: 2026-01-28 17:01+0300\n"
 "Last-Translator: gfbdrgng <hnaofegnp@hldrive.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/klipperscreen/klipperscreen/ru/>\n"
 "Language: ru\n"
@@ -940,6 +940,12 @@ msgstr "Обновление"
 
 msgid "Show cursor"
 msgstr "Отображать курсор"
+
+msgid "Show Access Point toggle"
+msgstr "Показывать переключатель точки доступа"
+
+msgid "Test feature, unstable behavior possible"
+msgstr "Тестовая функция, возможны сбои"
 
 msgid "For mouse control or to verify touchscreen accuracy"
 msgstr "Для управления мышью или для проверки точности сенсора"

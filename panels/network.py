@@ -84,31 +84,7 @@ class Panel(ScreenPanel):
         )
         self.wifi_toggle.connect("notify::active", self.toggle_wifi)
 
-        # AP toggle switch
-        self.ap_ssid = self._config.get_main_config().get('ap_ssid', 'zboltprinter')
-        self.ap_password = self._config.get_main_config().get('ap_password', 'zboltprinter')
-        self.is_ap_mode = False
-        
-        # Check saved AP mode state
-        ap_mode_enabled = self._config.get_main_config().getboolean('ap_mode_enabled', False)
-        current_ap_mode = self.sdbus_nm.is_access_point_mode()
-        
-        self.ap_toggle = Gtk.Switch(
-            width_request=round(self._gtk.font_size * 2),
-            height_request=round(self._gtk.font_size),
-            active=current_ap_mode or ap_mode_enabled
-        )
-        self.ap_toggle.connect("notify::active", self.toggle_ap_mode)
-        self.ap_label = Gtk.Label(label=_("AP"), hexpand=False)
-
         sbox = Gtk.Box(hexpand=True, vexpand=False)
-        
-        # AP toggle container - placed first (leftmost)
-        ap_container = Gtk.Box(spacing=5, hexpand=False)
-        ap_container.add(self.ap_label)
-        ap_container.add(self.ap_toggle)
-        sbox.add(ap_container)
-        
         sbox.add(self.labels['interface'])
         sbox.add(self.labels['ip'])
         sbox.add(self.reload_button)
@@ -117,18 +93,59 @@ class Panel(ScreenPanel):
         scroll = self._gtk.ScrolledWindow()
         self.labels['main_box'] = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, vexpand=True)
 
+        # AP test feature visibility flag
+        self.show_ap_toggle = self._config.get_main_config().getboolean('show_ap_toggle', False)
+
+        # AP-related attributes (used only if show_ap_toggle is True)
+        self.ap_ssid = self._config.get_main_config().get('ap_ssid', 'zboltprinter')
+        self.ap_password = self._config.get_main_config().get('ap_password', 'zboltprinter')
+        self.is_ap_mode = False
+
         if self.sdbus_nm.wifi:
             self.labels['main_box'].pack_start(sbox, False, False, 5)
-            # Check initial AP mode state and restore if needed
-            if self.sdbus_nm.is_access_point_mode():
-                self.is_ap_mode = True
-                self.ap_toggle.set_active(True)
-                GLib.idle_add(self.update_ap_display)
-            elif ap_mode_enabled and not current_ap_mode:
-                # AP mode was enabled in config but not active, restore it
-                logging.info("Restoring AP mode from saved configuration")
-                GLib.idle_add(self.restore_ap_mode)
+            if self.show_ap_toggle:
+                # Initialize AP toggle switch (test feature)
+                ap_mode_enabled = self._config.get_main_config().getboolean('ap_mode_enabled', False)
+                current_ap_mode = self.sdbus_nm.is_access_point_mode()
+
+                self.ap_toggle = Gtk.Switch(
+                    width_request=round(self._gtk.font_size * 2),
+                    height_request=round(self._gtk.font_size),
+                    active=current_ap_mode or ap_mode_enabled
+                )
+                self.ap_toggle.connect("notify::active", self.toggle_ap_mode)
+                self.ap_label = Gtk.Label(label=_("AP"), hexpand=False)
+
+                ap_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2, hexpand=False)
+                ap_label_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+                ap_label_box.add(self.ap_label)
+                ap_note = Gtk.Label(
+                    label=_("Test feature, unstable behavior possible"),
+                    hexpand=False
+                )
+                ap_note.set_justify(Gtk.Justification.LEFT)
+                ap_note.set_xalign(0)
+                ap_note.get_style_context().add_class("dim-label")
+                ap_label_box.add(ap_note)
+
+                ap_container.add(ap_label_box)
+                ap_container.add(self.ap_toggle)
+
+                # Insert AP container at the beginning of sbox
+                sbox.pack_start(ap_container, False, False, 5)
+
+                # Check initial AP mode state and restore if needed
+                if self.sdbus_nm.is_access_point_mode():
+                    self.is_ap_mode = True
+                    self.ap_toggle.set_active(True)
+                    GLib.idle_add(self.update_ap_display)
+                elif ap_mode_enabled and not current_ap_mode:
+                    logging.info("Restoring AP mode from saved configuration")
+                    GLib.idle_add(self.restore_ap_mode)
+                else:
+                    GLib.idle_add(self.load_networks)
             else:
+                # AP toggle hidden: always use normal network list
                 GLib.idle_add(self.load_networks)
             scroll.add(self.network_list)
             self.sdbus_nm.enable_monitoring(True)
