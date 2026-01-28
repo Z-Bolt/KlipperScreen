@@ -13,8 +13,17 @@ class Panel(ScreenPanel):
         title = title or _("Shutdown")
         super().__init__(screen, title)
 
+        self.has_change_poweroff = False
+        if self._printer:
+            macros = self._printer.get_config_section_list("gcode_macro ")
+            self.has_change_poweroff = any("CHANGE_POWEROFF" in macro.upper() for macro in macros)
+
         estop = self._gtk.Button("emergency", _("Emergency Stop"), "color2")
         estop.connect("clicked", self.emergency_stop)
+        auto_poweroff = self._gtk.Button("shutdown", _("On/Off auto power off"), "color2")
+        auto_poweroff.connect("clicked", self.toggle_auto_poweroff)
+
+        safety_button = auto_poweroff if self.has_change_poweroff else estop
 
         poweroff = self._gtk.Button("shutdown", _("Shutdown"), "color1")
         poweroff.connect("clicked", self.reboot_poweroff, "shutdown")
@@ -33,7 +42,7 @@ class Panel(ScreenPanel):
         self.main = Gtk.Grid(row_homogeneous=True, column_homogeneous=True)
         if self._show_lock_button:
             if self._printer and self._printer.state not in {'disconnected', 'startup', 'shutdown', 'error'}:
-                self.main.attach(estop, 1, 0, 1, 1)
+                self.main.attach(safety_button, 1, 0, 1, 1)
             self.main.attach(restart_ks, 2, 0, 1, 1)
             self.main.attach(lock_screen, 0, 0, 1, 2)
             self.main.attach(poweroff, 1, 1, 1, 1)
@@ -41,7 +50,7 @@ class Panel(ScreenPanel):
             self.content.add(self.main)
         else:
             if self._printer and self._printer.state not in {'disconnected', 'startup', 'shutdown', 'error'}:
-                self.main.attach(estop, 0, 0, 1, 1)
+                self.main.attach(safety_button, 0, 0, 1, 1)
             self.main.attach(restart_ks, 1, 0, 1, 1)
             self.main.attach(poweroff, 0, 1, 1, 1)
             self.main.attach(restart, 1, 1, 1, 1)
@@ -99,3 +108,7 @@ class Panel(ScreenPanel):
             if power_devices and self._printer.get_power_devices():
                 logging.info(f"Turning off associated power devices: {power_devices}")
                 self._screen.power_devices(widget=None, devices=power_devices, on=False)
+
+    def toggle_auto_poweroff(self, widget):
+        if self._screen and self._screen._ws and self._screen._ws.connected:
+            self._screen._send_action(widget, "printer.gcode.script", {"script": "CHANGE_POWEROFF"})

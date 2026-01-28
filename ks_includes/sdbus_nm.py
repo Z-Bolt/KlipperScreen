@@ -2,7 +2,9 @@
 # TODO device selection/swtichability
 # Alfredo Monclus (alfrix) 2024
 import logging
+import re
 import subprocess
+import socket
 from uuid import uuid4
 
 import sdbus
@@ -165,10 +167,15 @@ class SdbusNm:
     def get_ip_address(self):
         active_connection_path = self.nm.primary_connection
         if not active_connection_path or active_connection_path == "/":
-            return "?"
-        active_connection = ActiveConnection(active_connection_path)
-        ip_info = IPv4Config(active_connection.ip4_config)
-        return ip_info.address_data[0]["address"][1]
+            # Try to get IP address directly from interface
+            return self.get_interface_ip_address()
+        try:
+            active_connection = ActiveConnection(active_connection_path)
+            ip_info = IPv4Config(active_connection.ip4_config)
+            return ip_info.address_data[0]["address"][1]
+        except Exception as e:
+            logging.debug(f"Failed to get IP from active connection: {e}")
+            return self.get_interface_ip_address()
 
     def get_networks(self):
         networks = []
@@ -395,3 +402,139 @@ class SdbusNm:
 
     def enable_monitoring(self, enable):
         self.monitor_connection = enable
+
+    def get_interface_ip_address(self):
+        """Get IP address directly from network interface"""
+        try:
+            interface = self.get_primary_interface()
+            if not interface:
+                return "?"
+            # Try using socket
+            try:
+                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                s.connect(("8.8.8.8", 80))
+                ip = s.getsockname()[0]
+                s.close()
+                return ip
+            except Exception:
+                pass
+            # Fallback to ip command
+            result = subprocess.run(
+                ["ip", "-4", "addr", "show", interface],
+                capture_output=True,
+                text=True,
+                timeout=2
+            )
+            if result.returncode == 0:
+                match = re.search(r'inet\s+(\d+\.\d+\.\d+\.\d+)', result.stdout)
+                if match:
+                    return match.group(1)
+        except Exception as e:
+            logging.debug(f"Failed to get interface IP: {e}")
+        return "?"
+
+    def is_access_point_mode(self):
+        """Check if wireless device is in AP mode"""
+        if not self.wlan_device:
+            return False
+        try:
+            # Check active connection type
+            active_connection_path = self.wlan_device.active_connection
+            if active_connection_path and active_connection_path != "/":
+                active_connection = ActiveConnection(active_connection_path)
+                connection_path = active_connection.connection
+                if connection_path and connection_path != "/":
+                    connection_settings = NetworkConnectionSettings(connection_path)
+                    settings = connection_settings.get_settings()
+                    if "802-11-wireless" in settings:
+                        mode = settings["802-11-wireless"].get("mode", [None, None])[1]
+                        return mode == "ap"
+        except Exception as e:
+            logging.debug(f"Failed to check AP mode: {e}")
+        return False
+
+    def get_access_point_connection_path(self):
+        """Get connection path for access point if exists"""
+        try:
+            saved_network_paths = NetworkManagerSettings().list_connections()
+            for netpath in saved_network_paths:
+                saved_con = NetworkConnectionSettings(netpath)
+                con_settings = saved_con.get_settings()
+                if (con_settings["connection"]["type"][1] == "802-11-wireless" and
+                    con_settings.get("802-11-wireless", {}).get("mode", [None, None])[1] == "ap"):
+                    return netpath
+        except Exception as e:
+            logging.debug(f"Failed to get AP connection path: {e}")
+        return None
+
+    def create_access_point(self, ssid, password):
+        """Create and activate access point"""
+        try:
+            # Delete existing AP connection if exists
+            ap_path = self.get_access_point_connection_path()
+            if ap_path:
+                NetworkConnectionSettings(ap_path).delete()
+
+            # Disconnect current connection
+            if self.wlan_device.active_connection and self.wlan_device.active_connection != "/":
+                self.wlan_device.disconnect()
+
+            properties: NetworkManagerConnectionProperties = {
+                "connection": {
+                    "id": ("s", "KlipperScreen-AP"),
+                    "uuid": ("s", str(uuid4())),
+                    "type": ("s", "802-11-wireless"),
+                    "interface-name": ("s", self.wlan_device.interface),
+                    "autoconnect": ("b", True),
+                },
+                "802-11-wireless": {
+                    "mode": ("s", "ap"),
+                    "ssid": ("ay", ssid.encode("utf-8")),
+                    "security": ("s", "802-11-wireless-security"),
+                },
+                "802-11-wireless-security": {
+                    "key-mgmt": ("s", "wpa-psk"),
+                    "psk": ("s", password),
+                },
+                "ipv4": {
+                    "method": ("s", "shared"),
+                },
+                "ipv6": {
+                    "method": ("s", "ignore"),
+                },
+            }
+
+            connection_path = NetworkManagerSettings().add_connection(properties)
+            logging.info(f"Created AP connection: {connection_path}")
+            
+            # Activate the connection
+            self.popup(f"{ssid}\nStarting Access Point", 1)
+            self.nm.activate_connection(connection_path)
+            return {"status": "success"}
+        except exceptions.NmSettingsPermissionDeniedError:
+            logging.exception("Insufficient privileges")
+            return {
+                "error": "insufficient_privileges",
+                "message": "Insufficient privileges",
+            }
+        except Exception as e:
+            logging.exception("Couldn't create access point")
+            return {"error": "unknown", "message": "Couldn't create access point" + f"\n{e}"}
+
+    def remove_access_point(self):
+        """Remove access point and return to normal mode"""
+        try:
+            # Disconnect current connection
+            if self.wlan_device.active_connection and self.wlan_device.active_connection != "/":
+                self.wlan_device.disconnect()
+
+            # Delete AP connection
+            ap_path = self.get_access_point_connection_path()
+            if ap_path:
+                NetworkConnectionSettings(ap_path).delete()
+                logging.info("Removed AP connection")
+                return {"status": "success"}
+        except Exception as e:
+            logging.exception("Couldn't remove access point")
+            return {"error": "unknown", "message": "Couldn't remove access point" + f"\n{e}"}
+        return {"status": "success"}
