@@ -1180,3 +1180,7 @@ msgstr "Ошибка при экспорте журналов"
 
 msgid "Export Logs"
 msgstr "Экпорт журналов"
+
+msgid "Recording configuration"
+msgstr "Запись печати"
+
