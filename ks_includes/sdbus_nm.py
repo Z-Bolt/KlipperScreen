@@ -460,8 +460,10 @@ class SdbusNm:
             for netpath in saved_network_paths:
                 saved_con = NetworkConnectionSettings(netpath)
                 con_settings = saved_con.get_settings()
-                if (con_settings["connection"]["type"][1] == "802-11-wireless" and
-                    con_settings.get("802-11-wireless", {}).get("mode", [None, None])[1] == "ap"):
+                if (
+                    con_settings["connection"]["type"][1] == "802-11-wireless"
+                    and con_settings.get("802-11-wireless", {}).get("mode", [None, None])[1] == "ap"
+                ):
                     return netpath
         except Exception as e:
             logging.debug(f"Failed to get AP connection path: {e}")
@@ -506,7 +508,7 @@ class SdbusNm:
 
             connection_path = NetworkManagerSettings().add_connection(properties)
             logging.info(f"Created AP connection: {connection_path}")
-            
+
             # Activate the connection
             self.popup(f"{ssid}\nStarting Access Point", 1)
             self.nm.activate_connection(connection_path)

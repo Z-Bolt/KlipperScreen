@@ -396,7 +396,7 @@ class Panel(ScreenPanel):
         self.interface = self.sdbus_nm.get_primary_interface()
         self.labels['interface'].set_text(_("Interface") + f': {self.interface}')
         self.update_ip_display()
-        
+
         # Check if AP mode changed externally
         ap_mode = self.sdbus_nm.is_access_point_mode()
         if ap_mode != self.is_ap_mode:
@@ -405,11 +405,11 @@ class Panel(ScreenPanel):
             if ap_mode:
                 self.update_ap_display()
                 return True
-        
+
         # If in AP mode, don't update network list
         if self.is_ap_mode:
             return True
-        
+
         nets = self.sdbus_nm.get_networks()
         remove = [bssid for bssid in self.network_rows.keys() if bssid not in [net['BSSID'] for net in nets]]
         for bssid in remove:
@@ -527,7 +527,7 @@ class Panel(ScreenPanel):
         if not self.sdbus_nm.is_wifi_enabled():
             logging.warning("Cannot restore AP mode: WiFi is disabled")
             return False
-        
+
         result = self.sdbus_nm.create_access_point(self.ap_ssid, self.ap_password)
         if "error" in result:
             logging.error(f"Failed to restore AP mode: {result['message']}")
@@ -540,7 +540,7 @@ class Panel(ScreenPanel):
             # Load networks if AP restoration failed
             GLib.idle_add(self.load_networks)
             return False
-        
+
         self.is_ap_mode = True
         self.ap_toggle.set_active(True)
         # Update display after restoring AP
@@ -551,18 +551,18 @@ class Panel(ScreenPanel):
     def toggle_ap_mode(self, switch, gparams):
         enable = switch.get_active()
         logging.info(f"AP mode {enable}")
-        
+
         if not self.sdbus_nm.is_wifi_enabled():
             switch.set_active(False)
             self._screen.show_popup_message(_("WiFi must be enabled first"), level=2)
             return
-        
+
         # Save state to configuration
         if 'main' not in self._config.get_config().sections():
             self._config.get_config().add_section('main')
         self._config.set('main', 'ap_mode_enabled', 'True' if enable else 'False')
         self._config.save_user_config_options()
-        
+
         if enable:
             # Enable AP mode
             result = self.sdbus_nm.create_access_point(self.ap_ssid, self.ap_password)
@@ -583,7 +583,7 @@ class Panel(ScreenPanel):
             self.is_ap_mode = False
             # Restore normal network list
             self.reload_networks()
-        
+
         # Update IP display
         self.update_ip_display()
 
@@ -594,27 +594,27 @@ class Panel(ScreenPanel):
             self.network_list.remove(child)
         self.network_rows.clear()
         self.networks.clear()
-        
+
         # Add AP info display
-        ap_info_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10, 
+        ap_info_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10,
                               valign=Gtk.Align.CENTER, vexpand=True)
         ap_info_box.get_style_context().add_class("frame-item")
-        
+
         ap_name_label = Gtk.Label()
         ap_name_label.set_markup(f"<big><b>{self.ap_ssid}</b></big>")
         ap_name_label.set_halign(Gtk.Align.CENTER)
-        
+
         ap_status_label = Gtk.Label(label=_("Access Point Mode"))
         ap_status_label.set_halign(Gtk.Align.CENTER)
-        
+
         ap_password_label = Gtk.Label()
         ap_password_label.set_markup(f"<small>{_('Password')}: {self.ap_password}</small>")
         ap_password_label.set_halign(Gtk.Align.CENTER)
-        
+
         ap_info_box.add(ap_name_label)
         ap_info_box.add(ap_status_label)
         ap_info_box.add(ap_password_label)
-        
+
         self.network_list.add(ap_info_box)
         self.network_list.show_all()
 

@@ -46,10 +46,10 @@ class Panel(ScreenPanel):
         export_button.connect("clicked", self.export_logs)
         self.grid.attach(export_button, 0, self.current_row, 2, 1)
         self.current_row += 1
-        
+
         self.grid.attach(Gtk.Separator(), 0, self.current_row, 2, 1)
         self.current_row += 1
-        
+
         self.cpu_count = int(self.sysinfo["cpu_info"]["cpu_count"])
         self.labels["cpu_usage"] = Gtk.Label(label="", xalign=0)
         self.grid.attach(self.labels["cpu_usage"], 0, self.current_row, 1, 1)
@@ -159,10 +159,10 @@ class Panel(ScreenPanel):
     def find_mounted_device(self):
         """Находит примонтированное устройство в /home/pi/printer_data/gcodes/"""
         gcodes_base = "/home/pi/printer_data/gcodes"
-        
+
         if not os.path.exists(gcodes_base):
             return None
-        
+
         # Проверяем все подкаталоги в gcodes
         try:
             for item in os.listdir(gcodes_base):
@@ -172,7 +172,7 @@ class Panel(ScreenPanel):
                     return item_path
         except OSError as e:
             logging.error(f"Error scanning gcodes directory: {e}")
-        
+
         return None
 
     @staticmethod
@@ -229,9 +229,15 @@ class Panel(ScreenPanel):
             return default
 
         total_jobs = _first_key(totals, "total_jobs", "job_total", "jobs", default=None)
-        total_time_s = _first_key(totals, "total_time", "total_run_time", "total_time_seconds", default=None)
-        total_print_time_s = _first_key(totals, "total_print_time", "total_print_time_seconds", "total_print_seconds", default=None)
-        total_filament_mm = _first_key(totals, "total_filament_used", "total_filament", "total_filament_mm", default=None)
+        total_time_s = _first_key(
+            totals, "total_time", "total_run_time", "total_time_seconds", default=None
+        )
+        total_print_time_s = _first_key(
+            totals, "total_print_time", "total_print_time_seconds", "total_print_seconds", default=None
+        )
+        total_filament_mm = _first_key(
+            totals, "total_filament_used", "total_filament", "total_filament_mm", default=None
+        )
 
         # Filament: Moonraker reports millimeters (per docs). Convert to meters for readability.
         filament_mm_str = _("Unknown")
@@ -264,7 +270,7 @@ class Panel(ScreenPanel):
             f.write(f"- Total printer time: {self._format_duration_seconds(total_time_s)}\n")
             f.write(f"- Total print time: {self._format_duration_seconds(total_print_time_s)}\n")
             f.write(f"- Total filament used: {filament_mm_str} ({filament_m_str})\n")
-    
+
     def export_logs(self, widget):
         """Экспортирует журналы на съемный носитель"""
         # Ищем примонтированное устройство
@@ -286,20 +292,20 @@ class Panel(ScreenPanel):
             logging.warning(
                 "No mounted device found in /home/pi/printer_data/gcodes/. Saving to ~/printer_data/logs"
             )
-        
+
         try:
             # Создаем временную директорию для файлов
             if os.path.exists(temp_dir):
                 shutil.rmtree(temp_dir)
             os.makedirs(temp_dir)
-            
+
             # Пути к файлам логов
             log_files = [
                 ("klippy.log", os.path.join(logs_dir, "klippy.log")),
                 ("moonraker.log", os.path.join(logs_dir, "moonraker.log")),
                 ("crowsnest.log", os.path.join(logs_dir, "crowsnest.log")),
             ]
-            
+
             # KlipperScreen.log может быть в разных местах
             klipperscreen_log_paths = [
                 os.path.join(logs_dir, "KlipperScreen.log"),
@@ -309,7 +315,7 @@ class Panel(ScreenPanel):
                 if os.path.exists(log_path):
                     log_files.append(("KlipperScreen.log", log_path))
                     break
-            
+
             # Копируем файлы логов, если они существуют
             for dest_name, source_path in log_files:
                 if os.path.exists(source_path):
@@ -318,7 +324,7 @@ class Panel(ScreenPanel):
                     logging.info(f"Copied {source_path} to {dest_path}")
                 else:
                     logging.warning(f"Log file not found: {source_path}")
-            
+
             # Выполняем команду dmesg и сохраняем вывод
             try:
                 dmesg_result = subprocess.run(
@@ -334,7 +340,7 @@ class Panel(ScreenPanel):
                     logging.info("Saved dmesg output")
             except Exception as e:
                 logging.error(f"Error running dmesg: {e}")
-            
+
             # Выполняем команду df -h и сохраняем вывод
             try:
                 df_result = subprocess.run(
@@ -358,12 +364,12 @@ class Panel(ScreenPanel):
                 logging.info("Saved moonraker history totals")
             except Exception as e:
                 logging.error(f"Error saving moonraker history totals: {e}")
-            
+
             # Создаем ZIP архив
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             zip_filename = f"logs_export_{timestamp}.zip"
             zip_path = os.path.join(temp_dir, zip_filename)
-            
+
             with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
                 for root, dirs, files in os.walk(temp_dir):
                     for file in files:
@@ -371,22 +377,22 @@ class Panel(ScreenPanel):
                             file_path = os.path.join(root, file)
                             arcname = os.path.basename(file_path)
                             zipf.write(file_path, arcname)
-            
+
             # Копируем/сохраняем архив в целевую папку
             os.makedirs(export_dest_dir, exist_ok=True)
             dest_zip_path = os.path.join(export_dest_dir, zip_filename)
             shutil.copy2(zip_path, dest_zip_path)
             logging.info(f"Copied archive to {dest_zip_path}")
-            
+
             # Удаляем временную директорию
             shutil.rmtree(temp_dir)
-            
+
             # Показываем уведомление об успехе
             self._screen.show_popup_message(
                 _("Logs saved successfully") + f"\n{dest_zip_path}",
                 level=1
             )
-            
+
             # Отмонтируем устройство
             if mounted_device:
                 try:
@@ -402,7 +408,7 @@ class Panel(ScreenPanel):
                         logging.warning(f"Failed to unmount {mounted_device}: {result.stderr}")
                 except Exception as e:
                     logging.error(f"Error unmounting device: {e}")
-                
+
         except Exception as e:
             logging.error(f"Error exporting logs: {e}")
             self._screen.show_popup_message(
@@ -413,7 +419,7 @@ class Panel(ScreenPanel):
             if os.path.exists(temp_dir):
                 try:
                     shutil.rmtree(temp_dir)
-                except:
+                except Exception:
                     pass
 
     def process_update(self, action, data):

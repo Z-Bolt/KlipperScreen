@@ -24,17 +24,17 @@ def format_label(widget):
 def is_mounted_device(path):
     """Проверяет, является ли путь примонтированным устройством"""
     gcodes_base = "/home/pi/printer_data/gcodes"
-    
+
     # Убираем префикс 'gcodes/' если он есть
     if path.startswith("gcodes/"):
         path = path[7:]
-    
+
     # Если путь пустой, это не устройство
     if not path or path == '':
         return False
-    
+
     full_path = os.path.join(gcodes_base, path)
-    
+
     # Проверяем, что путь существует и является точкой монтирования
     if os.path.exists(full_path) and os.path.ismount(full_path):
         return True
@@ -44,21 +44,21 @@ def is_mounted_device(path):
 def is_file_on_usb(filepath):
     """Проверяет, находится ли файл на USB устройстве (флешке)"""
     gcodes_base = "/home/pi/printer_data/gcodes"
-    
+
     # Убираем префикс 'gcodes/' если он есть
     if filepath.startswith("gcodes/"):
         filepath = filepath[7:]
-    
+
     # Получаем директорию файла
     dir_path = os.path.dirname(filepath)
-    
+
     # Если файл в корне gcodes, он не на USB
     if dir_path == '' or dir_path == '.':
         return False
-    
+
     # Проверяем, является ли родительская директория примонтированным устройством
     full_dir_path = os.path.join(gcodes_base, dir_path)
-    
+
     # Проверяем все родительские директории до gcodes
     current_path = full_dir_path
     while current_path != gcodes_base and current_path != os.path.dirname(gcodes_base):
@@ -67,7 +67,7 @@ def is_file_on_usb(filepath):
         current_path = os.path.dirname(current_path)
         if not current_path or current_path == '/':
             break
-    
+
     return False
 
 
@@ -217,7 +217,7 @@ class Panel(ScreenPanel):
                 row.attach(icon, 0, 0, 1, 2)
             row.attach(itemname, 1, 0, 3, 1)
             row.attach(info, 1, 1, 1, 1)
-            
+
             # Определяем позиции кнопок в зависимости от типа элемента
             button_col = 2
             if 'filename' in item:
@@ -341,25 +341,25 @@ class Panel(ScreenPanel):
     def confirm_unmount(self, widget, dirpath):
         """Отмонтирует примонтированное устройство"""
         logging.debug(f"Requesting unmount confirmation for {dirpath}")
-        
+
         if not is_mounted_device(dirpath):
             logging.warning(f"Path {dirpath} is not a mounted device")
             self._screen.show_popup_message(_("This directory is not a mounted device"))
             return
-        
+
         # Используем диалог подтверждения
         buttons = [
             {"name": _("Unmount"), "response": Gtk.ResponseType.OK, "style": 'dialog-primary'},
             {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL, "style": 'dialog-secondary'}
         ]
-        
+
         label = Gtk.Label(
             hexpand=True, vexpand=True,
             wrap=True, wrap_mode=Pango.WrapMode.WORD_CHAR,
             ellipsize=Pango.EllipsizeMode.END
         )
         label.set_markup(_("Unmount device?") + f"\n\n<b>{dirpath}</b>")
-        
+
         self._gtk.Dialog(
             _("Unmount Device"),
             buttons,
@@ -367,22 +367,22 @@ class Panel(ScreenPanel):
             self.confirm_unmount_response,
             dirpath
         )
-    
+
     def confirm_unmount_response(self, dialog, response_id, dirpath):
         """Обработчик ответа на диалог отмонтирования"""
         self._gtk.remove_dialog(dialog)
         if response_id != Gtk.ResponseType.OK:
             return
-        
+
         logging.debug(f"Unmounting device {dirpath}")
         gcodes_base = "/home/pi/printer_data/gcodes"
-        
+
         clean_path = dirpath
         if clean_path.startswith("gcodes/"):
             clean_path = clean_path[7:]
-        
+
         full_path = os.path.join(gcodes_base, clean_path)
-        
+
         try:
             result = subprocess.run(
                 ["sudo", "umount", full_path],
@@ -533,7 +533,7 @@ class Panel(ScreenPanel):
 
         inside_box.pack_start(info_box, True, True, 0)
         main_box.pack_start(inside_box, True, True, 0)
-        
+
         # Проверяем, находится ли файл на USB устройстве
         if is_file_on_usb(f"gcodes/{filename}"):
             self._gtk.Dialog(f'{action} {filename}', buttons_usb, main_box, self.confirm_print_response, filename)
