@@ -174,19 +174,118 @@ class Panel(ScreenPanel):
             logging.error(f"Error scanning gcodes directory: {e}")
         
         return None
+
+    @staticmethod
+    def _format_duration_seconds(value):
+        try:
+            total_seconds = int(float(value))
+        except (TypeError, ValueError):
+            return _("Unknown")
+
+        if total_seconds < 0:
+            total_seconds = 0
+
+        days, rem = divmod(total_seconds, 86400)
+        hours, rem = divmod(rem, 3600)
+        minutes, seconds = divmod(rem, 60)
+
+        if days > 0:
+            return f"{days}d {hours:02d}:{minutes:02d}:{seconds:02d}"
+        return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
+    def _write_moonraker_history_totals(self, dest_path):
+        """
+        Saves Moonraker /server/history/totals into a text file.
+        Moonraker reports time as seconds and filament as millimeters.
+        """
+        export_ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        try:
+            resp = self._screen.apiclient.send_request("server/history/totals")
+        except Exception as e:
+            logging.error(f"Error requesting Moonraker history totals: {e}")
+            resp = None
+
+        totals = None
+        if isinstance(resp, dict):
+            # Common shapes:
+            # {"result": {"job_totals": {...}}}
+            # {"job_totals": {...}}
+            # {"result": {...}}
+            result = resp.get("result")
+            if isinstance(result, dict) and isinstance(result.get("job_totals"), dict):
+                totals = result.get("job_totals")
+            elif isinstance(resp.get("job_totals"), dict):
+                totals = resp.get("job_totals")
+            elif isinstance(result, dict):
+                totals = result
+
+        def _first_key(d, *keys, default=None):
+            if not isinstance(d, dict):
+                return default
+            for k in keys:
+                if k in d:
+                    return d.get(k)
+            return default
+
+        total_jobs = _first_key(totals, "total_jobs", "job_total", "jobs", default=None)
+        total_time_s = _first_key(totals, "total_time", "total_run_time", "total_time_seconds", default=None)
+        total_print_time_s = _first_key(totals, "total_print_time", "total_print_time_seconds", "total_print_seconds", default=None)
+        total_filament_mm = _first_key(totals, "total_filament_used", "total_filament", "total_filament_mm", default=None)
+
+        # Filament: Moonraker reports millimeters (per docs). Convert to meters for readability.
+        filament_mm_str = _("Unknown")
+        filament_m_str = _("Unknown")
+        try:
+            if total_filament_mm is not None:
+                filament_mm = float(total_filament_mm)
+                if filament_mm < 0:
+                    filament_mm = 0.0
+                filament_mm_str = f"{filament_mm:,.0f} mm".replace(",", " ")
+                filament_m_str = f"{(filament_mm / 1000.0):,.2f} m".replace(",", " ")
+        except (TypeError, ValueError):
+            pass
+
+        with open(dest_path, "w", encoding="utf-8") as f:
+            f.write("Moonraker history totals\n")
+            f.write(f"Exported: {export_ts}\n")
+            f.write("Endpoint: /server/history/totals\n\n")
+
+            if totals is None:
+                f.write("Status: failed to parse response\n")
+                if resp is None:
+                    f.write("Response: <none>\n")
+                else:
+                    f.write(f"Response keys: {list(resp.keys())}\n")
+                return
+
+            f.write("Totals:\n")
+            f.write(f"- Prints: {total_jobs if total_jobs is not None else _('Unknown')}\n")
+            f.write(f"- Total printer time: {self._format_duration_seconds(total_time_s)}\n")
+            f.write(f"- Total print time: {self._format_duration_seconds(total_print_time_s)}\n")
+            f.write(f"- Total filament used: {filament_mm_str} ({filament_m_str})\n")
     
     def export_logs(self, widget):
         """Экспортирует журналы на съемный носитель"""
         # Ищем примонтированное устройство
         mounted_device = self.find_mounted_device()
-        
-        if not mounted_device:
-            self._screen.show_popup_message(_("No removable device found"), level=3)
-            logging.warning("No mounted device found in /home/pi/printer_data/gcodes/")
-            return
-        
+
         home_dir = os.path.expanduser("~")
         temp_dir = os.path.join(home_dir, "printer_data", "logs_export_temp")
+        logs_dir = os.path.join(home_dir, "printer_data", "logs")
+
+        # Если съемный носитель не подключен, сохраняем архив в ~/printer_data/logs
+        if mounted_device:
+            export_dest_dir = mounted_device
+        else:
+            export_dest_dir = logs_dir
+            self._screen.show_popup_message(
+                _("No removable device found") + "\n" + _("Saving to logs folder"),
+                level=2
+            )
+            logging.warning(
+                "No mounted device found in /home/pi/printer_data/gcodes/. Saving to ~/printer_data/logs"
+            )
         
         try:
             # Создаем временную директорию для файлов
@@ -195,7 +294,6 @@ class Panel(ScreenPanel):
             os.makedirs(temp_dir)
             
             # Пути к файлам логов
-            logs_dir = os.path.join(home_dir, "printer_data", "logs")
             log_files = [
                 ("klippy.log", os.path.join(logs_dir, "klippy.log")),
                 ("moonraker.log", os.path.join(logs_dir, "moonraker.log")),
@@ -252,6 +350,14 @@ class Panel(ScreenPanel):
                     logging.info("Saved df -h output")
             except Exception as e:
                 logging.error(f"Error running df -h: {e}")
+
+            # Добавляем историю печати Moonraker (totals) в отдельный файл
+            try:
+                history_file = os.path.join(temp_dir, "moonraker_history.txt")
+                self._write_moonraker_history_totals(history_file)
+                logging.info("Saved moonraker history totals")
+            except Exception as e:
+                logging.error(f"Error saving moonraker history totals: {e}")
             
             # Создаем ZIP архив
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -266,8 +372,9 @@ class Panel(ScreenPanel):
                             arcname = os.path.basename(file_path)
                             zipf.write(file_path, arcname)
             
-            # Копируем архив на съемный носитель
-            dest_zip_path = os.path.join(mounted_device, zip_filename)
+            # Копируем/сохраняем архив в целевую папку
+            os.makedirs(export_dest_dir, exist_ok=True)
+            dest_zip_path = os.path.join(export_dest_dir, zip_filename)
             shutil.copy2(zip_path, dest_zip_path)
             logging.info(f"Copied archive to {dest_zip_path}")
             
@@ -276,24 +383,25 @@ class Panel(ScreenPanel):
             
             # Показываем уведомление об успехе
             self._screen.show_popup_message(
-                _("Logs saved successfully") + f"\n{zip_filename}",
+                _("Logs saved successfully") + f"\n{dest_zip_path}",
                 level=1
             )
             
             # Отмонтируем устройство
-            try:
-                result = subprocess.run(
-                    ["sudo", "umount", mounted_device],
-                    capture_output=True,
-                    text=True,
-                    timeout=10
-                )
-                if result.returncode == 0:
-                    logging.info(f"Successfully unmounted {mounted_device}")
-                else:
-                    logging.warning(f"Failed to unmount {mounted_device}: {result.stderr}")
-            except Exception as e:
-                logging.error(f"Error unmounting device: {e}")
+            if mounted_device:
+                try:
+                    result = subprocess.run(
+                        ["sudo", "umount", mounted_device],
+                        capture_output=True,
+                        text=True,
+                        timeout=10
+                    )
+                    if result.returncode == 0:
+                        logging.info(f"Successfully unmounted {mounted_device}")
+                    else:
+                        logging.warning(f"Failed to unmount {mounted_device}: {result.stderr}")
+                except Exception as e:
+                    logging.error(f"Error unmounting device: {e}")
                 
         except Exception as e:
             logging.error(f"Error exporting logs: {e}")

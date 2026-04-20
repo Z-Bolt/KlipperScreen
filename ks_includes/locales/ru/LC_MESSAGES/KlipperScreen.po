@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KlipperScreen\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-26 12:31-0300\n"
-"PO-Revision-Date: 2026-01-28 17:01+0300\n"
+"PO-Revision-Date: 2026-04-20 17:24+0300\n"
 "Last-Translator: gfbdrgng <hnaofegnp@hldrive.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/klipperscreen/klipperscreen/ru/>\n"
 "Language: ru\n"
@@ -1152,22 +1152,22 @@ msgid "Transfer file?"
 msgstr "Перенести файл?"
 
 msgid "Unmount"
-msgstr "Отмонтировать"
+msgstr "Извлечь"
 
 msgid "Unmount device?"
-msgstr "Отмонтировать устройство?"
+msgstr "Извлечь устройство?"
 
 msgid "Device unmounted successfully"
-msgstr "Устройство успешно отмонтировано"
+msgstr "Устройство успешно извлечено"
 
 msgid "Failed to unmount device"
-msgstr "Не удалось отмонтировать устройство"
+msgstr "Не удалось извлечь устройство"
 
 msgid "Timeout while unmounting device"
-msgstr "Истекло время ожидания при отмонтировании устройства"
+msgstr "Истекло время ожидания при извлечении устройства"
 
 msgid "Error unmounting device"
-msgstr "Ошибка при отмонтировании устройства"
+msgstr "Ошибка при извлечении устройства"
 
 msgid "No removable device found"
 msgstr "Съемный носитель не найден"
@@ -1183,4 +1183,3 @@ msgstr "Экпорт журналов"
 
 msgid "Recording configuration"
 msgstr "Запись печати"
-
