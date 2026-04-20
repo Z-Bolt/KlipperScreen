@@ -377,14 +377,12 @@ class Panel(ScreenPanel):
         logging.debug(f"Unmounting device {dirpath}")
         gcodes_base = "/home/pi/printer_data/gcodes"
         
-        # Убираем префикс 'gcodes/' если он есть
         clean_path = dirpath
         if clean_path.startswith("gcodes/"):
             clean_path = clean_path[7:]
         
         full_path = os.path.join(gcodes_base, clean_path)
         
-        # Выполняем отмонтирование через subprocess
         try:
             result = subprocess.run(
                 ["sudo", "umount", full_path],
@@ -394,10 +392,8 @@ class Panel(ScreenPanel):
             )
             if result.returncode == 0:
                 logging.info(f"Successfully unmounted {full_path}")
-                # Удаляем папку устройства после отмонтирования
                 try:
                     if os.path.exists(full_path):
-                        # Используем API для удаления директории
                         params = {"path": clean_path, "force": True}
                         self._screen._send_action(
                             None,
@@ -407,8 +403,6 @@ class Panel(ScreenPanel):
                         logging.info(f"Deleted directory {full_path} after unmounting")
                 except Exception as e:
                     logging.error(f"Error deleting directory {full_path}: {e}")
-                    # Продолжаем выполнение даже если удаление не удалось
-                # Обновляем список файлов после отмонтирования
                 self._refresh_files()
                 self._screen.show_popup_message(_("Device unmounted successfully"), level=1)
             else:
