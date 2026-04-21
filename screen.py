@@ -865,13 +865,7 @@ class KlipperScreen(Gtk.Window):
             ):
                 self.show_popup_message(data, from_ws=True)
             elif "SAVE_CONFIG" in data and self.printer.state == "ready":
-                script = {"script": "SAVE_CONFIG"}
-                self._confirm_send_action(
-                    None,
-                    _("Save configuration?") + "\n\n" + _("Klipper will reboot"),
-                    "printer.gcode.script",
-                    script
-                )
+                logging.info("Ignoring SAVE_CONFIG prompt from gcode response")
         self.process_update(action, data)
 
     def process_action(self, action):

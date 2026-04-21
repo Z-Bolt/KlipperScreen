@@ -134,6 +134,27 @@ class SdbusNm:
             if device.device_type == enums.DeviceType.WIFI
         ]
 
+    def get_ethernet_interfaces(self):
+        devices = {path: NetworkDeviceGeneric(path) for path in self.nm.get_devices()}
+        ethernet_type = getattr(enums.DeviceType, "ETHERNET", 1)
+        return [
+            device.interface
+            for device in devices.values()
+            if device.device_type == ethernet_type
+        ]
+
+    def get_ap_mode_ips(self):
+        """Return WiFi AP IP and ethernet shared IPs for display."""
+        wifi_ip = "?"
+        ethernet_ips = []
+        if self.wlan_device:
+            wifi_ip = self.get_interface_ip_address(self.wlan_device.interface)
+        for interface in self.get_ethernet_interfaces():
+            ip = self.get_interface_ip_address(interface)
+            if ip != "?":
+                ethernet_ips.append(ip)
+        return {"wifi": wifi_ip, "ethernet": ethernet_ips}
+
     def get_primary_interface(self):
         if self.nm.primary_connection == "/":
             if self.wlan_device:
@@ -165,6 +186,13 @@ class SdbusNm:
         return any(net["SSID"] == ssid for net in self.get_known_networks())
 
     def get_ip_address(self):
+        # In AP mode we want to display the WiFi AP address, not the primary
+        # connection chosen by NM (which may become ethernet shared).
+        if self.is_access_point_mode() and self.wlan_device:
+            ap_ip = self.get_interface_ip_address(self.wlan_device.interface)
+            if ap_ip != "?":
+                return ap_ip
+
         active_connection_path = self.nm.primary_connection
         if not active_connection_path or active_connection_path == "/":
             # Try to get IP address directly from interface
@@ -403,21 +431,24 @@ class SdbusNm:
     def enable_monitoring(self, enable):
         self.monitor_connection = enable
 
-    def get_interface_ip_address(self):
+    def get_interface_ip_address(self, interface=None):
         """Get IP address directly from network interface"""
         try:
-            interface = self.get_primary_interface()
+            explicit_interface = interface is not None
+            interface = interface or self.get_primary_interface()
             if not interface:
                 return "?"
-            # Try using socket
-            try:
-                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                s.connect(("8.8.8.8", 80))
-                ip = s.getsockname()[0]
-                s.close()
-                return ip
-            except Exception:
-                pass
+            # When interface is explicitly requested, do not use socket-based
+            # route lookup because it can return another interface IP.
+            if not explicit_interface:
+                try:
+                    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                    s.connect(("8.8.8.8", 80))
+                    ip = s.getsockname()[0]
+                    s.close()
+                    return ip
+                except Exception:
+                    pass
             # Fallback to ip command
             result = subprocess.run(
                 ["ip", "-4", "addr", "show", interface],
@@ -469,6 +500,82 @@ class SdbusNm:
             logging.debug(f"Failed to get AP connection path: {e}")
         return None
 
+    @staticmethod
+    def get_ethernet_sharing_connection_id(interface):
+        return f"KlipperScreen-AP-ETH-{interface}"
+
+    def get_ethernet_sharing_connection_paths(self):
+        """Get saved ethernet sharing connection paths created by AP mode"""
+        paths = []
+        try:
+            saved_network_paths = NetworkManagerSettings().list_connections()
+            for netpath in saved_network_paths:
+                saved_con = NetworkConnectionSettings(netpath)
+                con_settings = saved_con.get_settings()
+                conn_type = con_settings.get("connection", {}).get("type", [None, None])[1]
+                conn_id = con_settings.get("connection", {}).get("id", [None, None])[1]
+                if conn_type == "802-3-ethernet" and conn_id and conn_id.startswith("KlipperScreen-AP-ETH-"):
+                    paths.append(netpath)
+        except Exception as e:
+            logging.debug(f"Failed to get ethernet sharing connection paths: {e}")
+        return paths
+
+    def create_ethernet_sharing(self):
+        """Create and activate ethernet shared mode for AP use"""
+        ethernet_interfaces = self.get_ethernet_interfaces()
+        if not ethernet_interfaces:
+            logging.info("No ethernet interfaces found, skipping ethernet sharing setup")
+            return {"status": "success"}
+
+        # Remove stale KlipperScreen ethernet sharing profiles first
+        for path in self.get_ethernet_sharing_connection_paths():
+            try:
+                NetworkConnectionSettings(path).delete()
+            except Exception as e:
+                logging.debug(f"Failed to delete stale ethernet sharing profile {path}: {e}")
+
+        for interface in ethernet_interfaces:
+            try:
+                properties: NetworkManagerConnectionProperties = {
+                    "connection": {
+                        "id": ("s", self.get_ethernet_sharing_connection_id(interface)),
+                        "uuid": ("s", str(uuid4())),
+                        "type": ("s", "802-3-ethernet"),
+                        "interface-name": ("s", interface),
+                        "autoconnect": ("b", True),
+                    },
+                    "ipv4": {
+                        "method": ("s", "shared"),
+                    },
+                    "ipv6": {
+                        "method": ("s", "ignore"),
+                    },
+                }
+                connection_path = NetworkManagerSettings().add_connection(properties)
+                self.nm.activate_connection(connection_path)
+                logging.info(f"Enabled ethernet sharing on {interface}")
+            except Exception as e:
+                logging.exception(f"Failed to enable ethernet sharing on {interface}: {e}")
+                return {
+                    "error": "ethernet_sharing_failed",
+                    "message": f"Couldn't enable ethernet sharing on {interface}\n{e}",
+                }
+        return {"status": "success"}
+
+    def remove_ethernet_sharing(self):
+        """Remove ethernet shared mode profiles created by AP mode"""
+        for path in self.get_ethernet_sharing_connection_paths():
+            try:
+                NetworkConnectionSettings(path).delete()
+                logging.info(f"Removed ethernet sharing profile: {path}")
+            except Exception as e:
+                logging.exception(f"Failed to remove ethernet sharing profile {path}: {e}")
+                return {
+                    "error": "ethernet_sharing_remove_failed",
+                    "message": f"Couldn't remove ethernet sharing profile\n{e}",
+                }
+        return {"status": "success"}
+
     def create_access_point(self, ssid, password):
         """Create and activate access point"""
         try:
@@ -512,6 +619,16 @@ class SdbusNm:
             # Activate the connection
             self.popup(f"{ssid}\nStarting Access Point", 1)
             self.nm.activate_connection(connection_path)
+            ethernet_result = self.create_ethernet_sharing()
+            if "error" in ethernet_result:
+                # Roll back AP if ethernet sharing setup fails.
+                try:
+                    if self.wlan_device.active_connection and self.wlan_device.active_connection != "/":
+                        self.wlan_device.disconnect()
+                    NetworkConnectionSettings(connection_path).delete()
+                except Exception as rollback_error:
+                    logging.debug(f"Failed to roll back AP after ethernet sharing error: {rollback_error}")
+                return ethernet_result
             return {"status": "success"}
         except exceptions.NmSettingsPermissionDeniedError:
             logging.exception("Insufficient privileges")
@@ -535,7 +652,10 @@ class SdbusNm:
             if ap_path:
                 NetworkConnectionSettings(ap_path).delete()
                 logging.info("Removed AP connection")
-                return {"status": "success"}
+            ethernet_result = self.remove_ethernet_sharing()
+            if "error" in ethernet_result:
+                return ethernet_result
+            return {"status": "success"}
         except Exception as e:
             logging.exception("Couldn't remove access point")
             return {"error": "unknown", "message": "Couldn't remove access point" + f"\n{e}"}

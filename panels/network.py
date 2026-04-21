@@ -620,6 +620,14 @@ class Panel(ScreenPanel):
 
     def update_ip_display(self):
         """Update IP address display"""
+        if self.is_ap_mode:
+            ip_info = self.sdbus_nm.get_ap_mode_ips()
+            wifi_ip = ip_info.get("wifi", "?")
+            ethernet_ips = ip_info.get("ethernet", [])
+            ethernet_text = ", ".join(ethernet_ips) if ethernet_ips else _("Not connected")
+            self.labels['ip'].set_text(f"IP: Wlan {wifi_ip} | Eth {ethernet_text}")
+            return True
+
         ip = self.sdbus_nm.get_ip_address()
         self.labels['ip'].set_text(f"IP: {ip}")
         return True
