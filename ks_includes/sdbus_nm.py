@@ -143,6 +143,18 @@ class SdbusNm:
             if device.device_type == ethernet_type
         ]
 
+    def get_ap_mode_ips(self):
+        """Return WiFi AP IP and ethernet shared IPs for display."""
+        wifi_ip = "?"
+        ethernet_ips = []
+        if self.wlan_device:
+            wifi_ip = self.get_interface_ip_address(self.wlan_device.interface)
+        for interface in self.get_ethernet_interfaces():
+            ip = self.get_interface_ip_address(interface)
+            if ip != "?":
+                ethernet_ips.append(ip)
+        return {"wifi": wifi_ip, "ethernet": ethernet_ips}
+
     def get_primary_interface(self):
         if self.nm.primary_connection == "/":
             if self.wlan_device:
@@ -174,6 +186,13 @@ class SdbusNm:
         return any(net["SSID"] == ssid for net in self.get_known_networks())
 
     def get_ip_address(self):
+        # In AP mode we want to display the WiFi AP address, not the primary
+        # connection chosen by NM (which may become ethernet shared).
+        if self.is_access_point_mode() and self.wlan_device:
+            ap_ip = self.get_interface_ip_address(self.wlan_device.interface)
+            if ap_ip != "?":
+                return ap_ip
+
         active_connection_path = self.nm.primary_connection
         if not active_connection_path or active_connection_path == "/":
             # Try to get IP address directly from interface
@@ -412,21 +431,24 @@ class SdbusNm:
     def enable_monitoring(self, enable):
         self.monitor_connection = enable
 
-    def get_interface_ip_address(self):
+    def get_interface_ip_address(self, interface=None):
         """Get IP address directly from network interface"""
         try:
-            interface = self.get_primary_interface()
+            explicit_interface = interface is not None
+            interface = interface or self.get_primary_interface()
             if not interface:
                 return "?"
-            # Try using socket
-            try:
-                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                s.connect(("8.8.8.8", 80))
-                ip = s.getsockname()[0]
-                s.close()
-                return ip
-            except Exception:
-                pass
+            # When interface is explicitly requested, do not use socket-based
+            # route lookup because it can return another interface IP.
+            if not explicit_interface:
+                try:
+                    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                    s.connect(("8.8.8.8", 80))
+                    ip = s.getsockname()[0]
+                    s.close()
+                    return ip
+                except Exception:
+                    pass
             # Fallback to ip command
             result = subprocess.run(
                 ["ip", "-4", "addr", "show", interface],
