@@ -611,20 +611,9 @@ class Panel(ScreenPanel):
         ap_password_label.set_markup(f"<small>{_('Password')}: {self.ap_password}</small>")
         ap_password_label.set_halign(Gtk.Align.CENTER)
 
-        ip_info = self.sdbus_nm.get_ap_mode_ips()
-        wifi_ip = ip_info.get("wifi", "?")
-        ethernet_ips = ip_info.get("ethernet", [])
-        ethernet_text = ", ".join(ethernet_ips) if ethernet_ips else _("Not connected")
-        ap_ips_label = Gtk.Label()
-        ap_ips_label.set_markup(
-            f"<small>WiFi: {wifi_ip}\nEthernet: {ethernet_text}</small>"
-        )
-        ap_ips_label.set_halign(Gtk.Align.CENTER)
-
         ap_info_box.add(ap_name_label)
         ap_info_box.add(ap_status_label)
         ap_info_box.add(ap_password_label)
-        ap_info_box.add(ap_ips_label)
 
         self.network_list.add(ap_info_box)
         self.network_list.show_all()
@@ -636,7 +625,7 @@ class Panel(ScreenPanel):
             wifi_ip = ip_info.get("wifi", "?")
             ethernet_ips = ip_info.get("ethernet", [])
             ethernet_text = ", ".join(ethernet_ips) if ethernet_ips else _("Not connected")
-            self.labels['ip'].set_text(f"IP: WiFi {wifi_ip} | Ethernet {ethernet_text}")
+            self.labels['ip'].set_text(f"IP: Wlan {wifi_ip} | Eth {ethernet_text}")
             return True
 
         ip = self.sdbus_nm.get_ip_address()
