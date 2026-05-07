@@ -8,7 +8,7 @@ from ks_includes.screen_panel import ScreenPanel
 
 
 class Panel(ScreenPanel):
-    deltas = ["0.05", "0.1"]
+    deltas = ["0.01", "0.05", "0.1"]
     delta = deltas[0]
 
     def __init__(self, screen, title):
