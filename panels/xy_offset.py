@@ -30,6 +30,7 @@ class Panel(ScreenPanel):
             self.labels[f"delta_{delta}"].connect("clicked", self.change_delta, delta)
             ctx = self.labels[f"delta_{delta}"].get_style_context()
             ctx.add_class("horizontal_togglebuttons")
+            ctx.add_class("horizontal_togglebuttons_smaller")
             if delta == self.delta:
                 ctx.add_class("horizontal_togglebuttons_active")
             delta_grid.attach(self.labels[f"delta_{delta}"], idx, 0, 1, 1)
@@ -43,6 +44,10 @@ class Panel(ScreenPanel):
         self.labels["y-"] = self._gtk.Button("arrow-down", "Y-", "color2")
         self.labels["y_value"] = self._gtk.Button("refresh", "  0.000mm", "color2", self.bts, Gtk.PositionType.LEFT, 1)
         self.labels["y+"] = self._gtk.Button("arrow-up", "Y+", "color2")
+
+        main_button_height = int(self._gtk.font_size * 4)
+        for key in ("x-", "x_value", "x+", "y-", "y_value", "y+"):
+            self.labels[key].set_size_request(-1, main_button_height)
 
         self.labels["x-"].connect("clicked", self.change_offset, "x", -1)
         self.labels["x+"].connect("clicked", self.change_offset, "x", 1)
