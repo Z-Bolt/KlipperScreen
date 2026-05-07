@@ -40,9 +40,9 @@ class Panel(ScreenPanel):
         self.labels["x_value"] = self._gtk.Button("refresh", "  0.000mm", "color1", self.bts, Gtk.PositionType.LEFT, 1)
         self.labels["x+"] = self._gtk.Button("arrow-right", "X+", "color1")
 
-        self.labels["y-"] = self._gtk.Button("arrow-left", "Y-", "color2")
+        self.labels["y-"] = self._gtk.Button("arrow-down", "Y-", "color2")
         self.labels["y_value"] = self._gtk.Button("refresh", "  0.000mm", "color2", self.bts, Gtk.PositionType.LEFT, 1)
-        self.labels["y+"] = self._gtk.Button("arrow-right", "Y+", "color2")
+        self.labels["y+"] = self._gtk.Button("arrow-up", "Y+", "color2")
 
         self.labels["x-"].connect("clicked", self.change_offset, "x", -1)
         self.labels["x+"].connect("clicked", self.change_offset, "x", 1)
