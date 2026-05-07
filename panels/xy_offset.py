@@ -53,8 +53,8 @@ class Panel(ScreenPanel):
         self.labels["x+"].connect("clicked", self.change_offset, "x", 1)
         self.labels["y-"].connect("clicked", self.change_offset, "y", -1)
         self.labels["y+"].connect("clicked", self.change_offset, "y", 1)
-        self.labels["x_value"].connect("clicked", self.reload_offsets)
-        self.labels["y_value"].connect("clicked", self.reload_offsets)
+        self.labels["x_value"].connect("clicked", self.reset_offset_confirm, "x")
+        self.labels["y_value"].connect("clicked", self.reset_offset_confirm, "y")
 
         grid = Gtk.Grid(column_homogeneous=True, row_homogeneous=True)
         grid.attach(self.labels["x-"], 0, 0, 1, 1)
@@ -117,4 +117,14 @@ class Panel(ScreenPanel):
             widget,
             "printer.gcode.script",
             {"script": f"SAVE_VARIABLE VARIABLE={variable} VALUE={value:.3f}"},
+        )
+
+    def reset_offset_confirm(self, widget, axis):
+        variable = self.variables[axis]
+        axis_name = axis.upper()
+        self._screen._confirm_send_action(
+            widget,
+            _("Reset %s offset to 0?") % axis_name,
+            "printer.gcode.script",
+            {"script": f"SAVE_VARIABLE VARIABLE={variable} VALUE=0.000"},
         )
