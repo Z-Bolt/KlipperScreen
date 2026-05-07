@@ -716,6 +716,10 @@ msgstr ""
 msgid "Recover Soft"
 msgstr ""
 
+#, python-format
+msgid "Reset %s offset to 0?"
+msgstr ""
+
 msgid "Reference"
 msgstr ""
 

@@ -124,7 +124,7 @@ class Panel(ScreenPanel):
         axis_name = axis.upper()
         self._screen._confirm_send_action(
             widget,
-            _("Reset %s offset to 0?") % axis_name,
+            _("Reset offset to 0?") % axis_name,
             "printer.gcode.script",
             {"script": f"SAVE_VARIABLE VARIABLE={variable} VALUE=0.000"},
         )
