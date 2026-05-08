@@ -37,6 +37,7 @@ class Panel(ScreenPanel):
             delta_grid.attach(self.labels[f"delta_{delta}"], idx, 0, 1, 1)
 
         self.labels["step_title"] = Gtk.Label(label=_("Offset Step (mm)"))
+        self.labels["step_title"].set_size_request(-1, int(self._gtk.font_size * 1.2))
         self.labels["zoffset_calibrate"] = self._gtk.Button("toolchanger", _("Z Offset Calibrate"), "color4")
 
         self.labels["x-"] = self._gtk.Button("arrow-left", "X-", "color1")
