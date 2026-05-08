@@ -18,7 +18,8 @@ class Panel(ScreenPanel):
 
         self.temp = float(self.default_temp)
         self.macros = self._printer.get_printer_status_data()["printer"]["gcode_macros"]["list"]
-        self.toggle_macro = "CHANGE_T_STAB" if "CHANGE_T_STAB" in self.macros else None
+        self.macros_map = {macro.upper(): macro for macro in self.macros}
+        self.toggle_macro = self.macros_map.get("CHANGE_T_STAB")
         self.edit_macro = self.get_edit_macro_name()
 
         temp_delta_grid = Gtk.Grid()
@@ -86,11 +87,7 @@ class Panel(ScreenPanel):
             return float(fallback)
 
     def get_edit_macro_name(self):
-        if "EDIT_T_CALIBTATE" in self.macros:
-            return "EDIT_T_CALIBTATE"
-        if "EDIT_T_CALIBRATE" in self.macros:
-            return "EDIT_T_CALIBRATE"
-        return None
+        return self.macros_map.get("EDIT_T_CALIBTATE") or self.macros_map.get("EDIT_T_CALIBRATE")
 
     def reload_temperature(self):
         result = self._screen.apiclient.send_request("printer/objects/query?save_variables")

@@ -563,8 +563,9 @@ class Panel(ScreenPanel):
 
     def has_print_start_settings(self):
         macros = self._printer.get_printer_status_data()["printer"]["gcode_macros"]["list"]
-        has_t_stab = "CHANGE_T_STAB" in macros
-        has_t_calibrate = "EDIT_T_CALIBTATE" in macros or "EDIT_T_CALIBRATE" in macros
+        macros_upper = {macro.upper() for macro in macros}
+        has_t_stab = "CHANGE_T_STAB" in macros_upper
+        has_t_calibrate = "EDIT_T_CALIBTATE" in macros_upper or "EDIT_T_CALIBRATE" in macros_upper
         return has_t_stab or has_t_calibrate
 
     def get_info_str(self, item, path):
