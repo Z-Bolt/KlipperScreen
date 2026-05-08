@@ -9,7 +9,7 @@ from ks_includes.screen_panel import ScreenPanel
 
 class Panel(ScreenPanel):
     deltas = ["0.01", "0.05", "0.1"]
-    delta = deltas[0]
+    delta = deltas[-1]
 
     def __init__(self, screen, title):
         title = title or _("XY Offset")
