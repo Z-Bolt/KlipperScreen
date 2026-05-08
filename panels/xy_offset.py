@@ -12,7 +12,7 @@ class Panel(ScreenPanel):
     delta = deltas[-1]
 
     def __init__(self, screen, title):
-        title = title or _("XY Offset")
+        title = title or _("2nd Head Offsets")
         super().__init__(screen, title)
 
         self.offsets = {

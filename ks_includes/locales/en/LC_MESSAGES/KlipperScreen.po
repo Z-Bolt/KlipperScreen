@@ -949,6 +949,9 @@ msgstr ""
 msgid "XY Speed (mm/s)"
 msgstr ""
 
+msgid "2nd Head Offsets"
+msgstr ""
+
 msgid "Z Calibrate"
 msgstr ""
 

@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KlipperScreen\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-26 12:31-0300\n"
-"PO-Revision-Date: 2026-05-08 11:42+0300\n"
+"PO-Revision-Date: 2026-05-08 11:52+0300\n"
 "Last-Translator: gfbdrgng <hnaofegnp@hldrive.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/klipperscreen/klipperscreen/ru/>\n"
 "Language: ru\n"
@@ -970,6 +970,9 @@ msgstr "Скорость перемещения по осям XY (мм/с)"
 
 msgid "XY Speed (mm/s)"
 msgstr "Скорость по осям XY (мм/с)"
+
+msgid "2nd Head Offsets"
+msgstr "Офсеты 2-й головы"
 
 msgid "XY Offset"
 msgstr "XY-офсет"
