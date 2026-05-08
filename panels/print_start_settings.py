@@ -35,11 +35,11 @@ class Panel(ScreenPanel):
 
         self.labels["temp_step_title"] = Gtk.Label(label=_("Temperature Step (deg)"))
         self.labels["tstab"] = self._gtk.Button("heat-up", _("Enable/Disable Thermal Stabilization"), "color4")
-        self.labels["temp-"] = self._gtk.Button("arrow-down", _("Temp -"), "color2")
+        self.labels["temp-"] = self._gtk.Button("cool-down", _("Temp -"), "color2")
         self.labels["temp_value"] = self._gtk.Button(
             "refresh", f"  {self.default_temp}°C", "color2", self.bts, Gtk.PositionType.LEFT, 1
         )
-        self.labels["temp+"] = self._gtk.Button("arrow-up", _("Temp +"), "color2")
+        self.labels["temp+"] = self._gtk.Button("heat-up", _("Temp +"), "color2")
 
         self.labels["tstab"].connect("clicked", self.toggle_thermal_stabilization)
         self.labels["temp-"].connect("clicked", self.change_temperature, -1)
