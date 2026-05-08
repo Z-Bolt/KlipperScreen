@@ -952,6 +952,9 @@ msgstr ""
 msgid "Z Calibrate"
 msgstr ""
 
+msgid "Z Offset Calibrate"
+msgstr ""
+
 msgid "Z Move Speed (mm/s)"
 msgstr ""
 

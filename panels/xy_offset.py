@@ -36,6 +36,7 @@ class Panel(ScreenPanel):
             delta_grid.attach(self.labels[f"delta_{delta}"], idx, 0, 1, 1)
 
         self.labels["step_title"] = Gtk.Label(label=_("Offset Step (mm)"))
+        self.labels["zoffset_calibrate"] = self._gtk.Button("toolchanger", _("Z Offset Calibrate"), "color4")
 
         self.labels["x-"] = self._gtk.Button("arrow-left", "X-", "color1")
         self.labels["x_value"] = self._gtk.Button("refresh", "  0.000mm", "color1", self.bts, Gtk.PositionType.LEFT, 1)
@@ -55,6 +56,8 @@ class Panel(ScreenPanel):
         self.labels["y+"].connect("clicked", self.change_offset, "y", 1)
         self.labels["x_value"].connect("clicked", self.reset_offset_confirm, "x")
         self.labels["y_value"].connect("clicked", self.reset_offset_confirm, "y")
+        self.labels["zoffset_calibrate"].connect("clicked", self.run_zoffset_calibrate)
+        self.labels["zoffset_calibrate"].set_sensitive(self.get_zoffset_macro_name() is not None)
 
         grid = Gtk.Grid(column_homogeneous=True, row_homogeneous=True)
         grid.attach(self.labels["x-"], 0, 0, 1, 1)
@@ -65,6 +68,7 @@ class Panel(ScreenPanel):
         grid.attach(self.labels["y+"], 2, 1, 1, 1)
         grid.attach(self.labels["step_title"], 0, 2, 3, 1)
         grid.attach(delta_grid, 0, 3, 3, 1)
+        grid.attach(self.labels["zoffset_calibrate"], 0, 4, 3, 1)
 
         self.content.add(grid)
         self.reload_offsets()
@@ -121,10 +125,28 @@ class Panel(ScreenPanel):
 
     def reset_offset_confirm(self, widget, axis):
         variable = self.variables[axis]
-        axis_name = axis.upper()
         self._screen._confirm_send_action(
             widget,
             _("Reset offset to 0?"),
             "printer.gcode.script",
             {"script": f"SAVE_VARIABLE VARIABLE={variable} VALUE=0.000"},
+        )
+
+    def get_zoffset_macro_name(self):
+        macros = self._printer.get_printer_status_data()["printer"]["gcode_macros"]["list"]
+        if "Zoffset" in macros:
+            return "Zoffset"
+        if "ZOFFSET" in macros:
+            return "ZOFFSET"
+        return None
+
+    def run_zoffset_calibrate(self, widget):
+        macro = self.get_zoffset_macro_name()
+        if macro is None:
+            return
+        self._screen._confirm_send_action(
+            widget,
+            _("After confirmation, the autocalibration of the 2nd head offset will begin"),
+            "printer.gcode.script",
+            {"script": macro},
         )
