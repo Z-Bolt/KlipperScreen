@@ -716,6 +716,10 @@ msgstr ""
 msgid "Recover Soft"
 msgstr ""
 
+#, python-format
+msgid "Reset %s offset to 0?"
+msgstr ""
+
 msgid "Reference"
 msgstr ""
 
@@ -945,7 +949,13 @@ msgstr ""
 msgid "XY Speed (mm/s)"
 msgstr ""
 
+msgid "2nd Head Offsets"
+msgstr ""
+
 msgid "Z Calibrate"
+msgstr ""
+
+msgid "Z Offset Calibrate"
 msgstr ""
 
 msgid "Z Move Speed (mm/s)"
@@ -1008,3 +1018,24 @@ msgid "second"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Print Start Settings"
+msgstr ""
+
+msgid "Enable/Disable Thermal Stabilization"
+msgstr ""
+
+msgid "Temp +"
+msgstr ""
+
+msgid "Temp -"
+msgstr ""
+
+msgid "Temperature Step (deg)"
+msgstr ""
+
+msgid "Toggle thermal stabilization?"
+msgstr ""
+
+msgid "Reset calibration temperature to 160C?"
+msgstr ""
