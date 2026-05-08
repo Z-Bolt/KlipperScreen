@@ -31,6 +31,7 @@ class Panel(ScreenPanel):
             ctx = self.labels[f"delta_{delta}"].get_style_context()
             ctx.add_class("horizontal_togglebuttons")
             ctx.add_class("horizontal_togglebuttons_smaller")
+            self.labels[f"delta_{delta}"].set_size_request(-1, int(self._gtk.font_size * 2.2))
             if delta == self.delta:
                 ctx.add_class("horizontal_togglebuttons_active")
             delta_grid.attach(self.labels[f"delta_{delta}"], idx, 0, 1, 1)
@@ -58,6 +59,7 @@ class Panel(ScreenPanel):
         self.labels["y_value"].connect("clicked", self.reset_offset_confirm, "y")
         self.labels["zoffset_calibrate"].connect("clicked", self.run_zoffset_calibrate)
         self.labels["zoffset_calibrate"].set_sensitive(self.get_zoffset_macro_name() is not None)
+        self.labels["zoffset_calibrate"].set_size_request(-1, int(self._gtk.font_size * 2.8))
 
         grid = Gtk.Grid(column_homogeneous=True, row_homogeneous=True)
         grid.attach(self.labels["x-"], 0, 0, 1, 1)
@@ -66,9 +68,9 @@ class Panel(ScreenPanel):
         grid.attach(self.labels["y-"], 0, 1, 1, 1)
         grid.attach(self.labels["y_value"], 1, 1, 1, 1)
         grid.attach(self.labels["y+"], 2, 1, 1, 1)
-        grid.attach(self.labels["step_title"], 0, 2, 3, 1)
-        grid.attach(delta_grid, 0, 3, 3, 1)
-        grid.attach(self.labels["zoffset_calibrate"], 0, 4, 3, 1)
+        grid.attach(self.labels["zoffset_calibrate"], 0, 2, 3, 1)
+        grid.attach(self.labels["step_title"], 0, 3, 3, 1)
+        grid.attach(delta_grid, 0, 4, 3, 1)
 
         self.content.add(grid)
         self.reload_offsets()
