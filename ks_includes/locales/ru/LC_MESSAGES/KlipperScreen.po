@@ -1211,8 +1211,8 @@ msgstr "Темп. +"
 msgid "Temp -"
 msgstr "Темп. -"
 
-msgid "Temperature Step (deg)"
-msgstr "Шаг температуры (град.)"
+msgid "Temperature Step (°C)"
+msgstr "Шаг температуры (°C)"
 
 msgid "Toggle thermal stabilization?"
 msgstr "Переключить термостабилизацию?"
