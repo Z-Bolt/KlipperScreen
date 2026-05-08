@@ -31,13 +31,15 @@ class Panel(ScreenPanel):
             ctx = self.labels[f"delta_{delta}"].get_style_context()
             ctx.add_class("horizontal_togglebuttons")
             ctx.add_class("horizontal_togglebuttons_smaller")
-            self.labels[f"delta_{delta}"].set_size_request(-1, int(self._gtk.font_size * 2.2))
+            self.labels[f"delta_{delta}"].set_size_request(-1, int(self._gtk.font_size * 1.8))
             if delta == self.delta:
                 ctx.add_class("horizontal_togglebuttons_active")
             delta_grid.attach(self.labels[f"delta_{delta}"], idx, 0, 1, 1)
 
         self.labels["step_title"] = Gtk.Label(label=_("Offset Step (mm)"))
-        self.labels["step_title"].set_size_request(-1, int(self._gtk.font_size * 1.2))
+        self.labels["step_title"].set_size_request(-1, int(self._gtk.font_size * 0.9))
+        self.labels["step_title"].set_margin_top(0)
+        self.labels["step_title"].set_margin_bottom(0)
         self.labels["zoffset_calibrate"] = self._gtk.Button("toolchanger", _("Z Offset Calibrate"), "color4")
 
         self.labels["x-"] = self._gtk.Button("arrow-left", "X-", "color1")
@@ -48,7 +50,7 @@ class Panel(ScreenPanel):
         self.labels["y_value"] = self._gtk.Button("refresh", "  0.000mm", "color2", self.bts, Gtk.PositionType.LEFT, 1)
         self.labels["y+"] = self._gtk.Button("arrow-up", "Y+", "color2")
 
-        main_button_height = int(self._gtk.font_size * 4)
+        main_button_height = int(self._gtk.font_size * 3.4)
         for key in ("x-", "x_value", "x+", "y-", "y_value", "y+"):
             self.labels[key].set_size_request(-1, main_button_height)
 
@@ -60,9 +62,9 @@ class Panel(ScreenPanel):
         self.labels["y_value"].connect("clicked", self.reset_offset_confirm, "y")
         self.labels["zoffset_calibrate"].connect("clicked", self.run_zoffset_calibrate)
         self.labels["zoffset_calibrate"].set_sensitive(self.get_zoffset_macro_name() is not None)
-        self.labels["zoffset_calibrate"].set_size_request(-1, int(self._gtk.font_size * 2.8))
+        self.labels["zoffset_calibrate"].set_size_request(-1, int(self._gtk.font_size * 2.4))
 
-        grid = Gtk.Grid(column_homogeneous=True, row_homogeneous=True)
+        grid = Gtk.Grid(column_homogeneous=True, row_homogeneous=False, row_spacing=0)
         grid.attach(self.labels["x-"], 0, 0, 1, 1)
         grid.attach(self.labels["x_value"], 1, 0, 1, 1)
         grid.attach(self.labels["x+"], 2, 0, 1, 1)
