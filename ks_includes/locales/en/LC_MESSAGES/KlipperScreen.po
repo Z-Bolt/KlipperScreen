@@ -1018,3 +1018,24 @@ msgid "second"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Print Start Settings"
+msgstr ""
+
+msgid "Enable/Disable Thermal Stabilization"
+msgstr ""
+
+msgid "Temp +"
+msgstr ""
+
+msgid "Temp -"
+msgstr ""
+
+msgid "Temperature Step (deg)"
+msgstr ""
+
+msgid "Toggle thermal stabilization?"
+msgstr ""
+
+msgid "Reset calibration temperature to 160C?"
+msgstr ""

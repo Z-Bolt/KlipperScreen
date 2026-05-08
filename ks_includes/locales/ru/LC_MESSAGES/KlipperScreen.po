@@ -1199,5 +1199,26 @@ msgstr "Запись печати"
 msgid "Restore"
 msgstr "Возобновить"
 
+msgid "Print Start Settings"
+msgstr "Настройка перед печатью"
+
+msgid "Enable/Disable Thermal Stabilization"
+msgstr "Вкл/Выкл термостабилизацию"
+
+msgid "Temp +"
+msgstr "Темп. +"
+
+msgid "Temp -"
+msgstr "Темп. -"
+
+msgid "Temperature Step (deg)"
+msgstr "Шаг температуры (град.)"
+
+msgid "Toggle thermal stabilization?"
+msgstr "Переключить термостабилизацию?"
+
+msgid "Reset calibration temperature to 160C?"
+msgstr "Сбросить температуру калибровки до 160C?"
+
 msgid "Reset offset to 0?"
 msgstr "Сбросить офсет в 0?"

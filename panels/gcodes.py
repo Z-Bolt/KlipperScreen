@@ -484,10 +484,13 @@ class Panel(ScreenPanel):
 
     def confirm_print(self, widget, filename):
         action = _("Print") if self._printer.extrudercount > 0 else _("Start")
+        show_start_settings = self.has_print_start_settings()
 
         buttons = [
             {"name": _("Delete"), "response": Gtk.ResponseType.REJECT, "style": 'dialog-error'},
             {"name": action, "response": Gtk.ResponseType.OK, "style": 'dialog-primary'},
+            *([{"name": _("Settings"), "response": Gtk.ResponseType.HELP, "style": 'dialog-secondary'}]
+              if show_start_settings else []),
             {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL, "style": 'dialog-secondary'}
         ]
 
@@ -495,6 +498,8 @@ class Panel(ScreenPanel):
             {"name": _("Delete"), "response": Gtk.ResponseType.REJECT, "style": 'dialog-error'},
             {"name": _("Resave"), "response": Gtk.ResponseType.APPLY, "style": 'dialog-secondary'},
             {"name": action, "response": Gtk.ResponseType.OK, "style": 'dialog-primary'},
+            *([{"name": _("Settings"), "response": Gtk.ResponseType.HELP, "style": 'dialog-secondary'}]
+              if show_start_settings else []),
             {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL, "style": 'dialog-secondary'}
         ]
 
@@ -544,6 +549,9 @@ class Panel(ScreenPanel):
         self._gtk.remove_dialog(dialog)
         if response_id == Gtk.ResponseType.CANCEL:
             return
+        elif response_id == Gtk.ResponseType.HELP:
+            self._screen.show_panel("print_start_settings")
+            return
         elif response_id == Gtk.ResponseType.OK:
             logging.info(f"Starting print: {filename}")
             self._screen._ws.klippy.print_start(filename)
@@ -552,6 +560,12 @@ class Panel(ScreenPanel):
             self.confirm_move_file(None, f"gcodes/{filename}")
         elif response_id == Gtk.ResponseType.REJECT:
             self.confirm_delete_file(None, f"gcodes/{filename}")
+
+    def has_print_start_settings(self):
+        macros = self._printer.get_printer_status_data()["printer"]["gcode_macros"]["list"]
+        has_t_stab = "CHANGE_T_STAB" in macros
+        has_t_calibrate = "EDIT_T_CALIBTATE" in macros or "EDIT_T_CALIBRATE" in macros
+        return has_t_stab or has_t_calibrate
 
     def get_info_str(self, item, path):
         info = ""
