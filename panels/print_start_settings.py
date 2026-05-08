@@ -33,7 +33,7 @@ class Panel(ScreenPanel):
                 ctx.add_class("horizontal_togglebuttons_active")
             temp_delta_grid.attach(self.labels[f"temp_delta_{delta}"], idx, 0, 1, 1)
 
-        self.labels["temp_step_title"] = Gtk.Label(label=_("Temperature Step (deg)"))
+        self.labels["temp_step_title"] = Gtk.Label(label=_("Temperature Step (°C)"))
         self.labels["tstab"] = self._gtk.Button("heat-up", _("Enable/Disable Thermal Stabilization"), "color4")
         self.labels["temp-"] = self._gtk.Button("cool-down", _("Temp -"), "color2")
         self.labels["temp_value"] = self._gtk.Button(
