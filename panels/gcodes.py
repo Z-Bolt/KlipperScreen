@@ -221,12 +221,13 @@ class Panel(ScreenPanel):
             # Определяем позиции кнопок в зависимости от типа элемента
             button_col = 2
             if 'filename' in item:
+                file_on_usb = is_file_on_usb(f"gcodes/{path}")
                 icon.connect("clicked", self.confirm_print, path)
                 image_args = (path, icon, self.thumbsize / 2, True, "file")
                 delete.connect("clicked", self.confirm_delete_file, f"gcodes/{path}")
                 rename.connect("clicked", self.show_rename, f"gcodes/{path}")
                 # Показываем кнопку переноса только если файл находится на USB
-                if is_file_on_usb(f"gcodes/{path}"):
+                if file_on_usb:
                     move = Gtk.Button(hexpand=False, vexpand=False, can_focus=False, always_show_image=True)
                     move.get_style_context().add_class("color3")
                     move.set_image(self._gtk.Image("sd", self.list_button_size, self.list_button_size))
@@ -244,8 +245,9 @@ class Panel(ScreenPanel):
                 action.set_vexpand(False)
                 action.set_halign(Gtk.Align.END)
                 if self._screen.width >= 400:
-                    row.attach(action, button_col, 0, 1, 2)
-                else:
+                    if not file_on_usb:
+                        row.attach(action, button_col, 0, 1, 2)
+                elif not file_on_usb:
                     icon.get_style_context().add_class("color3")
                     row.attach(icon, button_col, 0, 1, 2)
             elif 'dirname' in item:
@@ -497,7 +499,6 @@ class Panel(ScreenPanel):
         buttons_usb = [
             {"name": _("Delete"), "response": Gtk.ResponseType.REJECT, "style": 'dialog-error'},
             {"name": _("Resave"), "response": Gtk.ResponseType.APPLY, "style": 'dialog-secondary'},
-            {"name": action, "response": Gtk.ResponseType.OK, "style": 'dialog-primary'},
             *([{"name": _("Settings"), "response": Gtk.ResponseType.HELP, "style": 'dialog-secondary'}]
               if show_start_settings else []),
             {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL, "style": 'dialog-secondary'}
@@ -553,6 +554,10 @@ class Panel(ScreenPanel):
             self._screen.show_panel("print_start_settings")
             return
         elif response_id == Gtk.ResponseType.OK:
+            if is_file_on_usb(f"gcodes/{filename}"):
+                logging.warning(f"Refusing to print from removable storage: {filename}")
+                self._screen.show_popup_message(_("Move the file to internal storage before printing"), level=2)
+                return
             logging.info(f"Starting print: {filename}")
             self._screen._ws.klippy.print_start(filename)
         elif response_id == Gtk.ResponseType.APPLY:
