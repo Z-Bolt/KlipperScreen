@@ -491,15 +491,15 @@ class Panel(ScreenPanel):
         buttons = [
             {"name": _("Delete"), "response": Gtk.ResponseType.REJECT, "style": 'dialog-error'},
             {"name": action, "response": Gtk.ResponseType.OK, "style": 'dialog-primary'},
-            *([{"name": _("Settings"), "response": Gtk.ResponseType.HELP, "style": 'dialog-secondary'}]
+            *([{"name": _("Settings"), "response": Gtk.ResponseType.HELP, "style": 'dialog-info'}]
               if show_start_settings else []),
             {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL, "style": 'dialog-secondary'}
         ]
 
         buttons_usb = [
             {"name": _("Delete"), "response": Gtk.ResponseType.REJECT, "style": 'dialog-error'},
-            {"name": _("Resave"), "response": Gtk.ResponseType.APPLY, "style": 'dialog-secondary'},
-            *([{"name": _("Settings"), "response": Gtk.ResponseType.HELP, "style": 'dialog-secondary'}]
+            {"name": _("Resave"), "response": Gtk.ResponseType.APPLY, "style": 'dialog-primary'},
+            *([{"name": _("Settings"), "response": Gtk.ResponseType.HELP, "style": 'dialog-info'}]
               if show_start_settings else []),
             {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL, "style": 'dialog-secondary'}
         ]
