@@ -31,6 +31,8 @@ class BasePanel(ScreenPanel):
         self.titlebar_items = []
         self.titlebar_name_type = None
         self.current_extruder = None
+        self.title_printer = ""
+        self.title_panel = ""
         self.last_usage_report = datetime.now()
         self.usage_report = 0
         # Action bar buttons
@@ -90,6 +92,7 @@ class BasePanel(ScreenPanel):
         self.control['temp_box'] = Gtk.Box(spacing=10)
 
         self.titlelbl = Gtk.Label(hexpand=True, halign=Gtk.Align.CENTER, ellipsize=Pango.EllipsizeMode.END)
+        self.titlelbl.connect("size-allocate", self.update_title_visibility)
 
         self.control['time'] = Gtk.Label(label="00:00 AM")
         self.control['time_box'] = Gtk.Box(halign=Gtk.Align.END)
@@ -377,7 +380,9 @@ class BasePanel(ScreenPanel):
         else:
             printer = ""
         if not title:
-            self.titlelbl.set_label(f"{printer}")
+            self.title_printer = printer
+            self.title_panel = ""
+            self.update_title_visibility()
             return
         try:
             env = Environment(extensions=["jinja2.ext.i18n"], autoescape=True)
@@ -387,7 +392,29 @@ class BasePanel(ScreenPanel):
         except Exception as e:
             logging.debug(f"Error parsing jinja for title: {title}\n{e}")
 
-        self.titlelbl.set_label(f"{printer} {title}")
+        self.title_printer = printer
+        self.title_panel = title
+        self.update_title_visibility()
+
+    def update_title_visibility(self, *args):
+        if self.titlebar.get_style_context().has_class("message_popup_error"):
+            return False
+        if not self.title_panel:
+            label = self.title_printer
+        else:
+            label = f"{self.title_printer} {self.title_panel}".strip()
+            if self.title_printer and self._screen.vertical_mode:
+                allocation = self.titlelbl.get_allocation()
+                if allocation.width and not self.title_fits(label, allocation.width):
+                    label = self.title_panel
+        if self.titlelbl.get_label() != label:
+            self.titlelbl.set_label(label)
+        return False
+
+    def title_fits(self, text, width):
+        layout = self.titlelbl.create_pango_layout(text)
+        text_width, _ = layout.get_pixel_size()
+        return text_width <= width
 
     def update_time(self):
         now = datetime.now()
