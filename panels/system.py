@@ -2,13 +2,14 @@ import logging
 import os
 import subprocess
 import shutil
+import threading
 import zipfile
 from datetime import datetime
 
 import gi
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 from ks_includes.screen_panel import ScreenPanel
 
 
@@ -272,7 +273,29 @@ class Panel(ScreenPanel):
             f.write(f"- Total filament used: {filament_mm_str} ({filament_m_str})\n")
 
     def export_logs(self, widget):
+        self._gtk.Button_busy(widget, True)
+        threading.Thread(target=self._export_logs_thread, args=(widget,), daemon=True).start()
+
+    def _export_logs_thread(self, widget):
         """Экспортирует журналы на съемный носитель"""
+        messages = []
+        try:
+            messages = self._export_logs()
+        except Exception as e:
+            logging.error(f"Error exporting logs: {e}")
+            messages = [(_("Error exporting logs") + f": {str(e)}", 3)]
+        finally:
+            GLib.idle_add(self._finish_export_logs, widget, messages)
+
+    def _finish_export_logs(self, widget, messages):
+        self._gtk.Button_busy(widget, False)
+        for message, level in messages:
+            self._screen.show_popup_message(message, level=level)
+        return False
+
+    def _export_logs(self):
+        """Экспортирует журналы на съемный носитель"""
+        messages = []
         # Ищем примонтированное устройство
         mounted_device = self.find_mounted_device()
 
@@ -285,9 +308,8 @@ class Panel(ScreenPanel):
             export_dest_dir = mounted_device
         else:
             export_dest_dir = logs_dir
-            self._screen.show_popup_message(
-                _("No removable device found") + "\n" + _("Saving to logs folder"),
-                level=2
+            messages.append(
+                (_("No removable device found") + "\n" + _("Saving to logs folder"), 2)
             )
             logging.warning(
                 "No mounted device found in /home/pi/printer_data/gcodes/. Saving to ~/printer_data/logs"
@@ -388,9 +410,8 @@ class Panel(ScreenPanel):
             shutil.rmtree(temp_dir)
 
             # Показываем уведомление об успехе
-            self._screen.show_popup_message(
-                _("Logs saved successfully") + f"\n{dest_zip_path}",
-                level=1
+            messages.append(
+                (_("Logs saved successfully") + f"\n{dest_zip_path}", 1)
             )
 
             # Отмонтируем устройство
@@ -410,17 +431,15 @@ class Panel(ScreenPanel):
                     logging.error(f"Error unmounting device: {e}")
 
         except Exception as e:
-            logging.error(f"Error exporting logs: {e}")
-            self._screen.show_popup_message(
-                _("Error exporting logs") + f": {str(e)}",
-                level=3
-            )
             # Удаляем временную директорию в случае ошибки
             if os.path.exists(temp_dir):
                 try:
                     shutil.rmtree(temp_dir)
                 except Exception:
                     pass
+            raise
+
+        return messages
 
     def process_update(self, action, data):
         if not self.sysinfo:
