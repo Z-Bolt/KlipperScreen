@@ -373,7 +373,8 @@ class BasePanel(ScreenPanel):
     def set_title(self, title):
         self.titlebar.get_style_context().remove_class("message_popup_error")
         if (
-                self._screen.connecting_to_printer != "Printer"
+                self._screen.connecting_to_printer
+                and self._screen.connecting_to_printer != "Printer"
                 and 'printer_select' not in self._screen._cur_panels
         ):
             printer = self._screen.connecting_to_printer
@@ -400,7 +401,7 @@ class BasePanel(ScreenPanel):
         if self.titlebar.get_style_context().has_class("message_popup_error"):
             return False
         if not self.title_panel:
-            label = self.title_printer
+            label = self.title_printer or ""
         else:
             label = f"{self.title_printer} {self.title_panel}".strip()
             if self.title_printer and self._screen.vertical_mode:
