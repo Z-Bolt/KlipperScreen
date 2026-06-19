@@ -203,6 +203,8 @@ class Panel(ScreenPanel):
         buttons = Gtk.Box(spacing=5)
 
         name = Gtk.Label(hexpand=True, halign=Gtk.Align.START, wrap=True, wrap_mode=Pango.WrapMode.WORD_CHAR)
+        name.set_xalign(0)
+        name.set_justify(Gtk.Justification.LEFT)
         if bssid == self.sdbus_nm.get_connected_bssid():
             ssid += ' (' + _("Connected") + ')'
             name.set_markup(f"<big><b>{ssid}</b></big>")
@@ -214,6 +216,8 @@ class Panel(ScreenPanel):
         buttons.add(connect)
 
         info = Gtk.Label(halign=Gtk.Align.START)
+        info.set_xalign(0)
+        info.set_justify(Gtk.Justification.LEFT)
         labels = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, vexpand=True,
                          halign=Gtk.Align.START, valign=Gtk.Align.CENTER)
         labels.add(name)
