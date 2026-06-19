@@ -64,11 +64,27 @@ class Panel(ScreenPanel):
 
         self.interface = self.sdbus_nm.get_primary_interface()
         logging.info(f"Primary interface: {self.interface}")
+        self.is_ap_mode = False
 
-        self.labels['interface'] = Gtk.Label(hexpand=True)
-        self.labels['ip'] = Gtk.Label(hexpand=True)
+        self.labels['interface'] = Gtk.Label(
+            hexpand=True,
+            halign=Gtk.Align.START,
+            wrap=True,
+            wrap_mode=Pango.WrapMode.WORD_CHAR,
+        )
+        self.labels['interface'].set_xalign(0)
+        self.labels['interface'].set_max_width_chars(30 if self._screen.vertical_mode else 60)
+        self.labels['interface'].set_no_show_all(True)
+        self.labels['ip'] = Gtk.Label(
+            hexpand=True,
+            halign=Gtk.Align.START,
+            wrap=True,
+            wrap_mode=Pango.WrapMode.WORD_CHAR,
+        )
+        self.labels['ip'].set_xalign(0)
+        self.labels['ip'].set_max_width_chars(30 if self._screen.vertical_mode else 60)
         if self.interface is not None:
-            self.labels['interface'].set_text(_("Interface") + f': {self.interface}')
+            self.update_interface_display()
             self.labels['ip'].set_text(f"IP: {self.sdbus_nm.get_ip_address()}")
 
         self.reload_button = self._gtk.Button("refresh", None, "color1", self.bts)
@@ -84,11 +100,17 @@ class Panel(ScreenPanel):
         )
         self.wifi_toggle.connect("notify::active", self.toggle_wifi)
 
-        sbox = Gtk.Box(hexpand=True, vexpand=False)
-        sbox.add(self.labels['interface'])
-        sbox.add(self.labels['ip'])
-        sbox.add(self.reload_button)
-        sbox.add(self.wifi_toggle)
+        info_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, hexpand=True, vexpand=False)
+        info_box.add(self.labels['interface'])
+        info_box.add(self.labels['ip'])
+
+        controls_box = Gtk.Box(spacing=5, hexpand=False, vexpand=False)
+        controls_box.add(self.reload_button)
+        controls_box.add(self.wifi_toggle)
+
+        sbox = Gtk.Box(spacing=5, hexpand=True, vexpand=False)
+        sbox.add(info_box)
+        sbox.pack_end(controls_box, False, False, 0)
 
         scroll = self._gtk.ScrolledWindow()
         self.labels['main_box'] = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, vexpand=True)
@@ -99,7 +121,6 @@ class Panel(ScreenPanel):
         # AP-related attributes (used only if show_ap_toggle is True)
         self.ap_ssid = self._config.get_main_config().get('ap_ssid', 'zboltprinter')
         self.ap_password = self._config.get_main_config().get('ap_password', 'zboltprinter')
-        self.is_ap_mode = False
 
         if self.sdbus_nm.wifi:
             self.labels['main_box'].pack_start(sbox, False, False, 5)
@@ -120,8 +141,7 @@ class Panel(ScreenPanel):
                 ap_container.add(self.ap_label)
                 ap_container.add(self.ap_toggle)
 
-                # Insert AP container at the beginning of sbox
-                sbox.pack_start(ap_container, False, False, 5)
+                controls_box.pack_start(ap_container, False, False, 5)
 
                 # Check initial AP mode state and restore if needed
                 if self.sdbus_nm.is_access_point_mode():
@@ -394,17 +414,19 @@ class Panel(ScreenPanel):
 
     def update_all_networks(self):
         self.interface = self.sdbus_nm.get_primary_interface()
-        self.labels['interface'].set_text(_("Interface") + f': {self.interface}')
-        self.update_ip_display()
 
         # Check if AP mode changed externally
         ap_mode = self.sdbus_nm.is_access_point_mode()
         if ap_mode != self.is_ap_mode:
             self.is_ap_mode = ap_mode
-            self.ap_toggle.set_active(ap_mode)
+            if hasattr(self, "ap_toggle"):
+                self.ap_toggle.set_active(ap_mode)
+            self.update_ip_display()
             if ap_mode:
                 self.update_ap_display()
                 return True
+
+        self.update_ip_display()
 
         # If in AP mode, don't update network list
         if self.is_ap_mode:
@@ -463,6 +485,14 @@ class Panel(ScreenPanel):
         )
         self.labels['networkinfo'].show_all()
         return True
+
+    def update_interface_display(self):
+        if self.is_ap_mode:
+            self.labels['interface'].hide()
+            return
+        if self.interface is not None:
+            self.labels['interface'].set_text(_("Interface") + f': {self.interface}')
+            self.labels['interface'].show()
 
     def reload_networks(self, widget=None):
         if self.is_ap_mode:
@@ -620,6 +650,7 @@ class Panel(ScreenPanel):
 
     def update_ip_display(self):
         """Update IP address display"""
+        self.update_interface_display()
         if self.is_ap_mode:
             ip_info = self.sdbus_nm.get_ap_mode_ips()
             wifi_ip = ip_info.get("wifi", "?")
