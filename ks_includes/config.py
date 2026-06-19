@@ -392,7 +392,7 @@ class KlipperScreenConfig:
                     "section": "main",
                     "name": _("Action bar Shortcut"),
                     "type": "dropdown",
-                    "value": "notifications",
+                    "value": "gcode_macros",
                     "callback": screen.update_shortcut,
                     "options": [
                         {"name": _("Notifications"), "value": "notifications"},
@@ -401,6 +401,15 @@ class KlipperScreenConfig:
                         {"name": _("Camera"), "value": "camera"},
                         {"name": _("LEDs"), "value": "led"},
                     ],
+                }
+            },
+            {
+                "show_lock_button": {
+                    "section": "main",
+                    "name": _("Show Lock Button"),
+                    "type": "binary",
+                    "value": "False",
+                    "callback": screen.reload_panels,
                 }
             },
             {

@@ -122,13 +122,7 @@ class NotificationHandler:
         ):
             self._screen.show_popup_message(data, from_ws=True)
         elif "SAVE_CONFIG" in data and self._screen.printer.state == "ready":
-            script = {"script": "SAVE_CONFIG"}
-            self._screen._confirm_send_action(
-                None,
-                _("Save configuration?") + "\n\n" + _("Klipper will reboot"),
-                "printer.gcode.script",
-                script,
-            )
+            logging.info("Ignoring SAVE_CONFIG response")
 
     def _active_spool_set(self, data):
         self._screen.set_active_spool_details(data.get("spool_id"))

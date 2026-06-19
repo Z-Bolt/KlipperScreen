@@ -63,7 +63,7 @@ class Panel(ScreenPanel):
             wrap=True,
             wrap_mode=Pango.WrapMode.WORD_CHAR,
         )
-        fan_name = _("Part Fan") if fan == "fan" else fan.split()[1]
+        fan_name = _("Part Fan") if fan == "fan" else _("Chamber Fan")
         name.set_markup(f"\n<big><b>{fan_name}</b></big>\n")
 
         fan_col = Gtk.Box(spacing=5)

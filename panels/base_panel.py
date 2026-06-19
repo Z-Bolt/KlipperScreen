@@ -24,6 +24,8 @@ except ImportError:
 
 
 class BasePanel(ScreenPanel):
+    titlebar_temperature_sensors = {"chamber", "filament_box"}
+
     def __init__(self, screen, title=None):
         super().__init__(screen, title)
         self.current_panel = None
@@ -64,7 +66,7 @@ class BasePanel(ScreenPanel):
 
         self.shortcut = {}
         self.shortcut["panel"] = self._config.get_main_config().get(
-            "side_shortcut_target", fallback="notifications"
+            "side_shortcut_target", fallback="gcode_macros"
         )
         self.shortcut["icon"] = self._get_shortcut_icon(self.shortcut["panel"])
         self.control["shortcut"] = self._gtk.Button(self.shortcut["icon"], scale=self.abscale)
@@ -233,7 +235,7 @@ class BasePanel(ScreenPanel):
             logging.warning("Cannot load Titlebar items, printer not initialized")
             return
         try:
-            devices = self._printer.get_temp_devices()
+            devices = [d for d in self._printer.get_temp_devices() if self._show_in_titlebar(d)]
             if not devices:
                 return
             img_size = self._gtk.img_scale * self.bts
@@ -369,12 +371,20 @@ class BasePanel(ScreenPanel):
 
     def update_action_bar(self):
         printing, connected, printer_select = self.get_printer_state()
-        self.control["estop"].set_visible(printing)
-        self.control["shutdown"].set_visible(not printing)
+        self.control["estop"].set_visible(connected)
+        self.control["shutdown"].set_visible(connected)
         self.show_shortcut(self.shortcut["panel"])
         self.show_printer_select(len(self._config.get_printers()) > 1)
         for control in ("back", "home"):
             self.set_control_sensitive(len(self._screen._cur_panels) > 1, control=control)
+
+    def _show_in_titlebar(self, device):
+        name = device.split()[1] if len(device.split()) > 1 else device
+        if name.startswith("_"):
+            return False
+        if device.startswith("temperature_sensor"):
+            return name in self.titlebar_temperature_sensors
+        return True
 
     def add_content(self, panel):
         self.update_action_bar()
@@ -496,7 +506,7 @@ class BasePanel(ScreenPanel):
             return
         if action != "notify_status_update" or self._printer is None:
             return
-        devices = self._printer.get_temp_devices()
+        devices = [d for d in self._printer.get_temp_devices() if self._show_in_titlebar(d)]
         if not devices:
             return
         for device in devices:

@@ -24,13 +24,13 @@ msgid "Main Menu"
 msgstr "Главное меню"
 
 msgid "Move"
-msgstr "Двигать"
+msgstr "Движение"
 
 msgid "Temperature"
 msgstr "Tемпература"
 
 msgid "Extrude"
-msgstr "Заправить"
+msgstr "Экструзия"
 
 msgid "More"
 msgstr "Больше"
@@ -75,7 +75,7 @@ msgid "Console"
 msgstr "Консоль"
 
 msgid "Update"
-msgstr "Обновить"
+msgstr "Обновления"
 
 msgid "Input Shaper"
 msgstr "Входной шейпер"
@@ -111,16 +111,16 @@ msgid "Home XY"
 msgstr "Парковать XY"
 
 msgid "Quad Gantry Level"
-msgstr "Уровень Quad Gantry"
+msgstr "Калибр. стола"
 
 msgid "Z Tilt"
-msgstr "Z Наклон"
+msgstr "Калибр. стола"
 
 msgid "Print Control"
 msgstr "Управление печатью"
 
 msgid "Lock"
-msgstr "Замок"
+msgstr "Заблокировать"
 
 msgid "Menu"
 msgstr "Меню"
@@ -153,7 +153,7 @@ msgid "Slicer"
 msgstr "Слайсер"
 
 msgid "Screen Power Off Time"
-msgstr "Время выключения экрана"
+msgstr "Принтер продолжит работу"
 
 msgid "Timeout for screen black-out or power-off"
 msgstr "Время отключения экрана"
@@ -165,7 +165,7 @@ msgid "Printing"
 msgstr "Печатается"
 
 msgid "Timeout for screen black-out or power-off during printing"
-msgstr "Время отключения экрана во время печати"
+msgstr "Принтер продолжит работу"
 
 msgid "24 Hour Time"
 msgstr "24-x часовой формат"
@@ -209,10 +209,10 @@ msgid "Asks for confirmation before stopping"
 msgstr "Запросить подтверждение перед остановкой"
 
 msgid "Hide sensors in Temp."
-msgstr "Скрыть датчики в Temp."
+msgstr "Скрыть ненагреваемые датчики"
 
 msgid "Show only devices that are able to be set"
-msgstr "Показать только те устройства, которые можно установить"
+msgstr "Показать только те устройства, которым можно установить температуру"
 
 msgid "Screen DPMS"
 msgstr "Экран DPMS"
@@ -227,13 +227,13 @@ msgid "Auto-close notifications"
 msgstr "Автозакрытие уведомлений"
 
 msgid "Close messages after a timeout"
-msgstr "Закрыть сообщения по истечении времени"
+msgstr "Уведомления будут исчезать через время"
 
 msgid "Show Heater Power"
 msgstr "Показать мощность нагрева"
 
 msgid "Current percentage and graph line"
-msgstr "Текущий процент и линия графика"
+msgstr "Отображение процента мощности нагрева"
 
 msgid "Show Scrollbars Buttons"
 msgstr "Показать полосу прокрутки"
@@ -242,7 +242,7 @@ msgid "Useful for un-responsive touchscreens"
 msgstr "Полезно для неотзывчивых сенсорных экранов"
 
 msgid "Auto-open Extrude On Pause"
-msgstr "Автооткрытие меню Extrude при паузе"
+msgstr "Открывать панель \"Экструзия\" при паузе"
 
 msgid "Show cursor"
 msgstr "Показать курсор"
@@ -432,16 +432,16 @@ msgid "Are you sure you wish to cancel this print?"
 msgstr "Вы хотите отменить эту печать?"
 
 msgid "Load"
-msgstr "Загрузить"
+msgstr "Загрузить филамент"
 
 msgid "Unload"
-msgstr "Выгрузить"
+msgstr "Выгрузить филамент"
 
 msgid "Retract"
 msgstr "Втянуть"
 
 msgid "Pressure Advance"
-msgstr "Опережение давления"
+msgstr "Pressure Advance"
 
 msgid "Retraction"
 msgstr "Ретракт"
@@ -456,7 +456,7 @@ msgid "Speed (mm/s)"
 msgstr "Скорость (мм/с)"
 
 msgid "Part Fan"
-msgstr "Вентилятор обдува детали"
+msgstr "Вентиляторы обдува детали"
 
 msgid "Max"
 msgstr "Максимум"
@@ -789,13 +789,13 @@ msgid "Notification log empty"
 msgstr "Журнал уведомлений пуст"
 
 msgid "Pressure advance"
-msgstr "Опережения давления"
+msgstr "Pressure Advance"
 
 msgid "Current"
 msgstr "Текущий"
 
 msgid "Smooth time"
-msgstr "Ровное время"
+msgstr "Время сглаживания"
 
 msgid "s"
 msgstr "с"
@@ -822,7 +822,7 @@ msgid "Printer Connections"
 msgstr "Подключённые принтеры"
 
 msgid "Shutdown"
-msgstr "Выключить"
+msgstr "Выключение"
 
 msgid "Emergency Stop"
 msgstr "Аварийная остановка"
@@ -1149,3 +1149,62 @@ msgstr "Инициализация подключения Klipper"
 #, fuzzy
 msgid "Klipper not responding after multiple attempts"
 msgstr "Klipper не отвечает после нескольких попыток"
+
+
+msgid "Unretract"
+msgstr "Выдавить"
+
+
+msgid "Actions"
+msgstr "Действия"
+
+
+msgid "Chamber Fan"
+msgstr "Вентиляторы камеры"
+
+
+msgid "Bed calibrate"
+msgstr "Снятие карты"
+
+
+msgid "Screen Power Off Time (Printing)"
+msgstr "Время отключения экрана при печати"
+
+
+msgid "Show Lock Button"
+msgstr "Показывать кнопку \"Заблокировать\""
+
+
+msgid "Export Logs"
+msgstr "Экспорт журналов"
+
+
+msgid "Logs exported"
+msgstr "Журналы экспортированы"
+
+
+msgid "No removable device found"
+msgstr "Съёмный носитель не найден"
+
+
+msgid "Error exporting logs"
+msgstr "Ошибка экспорта журналов"
+
+
+msgid "Resave"
+msgstr "Перенести"
+
+
+msgid "File is already in the main directory"
+msgstr "Файл уже находится в главной директории"
+
+
+msgid "Move file to the main directory?"
+msgstr "Перенести файл в главную директорию?"
+
+
+msgid "Unable to generate QR-code"
+msgstr "Не удалось создать QR-код"
+
+msgid "Logs Parser"
+msgstr "Парсер логов"

@@ -143,7 +143,7 @@ class Panel(ScreenPanel):
             if name.startswith("."):
                 return None
             basename, ext = os.path.splitext(name)
-            if ext not in {".gcode", ".gco", ".g"}:
+            if ext not in {".gcode", ".gco", ".g", ".plgx", ".plg"}:
                 return None
             path = f"{self.cur_directory}/{name}".replace("gcodes/", "")
         else:
@@ -344,6 +344,7 @@ class Panel(ScreenPanel):
 
         buttons = [
             {"name": _("Delete"), "response": Gtk.ResponseType.REJECT, "style": "dialog-error"},
+            {"name": _("Resave"), "response": Gtk.ResponseType.APPLY, "style": "dialog-info"},
             {"name": action, "response": Gtk.ResponseType.OK, "style": "dialog-primary"},
             {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL, "style": "dialog-secondary"},
         ]
@@ -415,8 +416,23 @@ class Panel(ScreenPanel):
         elif response_id == Gtk.ResponseType.OK:
             logging.info(f"Starting print: {filename}")
             self._screen._ws.api.print_start(filename)
+        elif response_id == Gtk.ResponseType.APPLY:
+            self.confirm_move_file(None, filename)
         elif response_id == Gtk.ResponseType.REJECT:
             self.confirm_delete_file(None, f"gcodes/{filename}")
+
+    def confirm_move_file(self, widget, filename):
+        basename = os.path.basename(filename)
+        if filename == basename:
+            self._screen.show_popup_message(_("File is already in the main directory"))
+            return
+        params = {"source": f"gcodes/{filename}", "dest": f"gcodes/{basename}"}
+        self._screen._confirm_send_action(
+            widget,
+            _("Move file to the main directory?") + f"\n\n{filename} -> {basename}",
+            "server.files.move",
+            params,
+        )
 
     def get_info_str(self, item, path):
         info = ""

@@ -1,10 +1,13 @@
 import datetime
 import logging
+import os
+import threading
+import zipfile
 
 import gi
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk
+from gi.repository import GLib, Gtk
 
 from ks_includes.screen_panel import ScreenPanel
 
@@ -115,9 +118,89 @@ class Panel(ScreenPanel):
         self.current_row += 1
         self.populate_info()
 
+        export = self._gtk.Button("sd", _("Export Logs"), "color3")
+        export.connect("clicked", self.export_logs)
+        export.set_hexpand(True)
+        parser = self._gtk.Button("qrcode", _("Logs Parser"), "color2")
+        parser.connect("clicked", self.show_logs_parser_qrcode)
+        parser.set_hexpand(True)
+        self.grid.attach(export, 0, self.current_row, 1, 1)
+        self.grid.attach(parser, 1, self.current_row, 1, 1)
+        self.current_row += 1
+
         scroll = self._gtk.ScrolledWindow()
         scroll.add(self.grid)
         return scroll
+
+    def export_logs(self, widget):
+        self._gtk.Button_busy(widget, True)
+        widget.set_sensitive(False)
+        threading.Thread(target=self._export_logs_thread, args=(widget,), daemon=True).start()
+
+    def _export_logs_thread(self, widget):
+        messages = []
+        try:
+            mount = self.find_mounted_device()
+            if not mount:
+                messages.append((_("No removable device found"), 2))
+            else:
+                archive = os.path.join(
+                    mount,
+                    f"klipperscreen_logs_{datetime.datetime.now():%Y%m%d_%H%M%S}.zip",
+                )
+                log_dirs = [
+                    os.path.expanduser("~/printer_data/logs"),
+                    os.path.expanduser("~/klipper_logs"),
+                    "/tmp",
+                ]
+                with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as zf:
+                    for log_dir in log_dirs:
+                        if not os.path.isdir(log_dir):
+                            continue
+                        for root, _, files in os.walk(log_dir):
+                            for file in files:
+                                if not file.endswith(".log"):
+                                    continue
+                                path = os.path.join(root, file)
+                                arcname = os.path.relpath(path, os.path.dirname(log_dir))
+                                zf.write(path, arcname)
+                messages.append((_("Logs exported") + f": {archive}", 1))
+        except Exception as e:
+            logging.exception("Error exporting logs")
+            messages.append((_("Error exporting logs") + f": {e}", 3))
+        GLib.idle_add(self._finish_export_logs, widget, messages)
+
+    def _finish_export_logs(self, widget, messages):
+        self._gtk.Button_busy(widget, False)
+        widget.set_sensitive(True)
+        for message, level in messages:
+            self._screen.show_popup_message(message, level)
+        return False
+
+    @staticmethod
+    def find_mounted_device():
+        roots = ("/media", "/mnt", "/run/media")
+        for root in roots:
+            if not os.path.isdir(root):
+                continue
+            for dirpath, dirnames, _ in os.walk(root):
+                if os.path.ismount(dirpath) and os.access(dirpath, os.W_OK):
+                    return dirpath
+                dirnames[:] = [d for d in dirnames if not d.startswith(".")]
+        return None
+
+    def show_logs_parser_qrcode(self, widget):
+        filename = "/tmp/ks_logs_parser_qrcode.png"
+        url = "https://logs.klipper3d.org/"
+        result = os.system(f'qrencode -s 10 -l H -o "{filename}" "{url}"')
+        if result != 0 or not os.path.exists(filename):
+            self._screen.show_popup_message(_("Unable to generate QR-code"), level=2)
+            return
+        image = Gtk.Image.new_from_file(filename)
+        box = Gtk.Box(vexpand=True, hexpand=True, valign=Gtk.Align.CENTER, halign=Gtk.Align.CENTER)
+        box.add(image)
+        buttons = [{"name": _("Close"), "response": Gtk.ResponseType.CANCEL}]
+        self._gtk.Dialog(_("Logs Parser"), buttons, box, self._gtk.remove_dialog)
 
     def set_mem_multiplier(self, data):
         memory_units = data.get("memory_units", "kB").lower()

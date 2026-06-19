@@ -17,6 +17,7 @@ class Panel(ScreenPanel):
     def __init__(self, screen, title):
         title = title or _("Network")
         super().__init__(screen, title)
+        self.filename = "/tmp/ks_network_qrcode.png"
         self.last_drop_time = datetime.now()
         self.show_add = False
         try:
@@ -172,6 +173,11 @@ class Panel(ScreenPanel):
         delete.set_hexpand(False)
         delete.set_halign(Gtk.Align.END)
 
+        qrcode = self._gtk.Button("qrcode", None, "color1", self.bts)
+        qrcode.connect("clicked", self.show_fullscreen_qrcode)
+        qrcode.set_hexpand(False)
+        qrcode.set_halign(Gtk.Align.END)
+
         buttons = Gtk.Box(spacing=5)
 
         name = Gtk.Label(
@@ -184,6 +190,7 @@ class Panel(ScreenPanel):
             name.set_markup(f"<b>{ssid}</b>")
         if net["known"]:
             buttons.add(delete)
+            buttons.add(qrcode)
         buttons.add(connect)
 
         info = Gtk.Label(halign=Gtk.Align.START)
@@ -205,13 +212,7 @@ class Panel(ScreenPanel):
 
         icon.set_from_pixbuf(self.get_signal_strength_icon(net["signal_level"]))
         chan = _("Channel") + f" {net['channel']}"
-        info.set_markup(
-            "<small>"
-            f"{net['frequency']} Ghz  {chan}  {net['signal_level']} %\n"
-            f"{net['security']}\n"
-            f"{net['BSSID']}"
-            "</small>"
-        )
+        info.set_markup(f"<small>{chan}  {net['signal_level']} %</small>")
 
         self.networks[bssid] = {
             "connect": connect,
@@ -581,3 +582,17 @@ class Panel(ScreenPanel):
             self.reload_networks()
         else:
             self.reload_button.hide()
+
+    def show_fullscreen_qrcode(self, widget):
+        ip_address = self.sdbus_nm.get_ip_for_interface(self.interface)
+        logging.info(f"Generate QR-code with IP: {ip_address}")
+        result = os.system(f'qrencode -s 10 -l H -o "{self.filename}" "{ip_address}"')
+        if result != 0 or not os.path.exists(self.filename):
+            self._screen.show_popup_message(_("Unable to generate QR-code"), level=2)
+            return
+
+        image = Gtk.Image.new_from_file(self.filename)
+        box = Gtk.Box(vexpand=True, hexpand=True, valign=Gtk.Align.CENTER, halign=Gtk.Align.CENTER)
+        box.add(image)
+        buttons = [{"name": _("Close"), "response": Gtk.ResponseType.CANCEL}]
+        self._gtk.Dialog(self.filename, buttons, box, self._gtk.remove_dialog)
