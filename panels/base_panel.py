@@ -19,6 +19,8 @@ except ImportError:
 
 
 class BasePanel(ScreenPanel):
+    titlebar_temperature_sensors = {"chamber", "filament_box"}
+
     def __init__(self, screen, title=None):
         super().__init__(screen, title)
         self.current_panel = None
@@ -163,7 +165,11 @@ class BasePanel(ScreenPanel):
         if self._printer is None or not show:
             return
         try:
-            devices = self._printer.get_temp_devices()
+            devices = [
+                device
+                for device in self._printer.get_temp_devices()
+                if self._show_in_titlebar(device)
+            ]
             if not devices:
                 return
             img_size = self._gtk.img_scale * self.bts
@@ -210,6 +216,12 @@ class BasePanel(ScreenPanel):
             self.control['temp_box'].show_all()
         except Exception as e:
             logging.debug(f"Couldn't create heaters box: {e}")
+
+    def _show_in_titlebar(self, device):
+        if not device.startswith("temperature_sensor "):
+            return True
+        name = device.split(maxsplit=1)[1]
+        return name in self.titlebar_temperature_sensors
 
     def get_icon(self, device, img_size):
         if device.startswith("extruder"):
