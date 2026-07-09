@@ -46,7 +46,7 @@ class Panel(ScreenPanel):
             self._screen.panels_reinit.append(self._screen._cur_panels[-1])
             return
         self.update_timeout = None
-        self.network_list = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, hexpand=True, vexpand=True)
+        self.network_list = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, hexpand=True, vexpand=False)
         self.network_rows = {}
         self.networks = {}
         self.wifi_signal_icons = {
@@ -120,7 +120,9 @@ class Panel(ScreenPanel):
         sbox.add(right_area)
 
         scroll = self._gtk.ScrolledWindow()
-        self.labels['main_box'] = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, vexpand=True)
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scroll.set_propagate_natural_height(False)
+        self.labels['main_box'] = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, hexpand=True, vexpand=True)
 
         # AP test feature visibility flag
         self.show_ap_toggle = self._config.get_main_config().getboolean('show_ap_toggle', False)
@@ -173,7 +175,7 @@ class Panel(ScreenPanel):
             self.update_single_network_info()
 
         self.labels['main_box'].pack_start(scroll, True, True, 0)
-        self.content.add(self.labels['main_box'])
+        self.content.pack_start(self.labels['main_box'], True, True, 0)
 
     def popup_callback(self, msg, level=3):
         self._screen.show_popup_message(msg, level)
@@ -308,7 +310,7 @@ class Panel(ScreenPanel):
 
         for child in self.content.get_children():
             self.content.remove(child)
-        self.content.add(self.labels['main_box'])
+        self.content.pack_start(self.labels['main_box'], True, True, 0)
         self.content.show()
         for i in ['add_network', 'network_psk', 'network_identity']:
             if i in self.labels:
@@ -638,7 +640,7 @@ class Panel(ScreenPanel):
 
         # Add AP info display
         ap_info_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10,
-                              valign=Gtk.Align.CENTER, vexpand=True)
+                              valign=Gtk.Align.CENTER, vexpand=False)
         ap_info_box.get_style_context().add_class("frame-item")
 
         ap_name_label = Gtk.Label()
