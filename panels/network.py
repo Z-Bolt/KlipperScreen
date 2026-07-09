@@ -642,14 +642,18 @@ class Panel(ScreenPanel):
         ap_info_box.get_style_context().add_class("frame-item")
 
         ap_name_label = Gtk.Label()
-        ap_name_label.set_markup(f"<big><b>{self.ap_ssid}</b></big>")
+        ap_name_label.set_markup(
+            f"<big><b>{GLib.markup_escape_text(self.ap_ssid)}</b></big>"
+        )
         ap_name_label.set_halign(Gtk.Align.CENTER)
 
         ap_status_label = Gtk.Label(label=_("Access Point Mode"))
         ap_status_label.set_halign(Gtk.Align.CENTER)
 
         ap_password_label = Gtk.Label()
-        ap_password_label.set_markup(f"<small>{_('Password')}: {self.ap_password}</small>")
+        ap_password_label.set_markup(
+            f"<small>{_('Password')}: {GLib.markup_escape_text(self.ap_password)}</small>"
+        )
         ap_password_label.set_halign(Gtk.Align.CENTER)
 
         ap_info_box.add(ap_name_label)
