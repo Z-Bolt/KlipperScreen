@@ -46,7 +46,7 @@ class Panel(ScreenPanel):
             self._screen.panels_reinit.append(self._screen._cur_panels[-1])
             return
         self.update_timeout = None
-        self.network_list = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, hexpand=True, vexpand=True)
+        self.network_list = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, hexpand=True, vexpand=False)
         self.network_rows = {}
         self.networks = {}
         self.wifi_signal_icons = {
@@ -66,23 +66,24 @@ class Panel(ScreenPanel):
         logging.info(f"Primary interface: {self.interface}")
         self.is_ap_mode = False
 
+        self.max_info_width_chars = 30 if self._screen.vertical_mode else 60
         self.labels['interface'] = Gtk.Label(
-            hexpand=True,
-            halign=Gtk.Align.START,
+            halign=Gtk.Align.CENTER,
             wrap=True,
             wrap_mode=Pango.WrapMode.WORD_CHAR,
         )
-        self.labels['interface'].set_xalign(0)
-        self.labels['interface'].set_max_width_chars(30 if self._screen.vertical_mode else 60)
+        self.labels['interface'].set_xalign(0.5)
+        self.labels['interface'].set_justify(Gtk.Justification.CENTER)
+        self.labels['interface'].set_max_width_chars(self.max_info_width_chars)
         self.labels['interface'].set_no_show_all(True)
         self.labels['ip'] = Gtk.Label(
-            hexpand=True,
-            halign=Gtk.Align.START,
+            halign=Gtk.Align.CENTER,
             wrap=True,
             wrap_mode=Pango.WrapMode.WORD_CHAR,
         )
-        self.labels['ip'].set_xalign(0)
-        self.labels['ip'].set_max_width_chars(30 if self._screen.vertical_mode else 60)
+        self.labels['ip'].set_xalign(0.5)
+        self.labels['ip'].set_justify(Gtk.Justification.CENTER)
+        self.labels['ip'].set_max_width_chars(self.max_info_width_chars)
         if self.interface is not None:
             self.update_interface_display()
             self.labels['ip'].set_text(f"IP: {self.sdbus_nm.get_ip_address()}")
@@ -100,7 +101,8 @@ class Panel(ScreenPanel):
         )
         self.wifi_toggle.connect("notify::active", self.toggle_wifi)
 
-        info_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, hexpand=True, vexpand=False)
+        info_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, hexpand=False, vexpand=False)
+        info_box.set_halign(Gtk.Align.CENTER)
         info_box.add(self.labels['interface'])
         info_box.add(self.labels['ip'])
 
@@ -108,12 +110,19 @@ class Panel(ScreenPanel):
         controls_box.add(self.reload_button)
         controls_box.add(self.wifi_toggle)
 
+        right_area = Gtk.Box(hexpand=True, vexpand=False)
+        right_area.set_halign(Gtk.Align.END)
+        right_area.add(controls_box)
+
         sbox = Gtk.Box(spacing=5, hexpand=True, vexpand=False)
+        sbox.add(Gtk.Box(hexpand=True))
         sbox.add(info_box)
-        sbox.pack_end(controls_box, False, False, 0)
+        sbox.add(right_area)
 
         scroll = self._gtk.ScrolledWindow()
-        self.labels['main_box'] = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, vexpand=True)
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scroll.set_propagate_natural_height(False)
+        self.labels['main_box'] = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, hexpand=True, vexpand=True)
 
         # AP test feature visibility flag
         self.show_ap_toggle = self._config.get_main_config().getboolean('show_ap_toggle', False)
@@ -166,7 +175,7 @@ class Panel(ScreenPanel):
             self.update_single_network_info()
 
         self.labels['main_box'].pack_start(scroll, True, True, 0)
-        self.content.add(self.labels['main_box'])
+        self.content.pack_start(self.labels['main_box'], True, True, 0)
 
     def popup_callback(self, msg, level=3):
         self._screen.show_popup_message(msg, level)
@@ -301,7 +310,7 @@ class Panel(ScreenPanel):
 
         for child in self.content.get_children():
             self.content.remove(child)
-        self.content.add(self.labels['main_box'])
+        self.content.pack_start(self.labels['main_box'], True, True, 0)
         self.content.show()
         for i in ['add_network', 'network_psk', 'network_identity']:
             if i in self.labels:
@@ -631,18 +640,22 @@ class Panel(ScreenPanel):
 
         # Add AP info display
         ap_info_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10,
-                              valign=Gtk.Align.CENTER, vexpand=True)
+                              valign=Gtk.Align.CENTER, vexpand=False)
         ap_info_box.get_style_context().add_class("frame-item")
 
         ap_name_label = Gtk.Label()
-        ap_name_label.set_markup(f"<big><b>{self.ap_ssid}</b></big>")
+        ap_name_label.set_markup(
+            f"<big><b>{GLib.markup_escape_text(self.ap_ssid)}</b></big>"
+        )
         ap_name_label.set_halign(Gtk.Align.CENTER)
 
         ap_status_label = Gtk.Label(label=_("Access Point Mode"))
         ap_status_label.set_halign(Gtk.Align.CENTER)
 
         ap_password_label = Gtk.Label()
-        ap_password_label.set_markup(f"<small>{_('Password')}: {self.ap_password}</small>")
+        ap_password_label.set_markup(
+            f"<small>{_('Password')}: {GLib.markup_escape_text(self.ap_password)}</small>"
+        )
         ap_password_label.set_halign(Gtk.Align.CENTER)
 
         ap_info_box.add(ap_name_label)
@@ -660,9 +673,11 @@ class Panel(ScreenPanel):
             wifi_ip = ip_info.get("wifi", "?")
             ethernet_ips = ip_info.get("ethernet", [])
             ethernet_text = ", ".join(ethernet_ips) if ethernet_ips else _("Not connected")
-            self.labels['ip'].set_text(f"IP: Wlan {wifi_ip} | Eth {ethernet_text}")
+            self.labels['ip'].set_max_width_chars(self.max_info_width_chars)
+            self.labels['ip'].set_text(f"Wlan: {wifi_ip}\nEth: {ethernet_text}")
             return True
 
+        self.labels['ip'].set_max_width_chars(self.max_info_width_chars)
         ip = self.sdbus_nm.get_ip_address()
         self.labels['ip'].set_text(f"IP: {ip}")
         return True
