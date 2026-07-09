@@ -66,23 +66,24 @@ class Panel(ScreenPanel):
         logging.info(f"Primary interface: {self.interface}")
         self.is_ap_mode = False
 
+        self.max_info_width_chars = 30 if self._screen.vertical_mode else 60
         self.labels['interface'] = Gtk.Label(
-            hexpand=True,
-            halign=Gtk.Align.START,
+            halign=Gtk.Align.CENTER,
             wrap=True,
             wrap_mode=Pango.WrapMode.WORD_CHAR,
         )
-        self.labels['interface'].set_xalign(0)
-        self.labels['interface'].set_max_width_chars(30 if self._screen.vertical_mode else 60)
+        self.labels['interface'].set_xalign(0.5)
+        self.labels['interface'].set_justify(Gtk.Justification.CENTER)
+        self.labels['interface'].set_max_width_chars(self.max_info_width_chars)
         self.labels['interface'].set_no_show_all(True)
         self.labels['ip'] = Gtk.Label(
-            hexpand=True,
-            halign=Gtk.Align.START,
+            halign=Gtk.Align.CENTER,
             wrap=True,
             wrap_mode=Pango.WrapMode.WORD_CHAR,
         )
-        self.labels['ip'].set_xalign(0)
-        self.labels['ip'].set_max_width_chars(30 if self._screen.vertical_mode else 60)
+        self.labels['ip'].set_xalign(0.5)
+        self.labels['ip'].set_justify(Gtk.Justification.CENTER)
+        self.labels['ip'].set_max_width_chars(self.max_info_width_chars)
         if self.interface is not None:
             self.update_interface_display()
             self.labels['ip'].set_text(f"IP: {self.sdbus_nm.get_ip_address()}")
@@ -100,7 +101,8 @@ class Panel(ScreenPanel):
         )
         self.wifi_toggle.connect("notify::active", self.toggle_wifi)
 
-        info_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, hexpand=True, vexpand=False)
+        info_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, hexpand=False, vexpand=False)
+        info_box.set_halign(Gtk.Align.CENTER)
         info_box.add(self.labels['interface'])
         info_box.add(self.labels['ip'])
 
@@ -108,9 +110,14 @@ class Panel(ScreenPanel):
         controls_box.add(self.reload_button)
         controls_box.add(self.wifi_toggle)
 
+        right_area = Gtk.Box(hexpand=True, vexpand=False)
+        right_area.set_halign(Gtk.Align.END)
+        right_area.add(controls_box)
+
         sbox = Gtk.Box(spacing=5, hexpand=True, vexpand=False)
+        sbox.add(Gtk.Box(hexpand=True))
         sbox.add(info_box)
-        sbox.pack_end(controls_box, False, False, 0)
+        sbox.add(right_area)
 
         scroll = self._gtk.ScrolledWindow()
         self.labels['main_box'] = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, vexpand=True)
@@ -660,9 +667,11 @@ class Panel(ScreenPanel):
             wifi_ip = ip_info.get("wifi", "?")
             ethernet_ips = ip_info.get("ethernet", [])
             ethernet_text = ", ".join(ethernet_ips) if ethernet_ips else _("Not connected")
-            self.labels['ip'].set_text(f"IP: Wlan {wifi_ip} | Eth {ethernet_text}")
+            self.labels['ip'].set_max_width_chars(self.max_info_width_chars)
+            self.labels['ip'].set_text(f"Wlan: {wifi_ip}\nEth: {ethernet_text}")
             return True
 
+        self.labels['ip'].set_max_width_chars(self.max_info_width_chars)
         ip = self.sdbus_nm.get_ip_address()
         self.labels['ip'].set_text(f"IP: {ip}")
         return True
