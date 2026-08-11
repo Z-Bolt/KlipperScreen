@@ -187,6 +187,7 @@ class BasePanel(ScreenPanel):
             # Limit the number of items according to resolution
             nlimit = int(round(log(self._screen.width, 10) * 5 - 10.5))
             n = 0
+            heaters = set(self._printer.get_heaters())
             if len(self._printer.get_tools()) > (nlimit - 1):
                 self.current_extruder = self._printer.get_stat("toolhead", "extruder")
                 if self.current_extruder and f"{self.current_extruder}_box" in self.labels:
@@ -199,7 +200,7 @@ class BasePanel(ScreenPanel):
                 if device.startswith("extruder") and self.current_extruder is False:
                     self.control['temp_box'].add(self.labels[f"{device}_box"])
                     n += 1
-                elif device.startswith("heater"):
+                elif device.startswith("heater") or device in heaters:
                     self.control['temp_box'].add(self.labels[f"{device}_box"])
                     n += 1
                 elif device.startswith("temperature") and not device.split()[1].startswith("_"):
@@ -241,7 +242,7 @@ class BasePanel(ScreenPanel):
             return None
         elif device.startswith("temperature_fan"):
             return self._gtk.Image("fan", img_size, img_size)
-        elif device.startswith("heater_generic"):
+        elif device.startswith("heater_generic") or self._printer.is_multiplex_heater(device):
             return self._gtk.Image("heater", img_size, img_size)
         else:
             return self._gtk.Image("heat-up", img_size, img_size)
