@@ -71,6 +71,11 @@ class Printer:
                 if section != "temperature_sensor":
                     self.data[x]["target"] = 0
                 self.tempdevcount += 1
+            elif section == "multiplex_heater":
+                # Public facade name (heater_bed, chamber, …) — matches Moonraker/Fluidd
+                self.data[name] = {"temperature": 0, "target": 0}
+                self.tempdevcount += 1
+            # multiplex_heater_segment: hidden (like Fluidd); not listed as UI heaters
             elif section in (
                 "fan",
                 "controller_fan",
@@ -178,7 +183,17 @@ class Printer:
         return []
 
     def get_config_section(self, section):
-        return self.config[section] if section in self.config else False
+        if section in self.config:
+            return self.config[section]
+        # multiplex_heater facades are queried by public name (heater_bed, chamber)
+        mux = f"multiplex_heater {section}"
+        if mux in self.config:
+            return self.config[mux]
+        return False
+
+    def is_multiplex_heater(self, name):
+        """True if name is a multiplex_heater facade (public object name)."""
+        return f"multiplex_heater {name}" in self.config
 
     def get_macro(self, macro):
         return next(
@@ -216,9 +231,24 @@ class Printer:
         return macros
 
     def get_heaters(self):
-        heaters = self.get_config_section_list("heater_generic ")
-        if "heater_bed" in self.config:
-            heaters.insert(0, "heater_bed")
+        """Controllable heaters for UI (Fluidd-compatible).
+
+        Includes heater_bed, heater_generic, and multiplex_heater facades.
+        Segment heaters (multiplex_heater_segment / names with _) are excluded.
+        Multiplex devices use their public Moonraker object name (e.g. chamber).
+        """
+        heaters = []
+        if "heater_bed" in self.config or "multiplex_heater heater_bed" in self.config:
+            heaters.append("heater_bed")
+        for h in self.get_config_section_list("heater_generic "):
+            name = h.split(None, 1)[1]
+            if not name.startswith("_"):
+                heaters.append(h)
+        for section in self.get_config_section_list("multiplex_heater "):
+            name = section.split(None, 1)[1]
+            if name.startswith("_") or name == "heater_bed":
+                continue
+            heaters.append(name)
         return heaters
 
     def get_temp_fans(self):

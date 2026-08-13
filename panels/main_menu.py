@@ -106,7 +106,7 @@ class Panel(MenuPanel):
             devname = "Heater Bed"
             class_name = "graph_label_heater_bed"
             dev_type = "bed"
-        elif device.startswith("heater_generic"):
+        elif device.startswith("heater_generic") or self._printer.is_multiplex_heater(device):
             self.h += 1
             image = "heater"
             class_name = f"graph_label_sensor_{self.h}"
@@ -186,14 +186,17 @@ class Panel(MenuPanel):
             self._screen._ws.klippy.set_tool_temp(self._printer.get_tool_number(self.active_heater), temp)
         elif self.active_heater == "heater_bed":
             self._screen._ws.klippy.set_bed_temp(temp)
-        elif self.active_heater.startswith('heater_generic '):
+        elif (
+            self.active_heater.startswith('heater_generic ')
+            or self._printer.is_multiplex_heater(self.active_heater)
+        ):
             self._screen._ws.klippy.set_heater_temp(name, temp)
         elif self.active_heater.startswith('temperature_fan '):
             self._screen._ws.klippy.set_temp_fan_temp(name, temp)
         else:
             logging.info(f"Unknown heater: {self.active_heater}")
             self._screen.show_popup_message(_("Unknown Heater") + " " + self.active_heater)
-        self._printer.set_stat(name, {"target": temp})
+        self._printer.set_stat(self.active_heater, {"target": temp})
 
     def verify_max_temp(self, temp):
         temp = int(temp)
@@ -286,7 +289,8 @@ class Panel(MenuPanel):
         if "keypad" not in self.labels:
             self.labels["keypad"] = Keypad(self._screen, self.change_target_temp, self.pid_calibrate, self.hide_numpad)
         can_pid = self._printer.state not in ("printing", "paused") \
-            and self._screen.printer.config[self.active_heater]['control'] == 'pid'
+            and bool(self._printer.get_config_section(self.active_heater)) \
+            and self._printer.get_config_section(self.active_heater).get('control') == 'pid'
         self.labels["keypad"].show_pid(can_pid)
         self.labels["keypad"].clear()
 
