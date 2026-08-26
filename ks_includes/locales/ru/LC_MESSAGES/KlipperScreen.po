@@ -283,10 +283,10 @@ msgid "Extrude"
 msgstr "Экструзия"
 
 msgid "Extruder"
-msgstr "Левая голова"
+msgstr "Л. голова"
 
 msgid "Extruder1"
-msgstr "Правая голова"
+msgstr "П. голова"
 
 msgid "Unretract"
 msgstr "Выдавить"
