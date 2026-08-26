@@ -64,6 +64,7 @@ class KlipperScreen(Gtk.Window):
     keyboard = None
     panels = {}
     popup_message = None
+    popup_closed_handler = None
     printers = None
     printer = None
     updating = False
@@ -158,6 +159,7 @@ class KlipperScreen(Gtk.Window):
         self.overlay.add_overlay(self.base_panel.main_grid)
         self.show_all()
         self.update_cursor(self.show_cursor)
+        GLib.timeout_add_seconds(2, self._watch_pointer_grab)
         min_ver = (3, 8)
         if sys.version_info < min_ver:
             self.show_error_modal(
@@ -331,6 +333,7 @@ class KlipperScreen(Gtk.Window):
         if self._cur_panels and panel_name == self._cur_panels[-1]:
             logging.error("Panel is already is in view")
             return
+        self.close_popup_message()
         try:
             if remove_all:
                 self.panels_reinit = list(self.panels)
@@ -420,8 +423,11 @@ class KlipperScreen(Gtk.Window):
 
         popup = Gtk.Popover(relative_to=self.base_panel.titlebar,
                             halign=Gtk.Align.CENTER, width_request=int(self.width * .9))
+        # Non-modal: a leaked gtk_grab_add() from Gtk.Popover freezes touch input.
+        popup.set_modal(False)
         popup.get_style_context().add_class("message_popup_popover")
         popup.add(msg)
+        self.popup_closed_handler = popup.connect("closed", self._on_popup_closed)
         popup.popup()
 
         self.popup_message = popup
@@ -436,15 +442,84 @@ class KlipperScreen(Gtk.Window):
 
         return False
 
+    def _on_popup_closed(self, popup):
+        if self.popup_message is popup:
+            self.close_popup_message()
+
     def close_popup_message(self, widget=None):
-        if self.popup_message is None:
+        popup = self.popup_message
+        if popup is None:
             return False
-        self.popup_message.popdown()
+        self.popup_message = None
         if self.popup_timeout is not None:
             GLib.source_remove(self.popup_timeout)
             self.popup_timeout = None
-        self.popup_message = None
+        handler_id = getattr(self, "popup_closed_handler", None)
+        if handler_id is not None:
+            try:
+                popup.disconnect(handler_id)
+            except Exception:
+                pass
+            self.popup_closed_handler = None
+        self._release_widget_grab(popup)
+        try:
+            popup.popdown()
+            popup.hide()
+            popup.set_relative_to(None)
+            popup.destroy()
+        except Exception:
+            logging.exception("Error while closing popup message")
+        GLib.idle_add(self._release_stale_grabs)
         return False
+
+    def _release_widget_grab(self, widget):
+        grab = Gtk.grab_get_current()
+        if grab is None or widget is None:
+            return
+        try:
+            owns_grab = grab == widget or widget.is_ancestor(grab) or grab.is_ancestor(widget)
+        except Exception:
+            owns_grab = grab == widget
+        if owns_grab:
+            logging.warning("Releasing pointer grab held by popup/dialog")
+            Gtk.grab_remove(grab)
+
+    def _release_stale_grabs(self):
+        grab = Gtk.grab_get_current()
+        if grab is not None:
+            try:
+                stale = (not grab.get_mapped()) or (not grab.get_visible())
+            except Exception:
+                stale = True
+            if stale:
+                logging.warning("Releasing stale GTK pointer grab")
+                try:
+                    Gtk.grab_remove(grab)
+                    grab = None
+                except Exception:
+                    logging.exception("Failed to release stale GTK grab")
+        if grab is None and not self.dialogs:
+            try:
+                display = Gdk.Display.get_default()
+                seat = display.get_default_seat() if display else None
+                if seat is not None:
+                    seat.ungrab()
+            except Exception:
+                logging.exception("Failed to ungrab GDK seat")
+        return False
+
+    def _watch_pointer_grab(self):
+        grab = Gtk.grab_get_current()
+        if grab is None:
+            return True
+        try:
+            stale = (not grab.get_mapped()) or (not grab.get_visible())
+        except Exception:
+            stale = True
+        if stale:
+            logging.warning("Touch freeze recovery: stale pointer grab detected")
+            self._release_stale_grabs()
+        return True
 
     def show_error_modal(self, title_msg, description="", help_msg=None):
         logging.error(f"Showing error modal: {title_msg} {description}")
@@ -588,6 +663,7 @@ class KlipperScreen(Gtk.Window):
 
     def _remove_all_panels(self):
         logging.debug("Removing all panels")
+        self.close_popup_message()
         while len(self._cur_panels) > 0:
             self._remove_current_panel()
             del self._cur_panels[-1]
@@ -604,6 +680,7 @@ class KlipperScreen(Gtk.Window):
 
     def _menu_go_back(self, widget=None, home=False):
         logging.info(f"#### Menu go {'home' if home else 'back'}")
+        self.close_popup_message()
         self.remove_keyboard()
         while len(self._cur_panels) > 1:
             self._remove_current_panel()

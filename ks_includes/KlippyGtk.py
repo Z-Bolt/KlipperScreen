@@ -264,6 +264,15 @@ class KlippyGtk:
             return
         if dialog == self.screen.confirm:
             self.screen.confirm = None
+        grab = Gtk.grab_get_current()
+        if grab is not None:
+            try:
+                owns_grab = grab == dialog or dialog.is_ancestor(grab) or grab.is_ancestor(dialog)
+            except Exception:
+                owns_grab = grab == dialog
+            if owns_grab:
+                logging.warning("Releasing pointer grab held by dialog")
+                Gtk.grab_remove(grab)
         dialog.destroy()
         if dialog in self.screen.dialogs:
             logging.info("Removing Dialog")
