@@ -357,7 +357,7 @@ class Panel(ScreenPanel):
             dev_type = "bed"
         elif device.startswith("heater_generic") or self._printer.is_multiplex_heater(device):
             self.h += 1
-            image = "heater"
+            image = self.heater_icon_name(device)
             class_name = f"graph_label_sensor_{self.h}"
             dev_type = "sensor"
         elif device.startswith("temperature_fan"):

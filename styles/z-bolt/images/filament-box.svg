@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Heated filament enclosure: box + spool -->
+  <rect x="4" y="8" width="56" height="48" rx="8" fill="none" stroke="#ffffff" stroke-width="3.5"/>
+  <path fill="#ffffff" fill-rule="evenodd"
+        d="M32 16a16 16 0 1 1 0 32 16 16 0 1 1 0-32zm0 8a8 8 0 1 0 0 16 8 8 0 1 0 0-16z"/>
+</svg>

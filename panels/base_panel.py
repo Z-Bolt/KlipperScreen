@@ -244,7 +244,7 @@ class BasePanel(ScreenPanel):
         elif device.startswith("temperature_fan"):
             return self._gtk.Image("fan", img_size, img_size)
         elif device.startswith("heater_generic") or self._printer.is_multiplex_heater(device):
-            return self._gtk.Image("heater", img_size, img_size)
+            return self._gtk.Image(self.heater_icon_name(device), img_size, img_size)
         else:
             return self._gtk.Image("heat-up", img_size, img_size)
 

@@ -189,6 +189,13 @@ class ScreenPanel:
             name = name.title()
         return name
 
+    @staticmethod
+    def heater_icon_name(device):
+        name = device.split()[-1] if device else ""
+        if name == "filament_box":
+            return "filament-box"
+        return "heater"
+
     def update_temp(self, dev, temp, target, power, lines=1, digits=1):
         new_label_text = f"{temp or 0:.{digits}f}"
         if self._printer.device_has_target(dev) and target:
