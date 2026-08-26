@@ -665,7 +665,7 @@ msgid "Part Fan"
 msgstr "Вентиляторы обдува детали"
 
 msgid "Chamber"
-msgstr "Камера"
+msgstr "Термокамера"
 
 msgid "Chamber Fan"
 msgstr "Вентиляторы камеры"
