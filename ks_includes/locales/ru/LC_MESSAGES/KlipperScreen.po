@@ -312,7 +312,7 @@ msgstr "Обдув"
 msgid "Filament"
 msgstr "Филамент"
 
-msgid "Filament compartment"
+msgid "Filament_box"
 msgstr "Отсек для филамента"
 
 msgid "Filament Used"

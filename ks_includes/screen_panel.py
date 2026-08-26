@@ -199,7 +199,7 @@ class ScreenPanel:
         if key == "chamber":
             return _("Chamber")
         if key == "filament_box":
-            return _("Filament compartment")
+            return _("Filament_box")
         if key == "extruder":
             return _("Extruder")
         if key.startswith("extruder") and key[8:].isdigit():
