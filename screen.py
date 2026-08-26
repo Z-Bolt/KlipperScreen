@@ -93,6 +93,8 @@ class KlipperScreen(Gtk.Window):
         self.apiclient = None
         self.dialogs = []
         self.confirm = None
+        self.exclude_pending = False
+        self.exclude_pending_timeout = None
         self.panels_reinit = []
         self.last_popup_time = datetime.now()
 
@@ -993,6 +995,9 @@ class KlipperScreen(Gtk.Window):
             self.panels[self._cur_panels[-1]].process_update(*args)
 
     def _confirm_send_action(self, widget, text, method, params=None):
+        if self.confirm is not None:
+            logging.debug("Confirmation dialog already open, ignoring request")
+            return
         buttons = [
             {"name": _("Accept"), "response": Gtk.ResponseType.OK, "style": 'dialog-info'},
             {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL, "style": 'dialog-error'}
@@ -1008,8 +1013,6 @@ class KlipperScreen(Gtk.Window):
                           wrap=True, wrap_mode=Pango.WrapMode.WORD_CHAR)
         label.set_markup(text)
 
-        if self.confirm is not None:
-            self.gtk.remove_dialog(self.confirm)
         self.confirm = self.gtk.Dialog(
             "KlipperScreen", buttons, label, self._confirm_send_action_response, method, params
         )
@@ -1017,7 +1020,33 @@ class KlipperScreen(Gtk.Window):
     def _confirm_send_action_response(self, dialog, response_id, method, params):
         self.gtk.remove_dialog(dialog)
         if response_id == Gtk.ResponseType.OK:
+            if (params and isinstance(params, dict)
+                    and "EXCLUDE_OBJECT" in params.get("script", "")):
+                self.set_exclude_pending(True)
             self._send_action(None, method, params)
+
+    def set_exclude_pending(self, pending):
+        if self.exclude_pending_timeout is not None:
+            GLib.source_remove(self.exclude_pending_timeout)
+            self.exclude_pending_timeout = None
+        self.exclude_pending = pending
+        if pending:
+            self.exclude_pending_timeout = GLib.timeout_add_seconds(30, self.clear_exclude_pending)
+
+    def clear_exclude_pending(self):
+        if not self.exclude_pending and self.exclude_pending_timeout is None:
+            return False
+        logging.debug("Clearing exclude pending state")
+        self.exclude_pending = False
+        if self.exclude_pending_timeout is not None:
+            GLib.source_remove(self.exclude_pending_timeout)
+            self.exclude_pending_timeout = None
+        if "exclude" in self._cur_panels and "exclude" in self.panels:
+            panel = self.panels["exclude"]
+            if panel.labels.get("map"):
+                panel.labels["map"].sync_state()
+                panel.labels["map"].queue_draw()
+        return False
 
     def _send_action(self, widget, method, params):
         logging.info(f"{method}: {params}")
