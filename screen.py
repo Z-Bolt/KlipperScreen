@@ -481,10 +481,12 @@ class KlipperScreen(Gtk.Window):
         except Exception:
             owns_grab = grab == widget
         if owns_grab:
-            logging.warning("Releasing pointer grab held by popup/dialog")
-            Gtk.grab_remove(grab)
+            logging.debug("Releasing pointer grab held by popup")
+            self.gtk.release_grab(grab)
 
     def _release_stale_grabs(self):
+        if self.dialogs:
+            return False
         grab = Gtk.grab_get_current()
         if grab is not None:
             try:
@@ -493,12 +495,9 @@ class KlipperScreen(Gtk.Window):
                 stale = True
             if stale:
                 logging.warning("Releasing stale GTK pointer grab")
-                try:
-                    Gtk.grab_remove(grab)
+                if self.gtk.release_grab(grab):
                     grab = None
-                except Exception:
-                    logging.exception("Failed to release stale GTK grab")
-        if grab is None and not self.dialogs:
+        if grab is None:
             try:
                 display = Gdk.Display.get_default()
                 seat = display.get_default_seat() if display else None
@@ -509,6 +508,8 @@ class KlipperScreen(Gtk.Window):
         return False
 
     def _watch_pointer_grab(self):
+        if self.dialogs:
+            return True
         grab = Gtk.grab_get_current()
         if grab is None:
             return True
@@ -555,6 +556,22 @@ class KlipperScreen(Gtk.Window):
         os.execv(sys.executable, ['python'] + sys.argv)
         # noinspection PyUnreachableCode
         self._ws.send_method("machine.services.restart", {"service": "KlipperScreen"})  # Fallback
+
+    def restart_ks_service(self, *args):
+        logging.info("Restarting KlipperScreen service")
+        if self._ws is not None:
+            try:
+                self._ws.send_method("machine.services.restart", {"service": "KlipperScreen"})
+            except Exception:
+                logging.exception("Moonraker restart request failed")
+        try:
+            subprocess.Popen(["sudo", "-n", "systemctl", "restart", "KlipperScreen"])
+        except Exception:
+            logging.exception("systemctl restart failed")
+            self.restart_ks()
+        else:
+            GLib.timeout_add_seconds(8, self.restart_ks)
+        return False
 
     def setup_gtk_settings(self):
         settings = Gtk.Settings.get_default()
