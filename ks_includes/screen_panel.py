@@ -202,6 +202,8 @@ class ScreenPanel:
             return _("Filament_box")
         if key == "extruder":
             return _("Extruder")
+        if key == "extruder1":
+            return _("Extruder1")
         if key.startswith("extruder") and key[8:].isdigit():
             return f"{_('Extruder')} {key[8:]}"
         return ScreenPanel.prettify(key)
