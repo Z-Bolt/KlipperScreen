@@ -105,6 +105,9 @@ msgstr "Уровень стола"
 msgid "Bed Mesh"
 msgstr "Сетка стола"
 
+msgid "Heater Bed"
+msgstr "Стол"
+
 msgid "Both"
 msgstr "Оба"
 
@@ -279,6 +282,9 @@ msgstr "Очень большой"
 msgid "Extrude"
 msgstr "Экструзия"
 
+msgid "Extruder"
+msgstr "Экструдер"
+
 msgid "Unretract"
 msgstr "Выдавить"
 
@@ -305,6 +311,9 @@ msgstr "Обдув"
 
 msgid "Filament"
 msgstr "Филамент"
+
+msgid "Filament compartment"
+msgstr "Отсек для филамента"
 
 msgid "Filament Used"
 msgstr "Использование филамента"
@@ -651,6 +660,9 @@ msgstr[2] "Пакеты будут обновляться"
 
 msgid "Part Fan"
 msgstr "Вентиляторы обдува детали"
+
+msgid "Chamber"
+msgstr "Камера"
 
 msgid "Chamber Fan"
 msgstr "Вентиляторы камеры"

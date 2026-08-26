@@ -334,11 +334,10 @@ class BasePanel(ScreenPanel):
                 name = ""
                 if not (device.startswith("extruder") or device.startswith("heater_bed")):
                     if self.titlebar_name_type == "full":
-                        name = device.split()[1] if len(device.split()) > 1 else device
-                        name = f'{self.prettify(name)}: '
+                        name = f'{self.heater_display_name(device)}: '
                     elif self.titlebar_name_type == "short":
-                        name = device.split()[1] if len(device.split()) > 1 else device
-                        name = f"{name[:1].upper()}: "
+                        shown = self.heater_display_name(device)
+                        name = f"{shown[:1].upper()}: "
                 self.labels[device].set_label(f"{name}{temp:.0f}°")
 
         if (self.current_extruder and 'toolhead' in data and 'extruder' in data['toolhead']

@@ -190,6 +190,23 @@ class ScreenPanel:
         return name
 
     @staticmethod
+    def heater_display_name(device: str):
+        if not device:
+            return ""
+        key = device.split()[-1]
+        if key == "heater_bed":
+            return _("Heater Bed")
+        if key == "chamber":
+            return _("Chamber")
+        if key == "filament_box":
+            return _("Filament compartment")
+        if key == "extruder":
+            return _("Extruder")
+        if key.startswith("extruder") and key[8:].isdigit():
+            return f"{_('Extruder')} {key[8:]}"
+        return ScreenPanel.prettify(key)
+
+    @staticmethod
     def heater_icon_name(device):
         name = device.split()[-1] if device else ""
         if name == "filament_box":
