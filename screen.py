@@ -96,7 +96,6 @@ class KlipperScreen(Gtk.Window):
         self.exclude_pending = False
         self.exclude_pending_timeout = None
         self.panels_reinit = []
-        self.last_popup_time = datetime.now()
 
         configfile = os.path.normpath(os.path.expanduser(args.configfile))
 
@@ -394,34 +393,18 @@ class KlipperScreen(Gtk.Window):
         self.notification_log.clear()
 
     def show_popup_message(self, message, level=3, from_ws=False):
-        if from_ws:
-            if (datetime.now() - self.last_popup_time).seconds < 1:
-                return
-            self.last_popup_time = datetime.now()
-
         self.screensaver.close()
         if self.popup_message is not None:
-            self.close_popup_message()
+            self._refresh_popup_message(message, level)
+            return False
 
         self.log_notification(message, level)
 
         msg = Gtk.Button(label=f"{message}", hexpand=True, vexpand=True)
-        for widget in msg.get_children():
-            if isinstance(widget, Gtk.Label):
-                widget.set_line_wrap(True)
-                widget.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
-                widget.set_max_width_chars(40)
+        self._wrap_popup_label(msg)
         msg.connect("clicked", self.close_popup_message)
         msg.get_style_context().add_class("message_popup")
-        if level == 1:
-            msg.get_style_context().add_class("message_popup_echo")
-            logging.info(f'echo: {message}')
-        elif level == 2:
-            msg.get_style_context().add_class("message_popup_warning")
-            logging.info(f'warning: {message}')
-        else:
-            msg.get_style_context().add_class("message_popup_error")
-            logging.info(f'error: {message}')
+        self._style_popup_button(msg, level, message)
 
         popup = Gtk.Popover(relative_to=self.base_panel.titlebar,
                             halign=Gtk.Align.CENTER, width_request=int(self.width * .9))
@@ -434,15 +417,50 @@ class KlipperScreen(Gtk.Window):
 
         self.popup_message = popup
         self.popup_message.show_all()
-
-        if self._config.get_main_config().getboolean('autoclose_popups', True):
-            if self.popup_timeout is not None:
-                GLib.source_remove(self.popup_timeout)
-                self.popup_timeout = None
-            timeout = 300 if level == 2 else 10
-            self.popup_timeout = GLib.timeout_add_seconds(timeout, self.close_popup_message)
-
+        self._schedule_popup_autoclose(level)
         return False
+
+    def _refresh_popup_message(self, message, level):
+        self.log_notification(message, level)
+        button = self.popup_message.get_child()
+        if isinstance(button, Gtk.Button):
+            button.set_label(f"{message}")
+            self._wrap_popup_label(button)
+            self._style_popup_button(button, level, message)
+        self._schedule_popup_autoclose(level)
+
+    @staticmethod
+    def _wrap_popup_label(button):
+        for widget in button.get_children():
+            if isinstance(widget, Gtk.Label):
+                widget.set_line_wrap(True)
+                widget.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
+                widget.set_max_width_chars(40)
+
+    @staticmethod
+    def _style_popup_button(button, level, message):
+        ctx = button.get_style_context()
+        ctx.remove_class("message_popup_echo")
+        ctx.remove_class("message_popup_warning")
+        ctx.remove_class("message_popup_error")
+        if level == 1:
+            ctx.add_class("message_popup_echo")
+            logging.info(f'echo: {message}')
+        elif level == 2:
+            ctx.add_class("message_popup_warning")
+            logging.info(f'warning: {message}')
+        else:
+            ctx.add_class("message_popup_error")
+            logging.info(f'error: {message}')
+
+    def _schedule_popup_autoclose(self, level):
+        if self.popup_timeout is not None:
+            GLib.source_remove(self.popup_timeout)
+            self.popup_timeout = None
+        if not self._config.get_main_config().getboolean('autoclose_popups', True):
+            return
+        timeout = 300 if level == 2 else 10
+        self.popup_timeout = GLib.timeout_add_seconds(timeout, self.close_popup_message)
 
     def _on_popup_closed(self, popup):
         if self.popup_message is popup:
