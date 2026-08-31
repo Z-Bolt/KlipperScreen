@@ -103,6 +103,7 @@ class Panel(MenuPanel):
             dev_type = "extruder"
         elif device == "heater_bed":
             image = "bed"
+            devname = "Heater Bed"
             class_name = "graph_label_heater_bed"
             dev_type = "bed"
         elif device.startswith("heater_generic") or self._printer.is_multiplex_heater(device):
@@ -132,7 +133,7 @@ class Panel(MenuPanel):
         if self._show_heater_power and self._printer.device_has_power(device):
             self.labels['da'].add_object(device, "powers", rgb, True, False)
 
-        name = self._gtk.Button(image, self.heater_display_name(device), None, self.bts, Gtk.PositionType.LEFT, 1)
+        name = self._gtk.Button(image, self.prettify(devname), None, self.bts, Gtk.PositionType.LEFT, 1)
         name.connect("clicked", self.toggle_visibility, device)
         name.set_alignment(0, .5)
         name.get_style_context().add_class(class_name)
