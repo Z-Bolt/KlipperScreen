@@ -184,6 +184,18 @@ class KlippyGtk:
         return b
 
     @staticmethod
+    def release_grab(widget=None):
+        grab = widget if widget is not None else Gtk.grab_get_current()
+        if grab is None:
+            return False
+        try:
+            grab.grab_remove()
+            return True
+        except Exception:
+            logging.exception("Failed to release GTK grab")
+            return False
+
+    @staticmethod
     def Button_busy(widget, busy):
         spinner = find_widget(widget, Gtk.Spinner)
         image = find_widget(widget, Gtk.Image)
@@ -208,6 +220,7 @@ class KlippyGtk:
         self.remove_dialog(dialog)
 
     def Dialog(self, title, buttons, content, callback=None, *args):
+        self.screen.close_popup_message()
         dialog = Gtk.Dialog(title=title, modal=True, transient_for=self.screen,
                             default_width=self.width, default_height=self.height)
         dialog.set_size_request(self.width, self.height)
@@ -264,6 +277,15 @@ class KlippyGtk:
             return
         if dialog == self.screen.confirm:
             self.screen.confirm = None
+        grab = Gtk.grab_get_current()
+        if grab is not None:
+            try:
+                owns_grab = grab == dialog or dialog.is_ancestor(grab) or grab.is_ancestor(dialog)
+            except Exception:
+                owns_grab = grab == dialog
+            if owns_grab:
+                logging.debug("Releasing pointer grab held by dialog")
+                self.release_grab(grab)
         dialog.destroy()
         if dialog in self.screen.dialogs:
             logging.info("Removing Dialog")

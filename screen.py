@@ -64,6 +64,7 @@ class KlipperScreen(Gtk.Window):
     keyboard = None
     panels = {}
     popup_message = None
+    popup_closed_handler = None
     printers = None
     printer = None
     updating = False
@@ -92,8 +93,9 @@ class KlipperScreen(Gtk.Window):
         self.apiclient = None
         self.dialogs = []
         self.confirm = None
+        self.exclude_pending = False
+        self.exclude_pending_timeout = None
         self.panels_reinit = []
-        self.last_popup_time = datetime.now()
 
         configfile = os.path.normpath(os.path.expanduser(args.configfile))
 
@@ -158,6 +160,7 @@ class KlipperScreen(Gtk.Window):
         self.overlay.add_overlay(self.base_panel.main_grid)
         self.show_all()
         self.update_cursor(self.show_cursor)
+        GLib.timeout_add_seconds(2, self._watch_pointer_grab)
         min_ver = (3, 8)
         if sys.version_info < min_ver:
             self.show_error_modal(
@@ -331,6 +334,7 @@ class KlipperScreen(Gtk.Window):
         if self._cur_panels and panel_name == self._cur_panels[-1]:
             logging.error("Panel is already is in view")
             return
+        self.close_popup_message()
         try:
             if remove_all:
                 self.panels_reinit = list(self.panels)
@@ -389,62 +393,154 @@ class KlipperScreen(Gtk.Window):
         self.notification_log.clear()
 
     def show_popup_message(self, message, level=3, from_ws=False):
-        if from_ws:
-            if (datetime.now() - self.last_popup_time).seconds < 1:
-                return
-            self.last_popup_time = datetime.now()
-
         self.screensaver.close()
         if self.popup_message is not None:
-            self.close_popup_message()
+            self._refresh_popup_message(message, level)
+            return False
 
         self.log_notification(message, level)
 
         msg = Gtk.Button(label=f"{message}", hexpand=True, vexpand=True)
-        for widget in msg.get_children():
-            if isinstance(widget, Gtk.Label):
-                widget.set_line_wrap(True)
-                widget.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
-                widget.set_max_width_chars(40)
+        self._wrap_popup_label(msg)
         msg.connect("clicked", self.close_popup_message)
         msg.get_style_context().add_class("message_popup")
-        if level == 1:
-            msg.get_style_context().add_class("message_popup_echo")
-            logging.info(f'echo: {message}')
-        elif level == 2:
-            msg.get_style_context().add_class("message_popup_warning")
-            logging.info(f'warning: {message}')
-        else:
-            msg.get_style_context().add_class("message_popup_error")
-            logging.info(f'error: {message}')
+        self._style_popup_button(msg, level, message)
 
         popup = Gtk.Popover(relative_to=self.base_panel.titlebar,
                             halign=Gtk.Align.CENTER, width_request=int(self.width * .9))
+        # Non-modal: a leaked gtk_grab_add() from Gtk.Popover freezes touch input.
+        popup.set_modal(False)
         popup.get_style_context().add_class("message_popup_popover")
         popup.add(msg)
+        self.popup_closed_handler = popup.connect("closed", self._on_popup_closed)
         popup.popup()
 
         self.popup_message = popup
         self.popup_message.show_all()
-
-        if self._config.get_main_config().getboolean('autoclose_popups', True):
-            if self.popup_timeout is not None:
-                GLib.source_remove(self.popup_timeout)
-                self.popup_timeout = None
-            timeout = 300 if level == 2 else 10
-            self.popup_timeout = GLib.timeout_add_seconds(timeout, self.close_popup_message)
-
+        self._schedule_popup_autoclose(level)
         return False
 
-    def close_popup_message(self, widget=None):
-        if self.popup_message is None:
-            return False
-        self.popup_message.popdown()
+    def _refresh_popup_message(self, message, level):
+        self.log_notification(message, level)
+        button = self.popup_message.get_child()
+        if isinstance(button, Gtk.Button):
+            button.set_label(f"{message}")
+            self._wrap_popup_label(button)
+            self._style_popup_button(button, level, message)
+        self._schedule_popup_autoclose(level)
+
+    @staticmethod
+    def _wrap_popup_label(button):
+        for widget in button.get_children():
+            if isinstance(widget, Gtk.Label):
+                widget.set_line_wrap(True)
+                widget.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
+                widget.set_max_width_chars(40)
+
+    @staticmethod
+    def _style_popup_button(button, level, message):
+        ctx = button.get_style_context()
+        ctx.remove_class("message_popup_echo")
+        ctx.remove_class("message_popup_warning")
+        ctx.remove_class("message_popup_error")
+        if level == 1:
+            ctx.add_class("message_popup_echo")
+            logging.info(f'echo: {message}')
+        elif level == 2:
+            ctx.add_class("message_popup_warning")
+            logging.info(f'warning: {message}')
+        else:
+            ctx.add_class("message_popup_error")
+            logging.info(f'error: {message}')
+
+    def _schedule_popup_autoclose(self, level):
         if self.popup_timeout is not None:
             GLib.source_remove(self.popup_timeout)
             self.popup_timeout = None
+        if not self._config.get_main_config().getboolean('autoclose_popups', True):
+            return
+        timeout = 300 if level == 2 else 10
+        self.popup_timeout = GLib.timeout_add_seconds(timeout, self.close_popup_message)
+
+    def _on_popup_closed(self, popup):
+        if self.popup_message is popup:
+            self.close_popup_message()
+
+    def close_popup_message(self, widget=None):
+        popup = self.popup_message
+        if popup is None:
+            return False
         self.popup_message = None
+        if self.popup_timeout is not None:
+            GLib.source_remove(self.popup_timeout)
+            self.popup_timeout = None
+        handler_id = getattr(self, "popup_closed_handler", None)
+        if handler_id is not None:
+            try:
+                popup.disconnect(handler_id)
+            except Exception:
+                pass
+            self.popup_closed_handler = None
+        self._release_widget_grab(popup)
+        try:
+            popup.popdown()
+            popup.hide()
+            popup.set_relative_to(None)
+            popup.destroy()
+        except Exception:
+            logging.exception("Error while closing popup message")
+        GLib.idle_add(self._release_stale_grabs)
         return False
+
+    def _release_widget_grab(self, widget):
+        grab = Gtk.grab_get_current()
+        if grab is None or widget is None:
+            return
+        try:
+            owns_grab = grab == widget or widget.is_ancestor(grab) or grab.is_ancestor(widget)
+        except Exception:
+            owns_grab = grab == widget
+        if owns_grab:
+            logging.debug("Releasing pointer grab held by popup")
+            self.gtk.release_grab(grab)
+
+    def _release_stale_grabs(self):
+        if self.dialogs:
+            return False
+        grab = Gtk.grab_get_current()
+        if grab is not None:
+            try:
+                stale = (not grab.get_mapped()) or (not grab.get_visible())
+            except Exception:
+                stale = True
+            if stale:
+                logging.warning("Releasing stale GTK pointer grab")
+                if self.gtk.release_grab(grab):
+                    grab = None
+        if grab is None:
+            try:
+                display = Gdk.Display.get_default()
+                seat = display.get_default_seat() if display else None
+                if seat is not None:
+                    seat.ungrab()
+            except Exception:
+                logging.exception("Failed to ungrab GDK seat")
+        return False
+
+    def _watch_pointer_grab(self):
+        if self.dialogs:
+            return True
+        grab = Gtk.grab_get_current()
+        if grab is None:
+            return True
+        try:
+            stale = (not grab.get_mapped()) or (not grab.get_visible())
+        except Exception:
+            stale = True
+        if stale:
+            logging.warning("Touch freeze recovery: stale pointer grab detected")
+            self._release_stale_grabs()
+        return True
 
     def show_error_modal(self, title_msg, description="", help_msg=None):
         logging.error(f"Showing error modal: {title_msg} {description}")
@@ -480,6 +576,22 @@ class KlipperScreen(Gtk.Window):
         os.execv(sys.executable, ['python'] + sys.argv)
         # noinspection PyUnreachableCode
         self._ws.send_method("machine.services.restart", {"service": "KlipperScreen"})  # Fallback
+
+    def restart_ks_service(self, *args):
+        logging.info("Restarting KlipperScreen service")
+        if self._ws is not None:
+            try:
+                self._ws.send_method("machine.services.restart", {"service": "KlipperScreen"})
+            except Exception:
+                logging.exception("Moonraker restart request failed")
+        try:
+            subprocess.Popen(["sudo", "-n", "systemctl", "restart", "KlipperScreen"])
+        except Exception:
+            logging.exception("systemctl restart failed")
+            self.restart_ks()
+        else:
+            GLib.timeout_add_seconds(8, self.restart_ks)
+        return False
 
     def setup_gtk_settings(self):
         settings = Gtk.Settings.get_default()
@@ -588,6 +700,7 @@ class KlipperScreen(Gtk.Window):
 
     def _remove_all_panels(self):
         logging.debug("Removing all panels")
+        self.close_popup_message()
         while len(self._cur_panels) > 0:
             self._remove_current_panel()
             del self._cur_panels[-1]
@@ -604,6 +717,7 @@ class KlipperScreen(Gtk.Window):
 
     def _menu_go_back(self, widget=None, home=False):
         logging.info(f"#### Menu go {'home' if home else 'back'}")
+        self.close_popup_message()
         self.remove_keyboard()
         while len(self._cur_panels) > 1:
             self._remove_current_panel()
@@ -899,6 +1013,9 @@ class KlipperScreen(Gtk.Window):
             self.panels[self._cur_panels[-1]].process_update(*args)
 
     def _confirm_send_action(self, widget, text, method, params=None):
+        if self.confirm is not None:
+            logging.debug("Confirmation dialog already open, ignoring request")
+            return
         buttons = [
             {"name": _("Accept"), "response": Gtk.ResponseType.OK, "style": 'dialog-info'},
             {"name": _("Cancel"), "response": Gtk.ResponseType.CANCEL, "style": 'dialog-error'}
@@ -914,8 +1031,6 @@ class KlipperScreen(Gtk.Window):
                           wrap=True, wrap_mode=Pango.WrapMode.WORD_CHAR)
         label.set_markup(text)
 
-        if self.confirm is not None:
-            self.gtk.remove_dialog(self.confirm)
         self.confirm = self.gtk.Dialog(
             "KlipperScreen", buttons, label, self._confirm_send_action_response, method, params
         )
@@ -923,7 +1038,33 @@ class KlipperScreen(Gtk.Window):
     def _confirm_send_action_response(self, dialog, response_id, method, params):
         self.gtk.remove_dialog(dialog)
         if response_id == Gtk.ResponseType.OK:
+            if (params and isinstance(params, dict)
+                    and "EXCLUDE_OBJECT" in params.get("script", "")):
+                self.set_exclude_pending(True)
             self._send_action(None, method, params)
+
+    def set_exclude_pending(self, pending):
+        if self.exclude_pending_timeout is not None:
+            GLib.source_remove(self.exclude_pending_timeout)
+            self.exclude_pending_timeout = None
+        self.exclude_pending = pending
+        if pending:
+            self.exclude_pending_timeout = GLib.timeout_add_seconds(30, self.clear_exclude_pending)
+
+    def clear_exclude_pending(self):
+        if not self.exclude_pending and self.exclude_pending_timeout is None:
+            return False
+        logging.debug("Clearing exclude pending state")
+        self.exclude_pending = False
+        if self.exclude_pending_timeout is not None:
+            GLib.source_remove(self.exclude_pending_timeout)
+            self.exclude_pending_timeout = None
+        if "exclude" in self._cur_panels and "exclude" in self.panels:
+            panel = self.panels["exclude"]
+            if panel.labels.get("map"):
+                panel.labels["map"].sync_state()
+                panel.labels["map"].queue_draw()
+        return False
 
     def _send_action(self, widget, method, params):
         logging.info(f"{method}: {params}")

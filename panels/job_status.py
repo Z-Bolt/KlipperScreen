@@ -183,9 +183,10 @@ class Panel(ScreenPanel):
             if n >= nlimit:
                 break
             if dev == "heater_bed":
-                self.buttons['heater'][dev] = self._gtk.Button("bed", "", None, self.bts, Gtk.PositionType.LEFT, 1)
+                icon = "bed"
             else:
-                self.buttons['heater'][dev] = self._gtk.Button("heater", "", None, self.bts, Gtk.PositionType.LEFT, 1)
+                icon = self.heater_icon_name(dev)
+            self.buttons['heater'][dev] = self._gtk.Button(icon, "", None, self.bts, Gtk.PositionType.LEFT, 1)
             self.labels[dev] = Gtk.Label(label="-")
 
             self.buttons['heater'][dev].set_label(self.labels[dev].get_text())

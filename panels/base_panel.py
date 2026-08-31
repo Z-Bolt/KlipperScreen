@@ -35,6 +35,7 @@ class BasePanel(ScreenPanel):
         self.title_panel = ""
         self.last_usage_report = datetime.now()
         self.usage_report = 0
+        self.update_restart_timeout = None
         # Action bar buttons
         self.abscale = self.bts * 1.1
         self.control['back'] = self._gtk.Button('back', scale=self.abscale)
@@ -243,7 +244,7 @@ class BasePanel(ScreenPanel):
         elif device.startswith("temperature_fan"):
             return self._gtk.Image("fan", img_size, img_size)
         elif device.startswith("heater_generic") or self._printer.is_multiplex_heater(device):
-            return self._gtk.Image("heater", img_size, img_size)
+            return self._gtk.Image(self.heater_icon_name(device), img_size, img_size)
         else:
             return self._gtk.Image("heat-up", img_size, img_size)
 
@@ -320,6 +321,7 @@ class BasePanel(ScreenPanel):
                         self._screen.updating = False
                         for dialog in self._screen.dialogs:
                             self._gtk.remove_dialog(dialog)
+                self._schedule_ks_restart_after_update()
             return
         if action != "notify_status_update" or self._screen.printer is None:
             return
@@ -493,10 +495,9 @@ class BasePanel(ScreenPanel):
     def finish_updating(self, dialog, response_id):
         if response_id != Gtk.ResponseType.OK:
             return
-        logging.info("Finishing update")
+        logging.info("Finishing update, restarting KlipperScreen")
         self._screen.updating = False
-        self._gtk.remove_dialog(dialog)
-        self._screen._menu_go_back(home=True)
+        self._restart_ks_after_update()
 
     def close_update_dialog(self, *args):
         logging.info("Closing update dialog")
@@ -504,3 +505,22 @@ class BasePanel(ScreenPanel):
             self._screen.dialogs.remove(self.update_dialog)
         self.update_dialog = None
         self._screen._menu_go_back(home=True)
+
+    def _schedule_ks_restart_after_update(self):
+        if self.update_restart_timeout is not None:
+            return
+        if 'update_progress' in self.labels:
+            current = self.labels['update_progress'].get_text().strip()
+            self.labels['update_progress'].set_text(
+                f"{current}\n{_('Restart')} KlipperScreen...\n")
+        logging.info("Scheduling KlipperScreen restart after update")
+        self.update_restart_timeout = GLib.timeout_add_seconds(
+            3, self._restart_ks_after_update, True)
+
+    def _restart_ks_after_update(self, from_timeout=False):
+        if not from_timeout and self.update_restart_timeout is not None:
+            GLib.source_remove(self.update_restart_timeout)
+        self.update_restart_timeout = None
+        self._screen.updating = False
+        self._screen.restart_ks_service()
+        return False

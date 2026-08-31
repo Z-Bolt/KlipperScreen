@@ -27,9 +27,12 @@ class ObjectMap(Gtk.DrawingArea):
         self.margin_bottom = self.font_size * 2
         self.objects = self.printer.get_stat("exclude_object", "objects")
         self.current_object = self.printer.get_stat("current_object", "current_object")
-        self.excluded_objects = self.printer.get_stat("exclude_object", "excluded_objects")
+        self.excluded_objects = self.printer.get_stat("exclude_object", "excluded_objects") or []
         self.min_x = self.min_y = 99999999
         self.max_x = self.max_y = 0
+
+    def sync_state(self):
+        self.excluded_objects = self.printer.get_stat("exclude_object", "excluded_objects") or []
 
     def x_graph_to_bed(self, width, gx):
         return (((gx - self.margin_left) * (self.max_x - self.min_x))
@@ -40,6 +43,9 @@ class ObjectMap(Gtk.DrawingArea):
                 * (self.max_y - self.min_y)) + self.min_y
 
     def event_cb(self, da, ev):
+        if self._screen.confirm is not None or self._screen.exclude_pending:
+            return
+        self.sync_state()
         # Convert coordinates from screen-graph to bed
         x = self.x_graph_to_bed(da.get_allocated_width(), ev.x)
         y = self.y_graph_to_bed(da.get_allocated_height(), ev.y)
@@ -60,6 +66,10 @@ class ObjectMap(Gtk.DrawingArea):
                 break
 
     def exclude_object(self, name):
+        if self._screen.confirm is not None or self._screen.exclude_pending:
+            return
+        if name in self.excluded_objects:
+            return
         script = {"script": f"EXCLUDE_OBJECT NAME={name}"}
         self._screen._confirm_send_action(
             None,

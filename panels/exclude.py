@@ -18,9 +18,9 @@ class Panel(ScreenPanel):
         self.current_object = self._gtk.Button("extrude", "", scale=self.bts, position=Gtk.PositionType.LEFT, lines=1)
         self.current_object.connect("clicked", self.exclude_current)
         self.current_object.set_vexpand(False)
-        self.excluded_objects = self._printer.get_stat("exclude_object", "excluded_objects")
+        self.excluded_objects = self._printer.get_stat("exclude_object", "excluded_objects") or []
         logging.info(f'Excluded: {self.excluded_objects}')
-        self.objects = self._printer.get_stat("exclude_object", "objects")
+        self.objects = self._printer.get_stat("exclude_object", "objects") or []
         self.labels['map'] = None
         for obj in self.objects:
             logging.info(f"Adding {obj['name']}")
@@ -57,6 +57,10 @@ class Panel(ScreenPanel):
             self.object_list.add(self.buttons[name])
 
     def exclude_object(self, widget, name):
+        if self._screen.confirm is not None or self._screen.exclude_pending:
+            return
+        if name in self.excluded_objects:
+            return
         if len(self.excluded_objects) == len(self.objects) - 1:
             # Do not exclude the last object, this is a workaround for a bug of klipper that starts
             # to move the toolhead really fast skipping gcode until the file ends
@@ -85,7 +89,7 @@ class Panel(ScreenPanel):
         if action == "notify_status_update":
             if "exclude_object" in data:
                 if "object" in data["exclude_object"]:                    # Update objects
-                    self.objects = data["exclude_object"]["objects"]
+                    self.objects = data["exclude_object"]["objects"] or []
                     logging.info(f'Objects: {data["exclude_object"]["objects"]}')
                     for obj in self.buttons:
                         self.object_list.remove(self.buttons[obj])
@@ -102,15 +106,17 @@ class Panel(ScreenPanel):
                 if "excluded_objects" in data["exclude_object"]:                    # Update objects
                     # Update excluded objects
                     logging.info(f'Excluded objects: {data["exclude_object"]["excluded_objects"]}')
-                    self.excluded_objects = data["exclude_object"]["excluded_objects"]
+                    self.excluded_objects = data["exclude_object"]["excluded_objects"] or []
                     for name in self.excluded_objects:
                         if name in self.buttons:
                             self.object_list.remove(self.buttons[name])
+                    self._screen.clear_exclude_pending()
                     self.update_graph()
                     if len(self.excluded_objects) == len(self.objects):
                         self._screen._menu_go_back()
         elif action == "notify_gcode_response" and "Excluding object" in data:
             self._screen.show_popup_message(data, level=1)
+            self._screen.clear_exclude_pending()
             self.update_graph()
 
     def activate(self):
@@ -118,4 +124,5 @@ class Panel(ScreenPanel):
 
     def update_graph(self):
         if self.labels['map']:
+            self.labels['map'].sync_state()
             self.labels['map'].queue_draw()
